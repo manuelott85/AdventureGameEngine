@@ -1,0 +1,3 @@
+﻿  rapidXMLAdditions.cpp
+c:\development\adventuregameengine\adventuregameengine\rapidxmladditions.cpp(27): warning C4101: 'buffer': unreferenced local variable
+  AdventureGameEngine.vcxproj -> C:\Development\AdventureGameEngine\\Build\Debug\AdventureGameEngine.exe
