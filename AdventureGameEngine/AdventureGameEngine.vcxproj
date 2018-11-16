@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="asset.h" />
+    <ClInclude Include="gameobject.h" />
     <ClInclude Include="manager.h" />
     <ClInclude Include="rapidxml.hpp" />
     <ClInclude Include="rapidXMLAdditions.h" />
@@ -29,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="asset.cpp" />
+    <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="rapidXMLAdditions.cpp" />

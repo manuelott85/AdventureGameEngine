@@ -46,6 +46,7 @@ int main()
 
 		// Draw Calls
 		window.clear(sf::Color::Black);
+		CManager::instance().update(&window);
 		window.display();
 	}
 	return 0;

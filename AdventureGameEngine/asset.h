@@ -1,26 +1,58 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "rapidxml.hpp"
+
 #include "manager.h"
+
+class CManager;
 
 class CAsset
 {
-public: 
+protected: 
 	std::string m_name;
-public:
-	CAsset();
 
-	virtual void Start(CManager *pManager, rapidxml::xml_node<>* pNode);
-	virtual void Update(sf::RenderWindow* pWindow);
-	virtual std::string GetName() const;
+public:
+	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);
+	virtual void update(sf::RenderWindow* pWindow);
+	std::string getName() const;
 };
+
+// ----------------------------------------------------------------------------
 
 class CSprite : public CAsset
 {
-public:
-	CSprite();
+protected:
+	sf::Texture m_Texture;
+	sf::Sprite m_Sprite;
 
-	virtual void Start(CManager *pManager, rapidxml::xml_node<>* pNode);
-	virtual void Update(sf::RenderWindow* pWindow);
-	virtual std::string GetName() const;
+public:
+	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);
+	virtual void update(sf::RenderWindow* pWindow);
+};
+
+// ----------------------------------------------------------------------------
+
+class CSpriteMap
+{
+protected:
+	sf::Texture m_Texture;
+
+public:
+	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);
+	sf::Texture* getTexture();
+};
+
+// ----------------------------------------------------------------------------
+
+class CSpriteMapImage : public CAsset
+{
+protected:
+	sf::Texture* m_pTexture;
+	sf::Sprite m_Sprite;
+	sf::IntRect m_Rect;
+
+public:
+	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode, CSpriteMap* pSpriteMap);
+	virtual void update(sf::RenderWindow* pWindow);
 };
