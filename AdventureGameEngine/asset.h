@@ -5,12 +5,14 @@
 
 class CAsset
 {
+public: 
+	std::string m_name;
 public:
 	CAsset();
 
 	virtual void Start(CManager *pManager, rapidxml::xml_node<>* pNode);
 	virtual void Update(sf::RenderWindow* pWindow);
-	virtual int GetName() const;
+	virtual std::string GetName() const;
 };
 
 class CSprite : public CAsset
@@ -20,5 +22,5 @@ public:
 
 	virtual void Start(CManager *pManager, rapidxml::xml_node<>* pNode);
 	virtual void Update(sf::RenderWindow* pWindow);
-	virtual int GetName() const;
+	virtual std::string GetName() const;
 };

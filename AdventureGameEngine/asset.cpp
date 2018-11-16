@@ -17,9 +17,9 @@ void CAsset::Update(sf::RenderWindow* pWindow)
 
 }
 
-int CAsset::GetName() const
+std::string CAsset::GetName() const
 {
-
+	return m_name;
 }
 
 // ---------- CSprite ----------
@@ -39,7 +39,7 @@ void CSprite::Update(sf::RenderWindow* pWindow)
 
 }
 
-int CSprite::GetName() const
+std::string CSprite::GetName() const
 {
-
+	return m_name;
 }
