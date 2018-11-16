@@ -1,7 +1,14 @@
 #pragma once
 
-rapidxml::xml_node<>* FindChildNode(rapidxml::xml_node<>* pNode, char* szName);
+class CRapidXMLAdditions
+{
+public:
+	static rapidxml::xml_node<>* findChildNode(rapidxml::xml_node<>* pNode, char* szName);
 
-rapidxml::xml_node<>* FindChildNodeWithID(rapidxml::xml_node<>* pNode, char* szName, const int &id);
+	static rapidxml::xml_node<>* findChildNodeWithID(rapidxml::xml_node<>* pNode, char* szName, const int &id);
 
-rapidxml::xml_attribute<>* FindAttribute(rapidxml::xml_node<>* pNode, char* szName);
+	static rapidxml::xml_attribute<>* findAttribute(rapidxml::xml_node<>* pNode, char* szName);
+
+	static char* getAttributeValue(rapidxml::xml_node<>* pNode, char* szName);
+
+};

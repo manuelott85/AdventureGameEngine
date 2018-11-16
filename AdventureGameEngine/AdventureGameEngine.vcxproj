@@ -19,13 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="asset.h" />
+    <ClInclude Include="manager.h" />
     <ClInclude Include="rapidxml.hpp" />
+    <ClInclude Include="rapidXMLAdditions.h" />
     <ClInclude Include="rapidxml_iterators.hpp" />
     <ClInclude Include="rapidxml_print.hpp" />
     <ClInclude Include="rapidxml_utils.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="asset.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="manager.cpp" />
     <ClCompile Include="rapidXMLAdditions.cpp" />
   </ItemGroup>
   <ItemGroup>
