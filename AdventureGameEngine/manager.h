@@ -13,12 +13,20 @@
 class CAsset;
 class CGameObject;
 
+class CScene
+{
+public:
+	std::list<CGameObject*> m_GameObjects;	// list of current gameobjects
+};
+
 class CManager
 {
 public:
 	std::string m_strAssetPath;		// general path to the assets
 	std::list<CAsset*> m_Assets;	// list of all loaded assets in memory
-	std::list<CGameObject*> m_GameObjects;	// list of current gameobjects
+	std::list<CScene*> m_Scenes;	// list of all loaded scene
+	CScene* m_activeScene = NULL;	// points to current scene, that will be drawn
+	//std::list<CGameObject*> m_GameObjects;	// list of current gameobjects
 
 private:
 	CManager();	// making the constructor private prevent anyone of creating an instance of it, as it is a singleton class
@@ -28,7 +36,8 @@ private:
 	void loadSprite(rapidxml::xml_node<>* pNode);
 	void loadSpriteMap(rapidxml::xml_node<>* pNode);
 
-	void createEveryGameObjectFromXML(rapidxml::xml_node<>* pRootNode);	// create gameobjects according to the XML
+	void createEverySceneFromXML(rapidxml::xml_node<>* pRootNode);	// create all scenes and store them
+	void createEveryGameObjectFromXML(rapidxml::xml_node<>* pNode, CScene* pScene);	// create gameobjects according to the XML
 	void createSpriteComponentFromXML(rapidxml::xml_node<>* pNode, CGameObject* pGameObject);	// create a sprite components to a given gameobject
 
 public:

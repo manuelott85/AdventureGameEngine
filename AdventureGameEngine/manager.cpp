@@ -36,7 +36,7 @@ CAsset* CManager::getAssetOnName(std::string name)
 void CManager::start(rapidxml::xml_node<>* pRootNode)
 {
 	loadEveryAssetFromXML(pRootNode);
-	createEveryGameObjectFromXML(pRootNode);
+	createEverySceneFromXML(pRootNode);
 }
 
 void CManager::update(sf::RenderWindow* pWindow)
@@ -109,21 +109,32 @@ void CManager::loadSpriteMap(rapidxml::xml_node<>* pNode)
 	}
 }
 
-void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pRootNode)
+void CManager::createEverySceneFromXML(rapidxml::xml_node<>* pRootNode)
 {
-	// Get the Scene
-	rapidxml::xml_node<>* pScene = CRapidXMLAdditions::findChildNode(pRootNode, "scene");
-	if (pScene == NULL)
-		return;
+	for (rapidxml::xml_node<>* pSceneNode = pRootNode->first_node(); pSceneNode != NULL; pSceneNode = pSceneNode->next_sibling())
+	{
+		if (strcmp(pSceneNode->name(), "scene") == 0)
+		{
+			CScene* pScene = new CScene();
+			m_Scenes.push_back(pScene);
+			if (m_activeScene == NULL)
+				m_activeScene = pScene;
 
+			createEveryGameObjectFromXML(pSceneNode, pScene);
+		}
+	}
+}
+
+void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pNode, CScene* pScene)
+{
 	// Create all the gameobjects defined in the scene
-	for (rapidxml::xml_node<>* pNodeGameObject = pScene->first_node(); pNodeGameObject != NULL; pNodeGameObject = pNodeGameObject->next_sibling())
+	for (rapidxml::xml_node<>* pNodeGameObject = pNode->first_node(); pNodeGameObject != NULL; pNodeGameObject = pNodeGameObject->next_sibling())
 	{
 		// e.g. <gameobject name="background" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
 		if (strcmp(pNodeGameObject->name(), "gameobject") == 0)
 		{
 			CGameObject* pGameObject = new CGameObject();	// create a gameobject
-			m_GameObjects.push_back(pGameObject);	// add it to the manager's list
+			pScene->m_GameObjects.push_back(pGameObject);	// add it to the manager's list
 
 			// Store the name of the object
 			pGameObject->m_name = CRapidXMLAdditions::getAttributeValue(pNodeGameObject, "name");
@@ -187,7 +198,11 @@ void CManager::createSpriteComponentFromXML(rapidxml::xml_node<>* pNode, CGameOb
 
 void CManager::drawScene(sf::RenderWindow* pWindow)
 {
-	for (std::list<CGameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); ++it)
+	// if there is no active scene, exit function and wait
+	if (m_activeScene == NULL)
+		return;
+
+	for (std::list<CGameObject*>::iterator it = m_activeScene->m_GameObjects.begin(); it != m_activeScene->m_GameObjects.end(); ++it)
 	{
 		(*it)->update(pWindow);
 	}
