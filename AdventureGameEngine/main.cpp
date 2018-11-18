@@ -27,7 +27,7 @@ int main()
 	// Render Window
 	rapidxml::xml_node<>* pTitle;
 	pTitle = CRapidXMLAdditions::findChildNode(pRootNode, "title");
-	sf::RenderWindow window(sf::VideoMode(1280, 720), "XML: TitleNode not readable");
+	sf::RenderWindow window(sf::VideoMode(1786, 992), "XML: TitleNode not readable");
 	if (pTitle != NULL)
 		window.setTitle(pTitle->value());
 

@@ -6,6 +6,10 @@
 #include "asset.h"
 
 class CAsset;
+class CSpriteAsset;
+class CComponent;
+
+// ----------------------------------------------------------------------------
 
 class CGameObject
 {
@@ -13,11 +17,37 @@ public:
 	std::string m_name;
 	sf::Vector2f m_v2fPosition;
 	sf::Vector2f m_v2fScale;
-	sf::Vector2f m_v2fOrigin;
 	float m_nRotation;
-	CAsset* m_pAsset;
 	bool m_bEnabled = true;
+	std::list<CComponent*> m_components;
 
 public:
 	void update(sf::RenderWindow* pWindow);
+};
+
+// ----------------------------------------------------------------------------
+
+class CComponent
+{
+public:
+	sf::Vector2f m_v2fPosition;
+	sf::Vector2f m_v2fScale;
+	sf::Vector2f m_v2fOrigin;
+	float m_nRotation;
+	CGameObject* m_pParentGameObject;
+	bool m_bEnabled = true;
+
+public:
+	virtual void update(sf::RenderWindow* pWindow);
+};
+
+// ----------------------------------------------------------------------------
+
+class CSpriteComponent : public CComponent
+{
+public:
+	CSpriteAsset* m_pAsset;
+
+public:
+	virtual void update(sf::RenderWindow* pWindow);
 };

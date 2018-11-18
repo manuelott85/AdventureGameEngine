@@ -7,6 +7,8 @@
 
 class CManager;
 
+// ----------------------------------------------------------------------------
+
 class CAsset
 {
 protected: 
@@ -16,11 +18,12 @@ public:
 	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);
 	virtual void update(sf::RenderWindow* pWindow);
 	std::string getName() const;
+	virtual sf::Sprite* getSprite();
 };
 
 // ----------------------------------------------------------------------------
 
-class CSprite : public CAsset
+class CSpriteAsset : public CAsset
 {
 protected:
 	sf::Texture m_Texture;
@@ -29,6 +32,7 @@ protected:
 public:
 	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);
 	virtual void update(sf::RenderWindow* pWindow);
+	virtual sf::Sprite* getSprite();
 };
 
 // ----------------------------------------------------------------------------
@@ -45,12 +49,13 @@ public:
 
 // ----------------------------------------------------------------------------
 
-class CSpriteMapImage : public CAsset
+class CSpriteMapImageAsset : public CAsset
 {
 protected:
 	sf::Texture* m_pTexture;
 	sf::Sprite m_Sprite;
 	sf::IntRect m_Rect;
+	virtual sf::Sprite* getSprite();
 
 public:
 	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode, CSpriteMap* pSpriteMap);

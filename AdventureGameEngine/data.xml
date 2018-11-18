@@ -14,7 +14,9 @@
     </spritemap>
 
     <spritemap src="keycards.png">
-      <sprite name="key" xOffset="6" yOffset="6" width="56" height="64"/>
+      <sprite name="keyRed" xOffset="6" yOffset="6" width="56" height="64"/>
+      <sprite name="keyYellow" xOffset="68" yOffset="6" width="56" height="64"/>
+      <sprite name="keyBlue" xOffset="130" yOffset="6" width="56" height="64"/>
     </spritemap>
 
     <spritemap src="doors.png">
@@ -54,7 +56,7 @@
   <scene name="street">
     
     <gameobject name="background" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="street" posX="0" posY="0" scaleX="4" scaleY="4" rotation="0" originX="0.5" originY="0.5"/>
+      <sprite load="street" posX="0" posY="0" scaleX="5" scaleY="5" rotation="0" originX="0.5" originY="0.5" enabled="1"/>
       <navigationmesh scaleOnYDepth="2">
         <polygon id="1" type="include">
           <vector x="0" y="0"></vector>
@@ -82,15 +84,15 @@
       <move speed="5"/>
     </gameobject>
     
-    <gameobject name="key" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="key" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0.5" originY="0.5"/>
+    <gameobject name="key" posX="230" posY="780" scaleX="1" scaleY="1" rotation="0">
+      <sprite load="keyYellow" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0.5" originY="0.5" enabled="1"/>
       <description id="1">This is a key for a door.</description>
       <interaction type="pickUp" range="100"/>
     </gameobject>
     
-    <gameobject name="door" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="doorClosed" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0.5" originY="0"/>
-      <sprite load="doorOpen" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0.5" originY="0" enabled="0"/>
+    <gameobject name="door" posX="32" posY="670" scaleX="1" scaleY="1" rotation="0">
+      <sprite load="doorClosed" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="0.5" originY="0" enabled="1"/>
+      <sprite load="doorOpen" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="0.5" originY="0" enabled="0"/>
       <description id="1" enabled="1">This door is closed.</description>
       <description id="2" enabled="0">This door is open.</description>
       <triggerZone id="1" range="100" loadScene="indoor"/>
@@ -109,7 +111,7 @@
   <scene name="indoor">
     
     <gameobject name="background" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="indoor" posX="0" posY="0" scaleX="4" scaleY="4" rotation="0" originX="0.5" originY="0.5"/>
+      <sprite load="indoor" posX="0" posY="0" scaleX="4" scaleY="4" rotation="0" originX="0.5" originY="0.5" enabled="1"/>
       <navigationmesh scaleOnYDepth="2">
         <polygon id="1" type="include">
           <vector x="0" y="0"></vector>
@@ -138,7 +140,7 @@
     </gameobject>
     
     <gameobject name="lightswitch" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="lightswitchOff" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0.5" originY="0"/>
+      <sprite load="lightswitchOff" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0.5" originY="0" enabled="1"/>
       <description id="1" enabled="1">A lightswitch.</description>
       <interaction type="clickable" range="100">
         <enable type="gameobject">background</enable>

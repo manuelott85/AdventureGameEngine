@@ -14,10 +14,11 @@ void CAsset::update(sf::RenderWindow* pWindow)
 }
 
 std::string CAsset::getName() const { return m_name; }
+sf::Sprite* CAsset::getSprite() { return NULL; }
 
-// ---------- CSprite ----------
+// ---------- CSpriteAsset ----------
 
-void CSprite::start(CManager *pManager, rapidxml::xml_node<>* pNode)
+void CSpriteAsset::start(CManager *pManager, rapidxml::xml_node<>* pNode)
 {
 	CAsset::start(pManager, pNode);	// call parent function
 
@@ -30,7 +31,7 @@ void CSprite::start(CManager *pManager, rapidxml::xml_node<>* pNode)
 	}
 }
 
-void CSprite::update(sf::RenderWindow* pWindow)
+void CSpriteAsset::update(sf::RenderWindow* pWindow)
 {
 	CAsset::update(pWindow);	// call parent function
 	//m_Sprite.setScale(sf::Vector2f(m_v2fScale.x, m_v2fScale.y));
@@ -38,6 +39,8 @@ void CSprite::update(sf::RenderWindow* pWindow)
 	//m_Sprite.setOrigin(sf::Vector2f(m_v2fOrigin.x * m_Texture.getSize().x, m_v2fOrigin.y * m_Texture.getSize().y));
 	pWindow->draw(m_Sprite);
 }
+
+sf::Sprite* CSpriteAsset::getSprite() { return &m_Sprite; }
 
 // ---------- CSpriteMap ----------
 
@@ -50,9 +53,9 @@ void CSpriteMap::start(CManager *pManager, rapidxml::xml_node<>* pNode)
 
 sf::Texture* CSpriteMap::getTexture() { return &m_Texture; }
 
-// ---------- CSpriteMapImage ----------
+// ---------- CSpriteMapImageAsset ----------
 
-void CSpriteMapImage::start(CManager *pManager, rapidxml::xml_node<>* pNode, CSpriteMap* pSpriteMap)
+void CSpriteMapImageAsset::start(CManager *pManager, rapidxml::xml_node<>* pNode, CSpriteMap* pSpriteMap)
 {
 	CAsset::start(pManager, pNode);	// call parent function
 
@@ -72,9 +75,11 @@ void CSpriteMapImage::start(CManager *pManager, rapidxml::xml_node<>* pNode, CSp
 	m_Sprite.setTextureRect(m_Rect);	// cut once to initialise the sprite
 }
 
-void CSpriteMapImage::update(sf::RenderWindow* pWindow)
+void CSpriteMapImageAsset::update(sf::RenderWindow* pWindow)
 {
 	CAsset::update(pWindow);	// call parent function
 
 	pWindow->draw(m_Sprite);
 }
+
+sf::Sprite* CSpriteMapImageAsset::getSprite() { return &m_Sprite; }

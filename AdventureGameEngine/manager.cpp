@@ -71,7 +71,7 @@ void CManager::loadSprite(rapidxml::xml_node<>* pNode)
 	// e.g. <sprite name="street">cyberpunk-street.png</sprite>
 	if (strcmp(pNode->name(), "sprite") == 0)
 	{
-		CSprite *pSprite = new CSprite();		// create the asset's object
+		CSpriteAsset *pSprite = new CSpriteAsset();		// create the asset's object
 		pSprite->start(this, pNode);			// call its start function
 		m_Assets.push_back(pSprite);			// make it available in the manager
 	}
@@ -91,7 +91,7 @@ void CManager::loadSpriteMap(rapidxml::xml_node<>* pNode)
 			// e.g. <sprite name="cursor-generic" xOffset="0" yOffset="0" width="356" height="150"/>
 			if (strcmp(pChild->name(), "sprite") == 0)
 			{
-				CSpriteMapImage *pSprite = new CSpriteMapImage();			// create the asset's object
+				CSpriteMapImageAsset *pSprite = new CSpriteMapImageAsset();			// create the asset's object
 				pSprite->start(this, pChild, pSpriteMap);	// call its start function
 				m_Assets.push_back(pSprite);			// make it available in the manager
 				int i = 5;
@@ -155,8 +155,33 @@ void CManager::createSpriteComponentFromXML(rapidxml::xml_node<>* pNode, CGameOb
 	// e.g. <sprite load = "street" posX = "0" posY = "0" scaleX = "4" scaleY = "4" rotation = "0" originX = "0.5" originY = "0.5" / >
 	if (strcmp(pNode->name(), "sprite") == 0)
 	{
+		CSpriteComponent* pSpriteComp = new CSpriteComponent();	// create the component itself
+		pGameObject->m_components.push_back(pSpriteComp);	// add it to the gameobject
+		pSpriteComp->m_pParentGameObject = pGameObject;
 		std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the asset to load
-		pGameObject->m_pAsset = getAssetOnName(assetNameToLoad);	// assign the pointer to the asset
+		pSpriteComp->m_pAsset = (CSpriteAsset*)getAssetOnName(assetNameToLoad);	// assign the pointer to the asset
+
+		// Store the position of the object
+		pSpriteComp->m_v2fPosition = sf::Vector2f(
+			(float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "posX")),
+			(float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "posY")));
+
+		// Store the scale
+		pSpriteComp->m_v2fScale = sf::Vector2f(
+			(float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "scaleX")),
+			(float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "scaleY")));
+
+		// Store the origin
+		pSpriteComp->m_v2fOrigin = sf::Vector2f(
+			(float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "originX")),
+			(float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "originY")));
+
+		// Store rotation
+		pSpriteComp->m_nRotation = (float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "rotation"));
+
+		// Store enabled
+		pSpriteComp->m_bEnabled = (bool)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "enabled"));
+		int i = 5;
 	}
 }
 
