@@ -6,6 +6,19 @@
 #include "manager.h"
 
 class CManager;
+class CAnimationComponent;
+
+// ----------------------------------------------------------------------------
+
+class CSpriteMap
+{
+protected:
+	sf::Texture m_Texture;
+
+public:
+	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);
+	sf::Texture* getTexture();
+};
 
 // ----------------------------------------------------------------------------
 
@@ -37,25 +50,28 @@ public:
 
 // ----------------------------------------------------------------------------
 
-class CSpriteMap
+class CSpriteMapImageAsset : public CSpriteAsset
 {
 protected:
-	sf::Texture m_Texture;
+	sf::Texture* m_pTexture = NULL;
+	sf::IntRect m_Rect;
 
 public:
-	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);
-	sf::Texture* getTexture();
+	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode, CSpriteMap* pSpriteMap);
+	virtual void update(sf::RenderWindow* pWindow);
 };
 
 // ----------------------------------------------------------------------------
 
-class CSpriteMapImageAsset : public CAsset
+class CSpriteMapAnimationAsset : public CSpriteMapImageAsset
 {
-protected:
-	sf::Texture* m_pTexture = NULL;
-	sf::Sprite m_Sprite;
-	sf::IntRect m_Rect;
-	virtual sf::Sprite* getSprite();
+public:
+	int	m_nSteps;
+	int	m_nTime;
+	int	m_nStepIndex;
+	int	m_nStepIndexFirstRow;
+	sf::Clock m_clockTiming;
+	CAnimationComponent* m_pParentGameObject = NULL;
 
 public:
 	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode, CSpriteMap* pSpriteMap);

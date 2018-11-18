@@ -7,6 +7,7 @@
 
 class CAsset;
 class CSpriteAsset;
+class CSpriteMapAnimationAsset;
 class CComponent;
 
 // ----------------------------------------------------------------------------
@@ -47,6 +48,22 @@ class CSpriteComponent : public CComponent
 {
 public:
 	CSpriteAsset* m_pAsset = NULL;
+
+public:
+	virtual void update(sf::RenderWindow* pWindow);
+};
+
+// ----------------------------------------------------------------------------
+
+class CAnimationComponent : public CSpriteComponent
+{
+public:
+	CSpriteMapAnimationAsset* m_pAsset = NULL;
+
+public:
+	bool	m_bReversePlay;
+	bool	m_bMirrorX;
+	bool	m_bMirrorY;
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);

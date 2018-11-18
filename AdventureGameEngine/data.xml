@@ -27,15 +27,12 @@
     </spritemap>
 
     <spritemap src="indie_suite_transparent.png">
-      <animation name="8" xOffset="200" yOffset="0" width="50" height="80" steps="8" time="200"/>
-      <animation name="9" xOffset="200" yOffset="0" width="50" height="80" steps="8" time="200"/>
-      <animation name="10" xOffset="200" yOffset="0" width="50" height="80" steps="8" time="200"/>
-      <animation name="11" xOffset="200" yOffset="0" width="50" height="80" steps="8" time="200"/>
-      <animation name="12" xOffset="600" yOffset="0" width="50" height="80" steps="6" time="200"/>
-      <animation name="13" xOffset="600" yOffset="0" width="50" height="80" steps="6" time="200"/>
-      <animation name="14" xOffset="150" yOffset="80" width="50" height="80" steps="5" time="200"/>
-      <sprite name="15" type="static" xOffset="0" yOffset="0" width="50" height="80"/>
-      <sprite name="16" type="static" xOffset="0" yOffset="50" width="50" height="80"/>
+      <animation name="moveRight" xOffset="200" yOffset="0" width="50" height="80" steps="8" time="200"/>
+      <animation name="moveRightReverse" xOffset="200" yOffset="0" width="50" height="80" steps="8" time="200"/>
+      <animation name="moveUp" xOffset="600" yOffset="0" width="50" height="80" steps="6" time="200"/>
+      <animation name="moveDown" xOffset="150" yOffset="80" width="50" height="80" steps="5" time="200"/>
+      <sprite name="idleFromRight" xOffset="0" yOffset="0" width="50" height="80"/>
+      <sprite name="idleFromLeft" xOffset="0" yOffset="50" width="50" height="80"/>
     </spritemap>
 
     <audio name="lightswitch">nameOfFile.ogg</audio>
@@ -57,7 +54,7 @@
     
     <gameobject name="background" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
       <sprite load="street" posX="0" posY="0" scaleX="5" scaleY="5" rotation="0" originX="0.5" originY="0.5" enabled="1"/>
-      <navigationmesh scaleOnYDepth="2">
+      <navigationmesh scaleOnYDepth="0.5">
         <polygon id="1" type="include">
           <vector x="0" y="0"></vector>
           <vector x="1000" y="0"></vector>
@@ -82,6 +79,22 @@
         <moveRight/>
       </animationset>
       <move speed="5"/>
+    </gameobject>
+
+    <gameobject name="player0" posX="400" posY="700" scaleX="1" scaleY="1" rotation="0">
+      <animation load="moveRightReverse" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="0.5" originY="0.5" enabled="1" reverseplay="1"/>
+    </gameobject>
+    <gameobject name="player1" posX="500" posY="700" scaleX="1" scaleY="1" rotation="0">
+      <animation load="moveRight" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="0.5" originY="0.5" enabled="1" reverseplay="0"/>
+    </gameobject>
+    <gameobject name="player1a" posX="500" posY="600" scaleX="1" scaleY="1" rotation="0">
+      <animation load="moveRight" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="0.5" originY="0.5" enabled="1" reverseplay="0" mirrorX="1" mirrorY="0"/>
+    </gameobject>
+    <gameobject name="player2" posX="600" posY="700" scaleX="1" scaleY="1" rotation="0">
+      <animation load="moveUp" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="0.5" originY="0.5" enabled="1"/>
+    </gameobject>
+    <gameobject name="player2" posX="700" posY="700" scaleX="1" scaleY="1" rotation="0">
+      <animation load="moveDown" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="0.5" originY="0.5" enabled="1"/>
     </gameobject>
     
     <gameobject name="key" posX="230" posY="780" scaleX="1" scaleY="1" rotation="0">

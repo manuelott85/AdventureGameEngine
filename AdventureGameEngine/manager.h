@@ -12,6 +12,7 @@
 
 class CAsset;
 class CGameObject;
+class CComponent;
 
 class CScene
 {
@@ -39,6 +40,8 @@ private:
 	void createEverySceneFromXML(rapidxml::xml_node<>* pRootNode);	// create all scenes and store them
 	void createEveryGameObjectFromXML(rapidxml::xml_node<>* pNode, CScene* pScene);	// create gameobjects according to the XML
 	void createSpriteComponentFromXML(rapidxml::xml_node<>* pNode, CGameObject* pGameObject);	// create a sprite components to a given gameobject
+	void createAnimationComponentFromXML(rapidxml::xml_node<>* pNode, CGameObject* pGameObject);	// create an animation components to a given gameobject
+	void createSpriteComponentBasicData(rapidxml::xml_node<>* pNode, CComponent* pComponent);	// create an animation components to a given gameobject
 
 public:
 	static CManager& instance();	// function to access the singleton instance
