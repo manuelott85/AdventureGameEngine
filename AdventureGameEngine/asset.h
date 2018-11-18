@@ -52,7 +52,7 @@ public:
 class CSpriteMapImageAsset : public CAsset
 {
 protected:
-	sf::Texture* m_pTexture;
+	sf::Texture* m_pTexture = NULL;
 	sf::Sprite m_Sprite;
 	sf::IntRect m_Rect;
 	virtual sf::Sprite* getSprite();

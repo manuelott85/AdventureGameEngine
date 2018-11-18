@@ -25,7 +25,7 @@ public:
 	std::string m_strAssetPath;		// general path to the assets
 	std::list<CAsset*> m_Assets;	// list of all loaded assets in memory
 	std::list<CScene*> m_Scenes;	// list of all loaded scene
-	CScene* m_activeScene = NULL;	// points to current scene, that will be drawn
+	CScene* m_pActiveScene = NULL;	// points to current scene, that will be drawn
 	//std::list<CGameObject*> m_GameObjects;	// list of current gameobjects
 
 private:

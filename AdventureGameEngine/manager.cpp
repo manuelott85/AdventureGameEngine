@@ -117,8 +117,8 @@ void CManager::createEverySceneFromXML(rapidxml::xml_node<>* pRootNode)
 		{
 			CScene* pScene = new CScene();
 			m_Scenes.push_back(pScene);
-			if (m_activeScene == NULL)
-				m_activeScene = pScene;
+			if (m_pActiveScene == NULL)
+				m_pActiveScene = pScene;
 
 			createEveryGameObjectFromXML(pSceneNode, pScene);
 		}
@@ -198,11 +198,7 @@ void CManager::createSpriteComponentFromXML(rapidxml::xml_node<>* pNode, CGameOb
 
 void CManager::drawScene(sf::RenderWindow* pWindow)
 {
-	// if there is no active scene, exit function and wait
-	if (m_activeScene == NULL)
-		return;
-
-	for (std::list<CGameObject*>::iterator it = m_activeScene->m_GameObjects.begin(); it != m_activeScene->m_GameObjects.end(); ++it)
+	for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_GameObjects.begin(); it != m_pActiveScene->m_GameObjects.end(); ++it)
 	{
 		(*it)->update(pWindow);
 	}

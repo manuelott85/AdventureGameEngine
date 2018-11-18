@@ -34,7 +34,7 @@ public:
 	sf::Vector2f m_v2fScale;
 	sf::Vector2f m_v2fOrigin;
 	float m_nRotation;
-	CGameObject* m_pParentGameObject;
+	CGameObject* m_pParentGameObject = NULL;
 	bool m_bEnabled = true;
 
 public:
@@ -46,7 +46,7 @@ public:
 class CSpriteComponent : public CComponent
 {
 public:
-	CSpriteAsset* m_pAsset;
+	CSpriteAsset* m_pAsset = NULL;
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
