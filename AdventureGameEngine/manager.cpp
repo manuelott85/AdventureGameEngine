@@ -14,6 +14,12 @@ CManager::CManager()
 
 }
 
+CManager::~CManager()
+{
+	if (m_pCursor != NULL)
+		delete(m_pCursor);
+}
+
 CManager& CManager::instance()
 {
 	static CManager* instance = new CManager();
@@ -153,6 +159,7 @@ void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pNode, CScene*
 			{
 				createSpriteComponentFromXML(pNodeComponent, pGameObject);	// create the sprite component
 				createAnimationComponentFromXML(pNodeComponent, pGameObject);	// create the animation component
+				createCursorComponent(pNodeComponent, pGameObject);	// create the animation component
 			}
 		}
 	}
@@ -220,6 +227,32 @@ void CManager::createSpriteComponentBasicData(rapidxml::xml_node<>* pNode, CComp
 
 	// Store enabled
 	pComponent->m_bEnabled = (bool)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "enabled"));
+}
+
+void CManager::createCursorComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject)
+{
+	if (strcmp(pNode->name(), "cursor") == 0)
+	{
+		m_pCursor = pGameObject;
+
+		CCursorComponent* pCursorComp = new CCursorComponent();	// create the component itself
+		pCursorComp->m_pParentGameObject = pGameObject;
+
+		int indexGeneric = atoi(CRapidXMLAdditions::getAttributeValue(pNode, "compIndexGeneric"));
+		int indexHighlight = atoi(CRapidXMLAdditions::getAttributeValue(pNode, "compIndexHighlight"));
+		int index = 0;
+		for (std::list<CComponent*>::iterator it = pGameObject->m_components.begin(); it != pGameObject->m_components.end(); ++it)
+		{
+			(*it);
+			// iterate through every asset by the index defined above and assign the pointer in the component
+			/*m_pSpriteGeneric = ;
+			m_pSpriteHighlight = ;
+			m_pCurrentAsset = ;*/
+			// update the cursor etc
+		}
+
+		pGameObject->m_components.push_back(pCursorComp);	// add it to the gameobject
+	}
 }
 
 void CManager::drawScene(sf::RenderWindow* pWindow)

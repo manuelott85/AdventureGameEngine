@@ -79,3 +79,10 @@ void CAnimationComponent::update(sf::RenderWindow* pWindow)
 	}
 	m_pAsset->update(pWindow);
 }
+
+// ---------- CCursorComponent ----------
+
+void CCursorComponent::update(sf::RenderWindow* pWindow)
+{
+
+}

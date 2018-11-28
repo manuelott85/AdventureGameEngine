@@ -9,6 +9,7 @@ class CAsset;
 class CSpriteAsset;
 class CSpriteMapAnimationAsset;
 class CComponent;
+class CCursorComponent;
 
 // ----------------------------------------------------------------------------
 
@@ -61,9 +62,22 @@ public:
 	CSpriteMapAnimationAsset* m_pAsset = NULL;
 
 public:
-	bool	m_bReversePlay;
-	bool	m_bMirrorX;
-	bool	m_bMirrorY;
+	bool m_bReversePlay;
+	bool m_bMirrorX;
+	bool m_bMirrorY;
+
+public:
+	virtual void update(sf::RenderWindow* pWindow);
+};
+
+// ----------------------------------------------------------------------------
+
+class CCursorComponent : public CComponent
+{
+public:
+	CSpriteAsset* m_pSpriteGeneric = NULL;
+	CSpriteAsset* m_pSpriteHighlight = NULL;
+	CSpriteAsset* m_pCurrentAsset = NULL;
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);

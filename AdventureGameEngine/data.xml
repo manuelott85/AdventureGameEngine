@@ -9,8 +9,8 @@
     <sprite name="indoor">bar.png</sprite>
 
     <spritemap src="cursors.png">
-      <sprite name="cursor-generic" xOffset="0" yOffset="0" width="356" height="150"/>
-      <sprite name="cursor-highlight" xOffset="356" yOffset="0" width="140" height="380"/>
+      <sprite name="cursorGeneric" xOffset="0" yOffset="0" width="356" height="150"/>
+      <sprite name="cursorHighlight" xOffset="356" yOffset="0" width="140" height="380"/>
     </spritemap>
 
     <spritemap src="keycards.png">
@@ -38,19 +38,15 @@
     <audio name="lightswitch">nameOfFile.ogg</audio>
   </assets>
 
-  <!-- #### CURSOR ####-->
-  <cursor>
-    <generic>
-      <sprite type="static" load="cursor-generic"/>
-    </generic>
-    <highlight>
-      <sprite type="static" load="cursor-highlight"/>
-    </highlight>
-    <mouseinput/>
-  </cursor>
-
   <!-- #### SCENE 1 ####-->
   <scene name="street">
+
+    <!-- #### CURSOR ####-->
+    <gameobject name="cursor" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
+      <sprite load="cursorGeneric" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1"/>
+      <sprite load="cursorHighlight" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
+      <cursor compIndexGeneric="0" compIndexHighlight="1"/>
+    </gameobject>
     
     <gameobject name="background" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
       <sprite load="street" posX="0" posY="0" scaleX="5" scaleY="5" rotation="0" originX="0.5" originY="0.5" enabled="1"/>

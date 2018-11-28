@@ -27,7 +27,7 @@ public:
 	std::list<CAsset*> m_Assets;	// list of all loaded assets in memory
 	std::list<CScene*> m_Scenes;	// list of all loaded scene
 	CScene* m_pActiveScene = NULL;	// points to current scene, that will be drawn
-	//std::list<CGameObject*> m_GameObjects;	// list of current gameobjects
+	CGameObject* m_pCursor;			// Pointer to the cursor object
 
 private:
 	CManager();	// making the constructor private prevent anyone of creating an instance of it, as it is a singleton class
@@ -42,8 +42,10 @@ private:
 	void createSpriteComponentFromXML(rapidxml::xml_node<>* pNode, CGameObject* pGameObject);	// create a sprite components to a given gameobject
 	void createAnimationComponentFromXML(rapidxml::xml_node<>* pNode, CGameObject* pGameObject);	// create an animation components to a given gameobject
 	void createSpriteComponentBasicData(rapidxml::xml_node<>* pNode, CComponent* pComponent);	// create an animation components to a given gameobject
+	void createCursorComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the cursor
 
 public:
+	~CManager();
 	static CManager& instance();	// function to access the singleton instance
 	void start(rapidxml::xml_node<>* pRootNode);
 	void update(sf::RenderWindow* pWindow);
