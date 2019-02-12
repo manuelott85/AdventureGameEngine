@@ -30,6 +30,7 @@ void CManager::start(rapidxml::xml_node<>* pRootNode)
 {
 	loadEveryAssetFromXML(pRootNode);
 	createEverySceneFromXML(pRootNode);
+	setReferences();
 }
 
 void CManager::update(sf::RenderWindow* pWindow)
@@ -42,7 +43,8 @@ void CManager::drawScene(sf::RenderWindow* pWindow)
 	// loop for the array of gameobjects
 	for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_GameObjects.begin(); it != m_pActiveScene->m_GameObjects.end(); ++it)
 	{
-		(*it)->update(pWindow);	// call their update function
+		if ((*it)->m_bEnabled)
+			(*it)->update(pWindow);	// call their update function
 	}
 }
 
@@ -185,12 +187,18 @@ void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pSceneNode, CS
 			// Store rotation
 			pGameObject->m_nRotation = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeGameObject, "rotation"));
 
+			// Store enabled
+			char* objectEnabled = CRapidXMLAdditions::getAttributeValue(pNodeGameObject, "enabled");
+			if (objectEnabled != "")	// set this value only if it is actually specified in the XML
+				pGameObject->m_bEnabled = (bool)atoi(objectEnabled);
+
 			// create all its components
 			for (rapidxml::xml_node<>* pNodeComponent = pNodeGameObject->first_node(); pNodeComponent != NULL; pNodeComponent = pNodeComponent->next_sibling())
 			{
 				createSpriteComponentFromXML(pNodeComponent, pGameObject);	// create the sprite component
 				createAnimationComponentFromXML(pNodeComponent, pGameObject);	// create the animation component
 				createCursorComponent(pNodeComponent, pGameObject);	// create the cursor component
+				createMoveToTargetComponent(pNodeComponent, pGameObject);	// create the moveToTarget component
 			}
 		}
 	}
@@ -292,5 +300,38 @@ void CManager::createCursorComponent(rapidxml::xml_node<>* pNode, CGameObject* p
 				}
 			}
 		}		
+	}
+}
+
+// create the moveToTarget components
+void CManager::createMoveToTargetComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject)
+{
+	// e.g. <moveToTarget gameobject="player0"/>
+	if (strcmp(pNode->name(), "moveToTarget") == 0)
+	{
+		CMoveToTarget* pComponent = new CMoveToTarget();	// create the component itself
+		pGameObject->m_components.push_back(pComponent);	// add it to the gameobject
+		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
+		pComponent->m_lastOrderPos = pGameObject->m_v2fPosition;	// init position storage
+
+		// Store object reference
+		for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_GameObjects.begin(); it != m_pActiveScene->m_GameObjects.end(); ++it)
+		{
+			char* temp = CRapidXMLAdditions::getAttributeValue(pNode, "gameobject");
+			if ((*it)->getName() == temp)
+				pComponent->m_objectToMove = *it;
+		}
+	}
+}
+
+// set all available references
+void CManager::setReferences()
+{
+	for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_GameObjects.begin(); it != m_pActiveScene->m_GameObjects.end(); ++it)
+	{
+		if ((*it)->getName() == "player0")
+			m_pActiveScene->m_player = *it;
+		if ((*it)->getName() == "playerMoveToTarget")
+			m_pActiveScene->m_playerMoveToTarget = *it;
 	}
 }

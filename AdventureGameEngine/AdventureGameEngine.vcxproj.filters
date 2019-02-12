@@ -39,6 +39,9 @@
     <ClInclude Include="gameobject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="interpolation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

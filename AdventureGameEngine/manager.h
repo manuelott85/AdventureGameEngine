@@ -14,11 +14,17 @@ class CAsset;
 class CGameObject;
 class CComponent;
 
+// ----------------------------------------------------------------------------
+
 class CScene
 {
 public:
 	std::list<CGameObject*> m_GameObjects;	// list of current gameobjects
+	CGameObject* m_player = NULL;	// a reference to the player's gameobject
+	CGameObject* m_playerMoveToTarget = NULL;	// a reference to the player's moving gameobject
 };
+
+// ----------------------------------------------------------------------------
 
 class CManager
 {
@@ -51,4 +57,7 @@ private:
 	void createAnimationComponentFromXML(rapidxml::xml_node<>* pNode, CGameObject* pGameObject);	// create an animation components to a given gameobject
 	void createSpriteComponentBasicData(rapidxml::xml_node<>* pNode, CComponent* pComponent);	// read out basic parameter and store them in the component
 	void createCursorComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the cursor components
+	void createMoveToTargetComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the moveToTarget components
+
+	void setReferences();	// set all available references
 };

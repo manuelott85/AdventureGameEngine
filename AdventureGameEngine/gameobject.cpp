@@ -1,4 +1,5 @@
 #include "gameobject.h"
+#include "interpolation.h"
 
 // ---------- CGameObject ---------------------------------------------------------------------------------------------------------------
 
@@ -10,6 +11,8 @@ void CGameObject::update(sf::RenderWindow* pWindow)
 		(*it)->update(pWindow);	// call its update function
 	}
 }
+
+std::string CGameObject::getName() { return m_name; }
 
 // ---------- CComponent ---------------------------------------------------------------------------------------------------------------
 void CComponent::update(sf::RenderWindow* pWindow) { }	// function should be overridden by derived class
@@ -90,12 +93,7 @@ void CCursorComponent::update(sf::RenderWindow* pWindow)
 	if (m_pSpriteGeneric == NULL || m_pSpriteHighlight == NULL)
 		return;
 
-	// Center the cursorSprite on mouse location (Offset); not sure why that is needed
-	sf::Vector2f temp;
-	temp.x = 434;
-	temp.y = 288;
-
-	m_pParentGameObject->m_v2fPosition = (sf::Vector2f)sf::Mouse::getPosition() - temp;	// match cursorSprite to mouse pos
+	m_pParentGameObject->m_v2fPosition = (sf::Vector2f)sf::Mouse::getPosition(*pWindow);	// match cursorSprite to mouse pos
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 		m_bCurrentAsset = 1;
@@ -117,5 +115,33 @@ void CCursorComponent::update(sf::RenderWindow* pWindow)
 		(*it)->m_bEnabled = 0;
 		it++;
 		(*it)->m_bEnabled = 1;
+	}
+}
+
+// ---------- CPlayerMoveToTarget ---------------------------------------------------------------------------------------------------------------
+void CMoveToTarget::update(sf::RenderWindow* pWindow)
+{
+	if (m_lastOrderPos != m_pParentGameObject->m_v2fPosition)
+	{
+		// Debug Message
+		std::cout << m_lastOrderPos.x << "|" << m_lastOrderPos.y << " updated to: " << m_pParentGameObject->m_v2fPosition.x << "|" << m_pParentGameObject->m_v2fPosition.y << std::endl;
+
+		m_lastOrderPos = m_pParentGameObject->m_v2fPosition;	// Set lastOrderPos
+		m_clockTiming.restart();	// restart the timer
+
+		m_lastFramePos = m_objectToMove->m_v2fPosition;	// initialize movement
+	}
+
+	if (m_objectToMove->m_v2fPosition != m_pParentGameObject->m_v2fPosition)
+	{
+		std::vector<double> xData = { m_objectToMove->m_v2fPosition.x, m_pParentGameObject->m_v2fPosition.x };
+		std::vector<double> yData = { m_objectToMove->m_v2fPosition.y, m_pParentGameObject->m_v2fPosition.y };
+		float movementSpeed = 0.001;
+
+		//float x = m_clockTiming.getElapsedTime().asSeconds() * movementSpeed + m_objectToMove->m_v2fPosition.x;
+		m_lastFramePos.y = interpolate(xData, yData, m_lastFramePos.x, true);
+		m_objectToMove->m_v2fPosition = m_lastFramePos;
+		std::cout << "Current MoveCoord: " << m_lastFramePos.x << "|" << m_lastFramePos.y << std::endl;
+		m_lastFramePos.x = m_lastFramePos.x + m_clockTiming.getElapsedTime().asSeconds() * movementSpeed;
 	}
 }

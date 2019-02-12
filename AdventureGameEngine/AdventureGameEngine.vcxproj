@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="asset.h" />
     <ClInclude Include="gameobject.h" />
+    <ClInclude Include="interpolation.h" />
     <ClInclude Include="manager.h" />
     <ClInclude Include="rapidxml.hpp" />
     <ClInclude Include="rapidXMLAdditions.h" />

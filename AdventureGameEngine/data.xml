@@ -42,7 +42,7 @@
   <scene name="street">
     
     <gameobject name="background" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="street" posX="0" posY="0" scaleX="5" scaleY="5" rotation="0" originX="0.5" originY="0.5" enabled="1"/>
+      <sprite load="street" posX="0" posY="0" scaleX="5" scaleY="5" rotation="0" originX="0" originY="0" enabled="1"/>
       <navigationmesh scaleOnYDepth="0.5">
         <polygon id="1" type="include">
           <vector x="0" y="0"></vector>
@@ -70,31 +70,31 @@
       <move speed="5"/>
     </gameobject>
 
-    <gameobject name="player0" posX="400" posY="700" scaleX="1" scaleY="1" rotation="0">
-      <animation load="moveRightReverse" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="0.5" originY="0.5" enabled="1" reverseplay="1"/>
+    <gameobject name="player0" posX="400" posY="700" scaleX="1" scaleY="1" rotation="0" enabled="1">
+      <animation load="moveRightReverse" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="1" reverseplay="1"/>
     </gameobject>
-    <gameobject name="player1" posX="500" posY="700" scaleX="1" scaleY="1" rotation="0">
-      <animation load="moveRight" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="0.5" originY="0.5" enabled="1" reverseplay="0"/>
+    <gameobject name="player1" posX="500" posY="700" scaleX="1" scaleY="1" rotation="0" enabled="0">
+      <animation load="moveRight" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="1" reverseplay="0"/>
     </gameobject>
-    <gameobject name="player1a" posX="500" posY="600" scaleX="1" scaleY="1" rotation="0">
-      <animation load="moveRight" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="0.5" originY="0.5" enabled="1" reverseplay="0" mirrorX="1" mirrorY="0"/>
+    <gameobject name="player1a" posX="500" posY="600" scaleX="1" scaleY="1" rotation="0" enabled="0">
+      <animation load="moveRight" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="1" reverseplay="0" mirrorX="1" mirrorY="0"/>
     </gameobject>
-    <gameobject name="player2" posX="600" posY="700" scaleX="1" scaleY="1" rotation="0">
-      <animation load="moveUp" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="0.5" originY="0.5" enabled="1"/>
+    <gameobject name="player2" posX="600" posY="700" scaleX="1" scaleY="1" rotation="0" enabled="0">
+      <animation load="moveUp" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="1"/>
     </gameobject>
-    <gameobject name="player2" posX="700" posY="700" scaleX="1" scaleY="1" rotation="0">
-      <animation load="moveDown" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="0.5" originY="0.5" enabled="1"/>
+    <gameobject name="player2" posX="700" posY="700" scaleX="1" scaleY="1" rotation="0" enabled="0">
+      <animation load="moveDown" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="1"/>
     </gameobject>
     
     <gameobject name="key" posX="230" posY="780" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="keyYellow" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0.5" originY="0.5" enabled="1"/>
+      <sprite load="keyYellow" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0" originY="0" enabled="1"/>
       <description id="1">This is a key for a door.</description>
       <interaction type="pickUp" range="100"/>
     </gameobject>
     
     <gameobject name="door" posX="32" posY="670" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="doorClosed" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="0.5" originY="0" enabled="1"/>
-      <sprite load="doorOpen" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="0.5" originY="0" enabled="0"/>
+      <sprite load="doorClosed" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="0" originY="0" enabled="1"/>
+      <sprite load="doorOpen" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="0" originY="0" enabled="0"/>
       <description id="1" enabled="1">This door is closed.</description>
       <description id="2" enabled="0">This door is open.</description>
       <triggerZone id="1" range="100" loadScene="indoor"/>
@@ -107,10 +107,14 @@
       </interaction>
     </gameobject>
 
+    <gameobject name="playerMoveToTarget" posX="10" posY="10" scaleX="1" scaleY="1" rotation="0">
+      <moveToTarget gameobject="player0"/>
+    </gameobject>
+
     <!-- #### CURSOR ####-->
     <gameobject name="cursor" posX="0" posY="0" scaleX="0.5" scaleY="0.5" rotation="0">
-      <sprite load="cursorGeneric" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1"/>
-      <sprite load="cursorHighlight" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
+      <sprite load="cursorGeneric" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="75" originY="53" enabled="1"/>
+      <sprite load="cursorHighlight" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="75" originY="53" enabled="0"/>
       <cursor/>
     </gameobject>
     
@@ -120,7 +124,7 @@
   <scene name="indoor">
     
     <gameobject name="background" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="indoor" posX="0" posY="0" scaleX="4" scaleY="4" rotation="0" originX="0.5" originY="0.5" enabled="1"/>
+      <sprite load="indoor" posX="0" posY="0" scaleX="4" scaleY="4" rotation="0" originX="0" originY="0" enabled="1"/>
       <navigationmesh scaleOnYDepth="2">
         <polygon id="1" type="include">
           <vector x="0" y="0"></vector>
@@ -149,12 +153,19 @@
     </gameobject>
     
     <gameobject name="lightswitch" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="lightswitchOff" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0.5" originY="0" enabled="1"/>
+      <sprite load="lightswitchOff" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1"/>
       <description id="1" enabled="1">A lightswitch.</description>
       <interaction type="clickable" range="100">
         <enable type="gameobject">background</enable>
         <playaudio load="lightswitch"/>
       </interaction>
+    </gameobject>
+
+    <!-- #### CURSOR ####-->
+    <gameobject name="cursor" posX="0" posY="0" scaleX="0.5" scaleY="0.5" rotation="0">
+      <sprite load="cursorGeneric" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1"/>
+      <sprite load="cursorHighlight" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
+      <cursor/>
     </gameobject>
     
   </scene>

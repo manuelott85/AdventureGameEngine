@@ -27,6 +27,7 @@ public:
 
 public:
 	void update(sf::RenderWindow* pWindow);
+	std::string getName();
 };
 
 // ----------------------------------------------------------------------------
@@ -83,6 +84,19 @@ public:
 	CSpriteAsset* m_pSpriteHighlight = NULL;
 	bool m_bCurrentAsset = 0;
 
+public:
+	virtual void update(sf::RenderWindow* pWindow);
+};
+
+// ----------------------------------------------------------------------------
+
+class CMoveToTarget : public CComponent
+{
+public:
+	sf::Clock m_clockTiming;
+	sf::Vector2f m_lastOrderPos;
+	sf::Vector2f m_lastFramePos;
+	CGameObject* m_objectToMove = NULL;
 public:
 	virtual void update(sf::RenderWindow* pWindow);
 };
