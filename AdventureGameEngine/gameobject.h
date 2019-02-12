@@ -13,6 +13,8 @@ class CCursorComponent;
 
 // ----------------------------------------------------------------------------
 
+// The GameObject is just a container for any kind of components
+// Itself only has a name, a transform and knows if it is active or not, and ensure that each components' update function gets called
 class CGameObject
 {
 public:
@@ -29,6 +31,8 @@ public:
 
 // ----------------------------------------------------------------------------
 
+// The CComponent is a base class for all components, it is quite similar to the gameobject, but instead of having a list of components
+// it does only know the gameobject it is attached to. It has its own transform, to be able to offset it from the gameobject itself.
 class CComponent
 {
 public:
@@ -77,7 +81,7 @@ class CCursorComponent : public CComponent
 public:
 	CSpriteAsset* m_pSpriteGeneric = NULL;
 	CSpriteAsset* m_pSpriteHighlight = NULL;
-	CSpriteAsset* m_pCurrentAsset = NULL;
+	bool m_bCurrentAsset = 0;
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);

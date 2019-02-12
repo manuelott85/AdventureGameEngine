@@ -9,8 +9,8 @@
     <sprite name="indoor">bar.png</sprite>
 
     <spritemap src="cursors.png">
-      <sprite name="cursorGeneric" xOffset="0" yOffset="0" width="356" height="150"/>
-      <sprite name="cursorHighlight" xOffset="356" yOffset="0" width="140" height="380"/>
+      <sprite name="cursorGeneric" xOffset="0" yOffset="0" width="200" height="188"/>
+      <sprite name="cursorHighlight" xOffset="200" yOffset="0" width="200" height="188"/>
     </spritemap>
 
     <spritemap src="keycards.png">
@@ -40,13 +40,6 @@
 
   <!-- #### SCENE 1 ####-->
   <scene name="street">
-
-    <!-- #### CURSOR ####-->
-    <gameobject name="cursor" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="cursorGeneric" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1"/>
-      <sprite load="cursorHighlight" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
-      <cursor compIndexGeneric="0" compIndexHighlight="1"/>
-    </gameobject>
     
     <gameobject name="background" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
       <sprite load="street" posX="0" posY="0" scaleX="5" scaleY="5" rotation="0" originX="0.5" originY="0.5" enabled="1"/>
@@ -112,6 +105,13 @@
         <disable type="description">1</disable>
         <enable type="triggerZone">1</enable>
       </interaction>
+    </gameobject>
+
+    <!-- #### CURSOR ####-->
+    <gameobject name="cursor" posX="0" posY="0" scaleX="0.5" scaleY="0.5" rotation="0">
+      <sprite load="cursorGeneric" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1"/>
+      <sprite load="cursorHighlight" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
+      <cursor/>
     </gameobject>
     
   </scene>

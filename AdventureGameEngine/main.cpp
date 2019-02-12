@@ -31,8 +31,8 @@ int main()
 	if (pTitle != NULL)
 		window.setTitle(pTitle->value());
 
-	// initiate the manager
-	CManager::instance().start(pRootNode);
+	CManager::instance().start(pRootNode);	// initiate the manager
+	window.setMouseCursorVisible(false);	// hide the windows mouse cursor
 
 	// main Game loop
 	while (window.isOpen())
@@ -45,9 +45,9 @@ int main()
 		}
 
 		// Draw Calls
-		window.clear(sf::Color::Black);
-		CManager::instance().update(&window);
-		window.display();
+		window.clear(sf::Color::Black);	// remove the last frame
+		CManager::instance().update(&window);	// call the update function which includes drawing
+		window.display();	// show the current frame
 	}
 	return 0;
 }

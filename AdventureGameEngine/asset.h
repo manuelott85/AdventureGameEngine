@@ -9,29 +9,29 @@ class CManager;
 class CAnimationComponent;
 
 // ----------------------------------------------------------------------------
-
-class CSpriteMap
-{
-protected:
-	sf::Texture m_Texture;
-
-public:
-	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);
-	sf::Texture* getTexture();
-};
-
-// ----------------------------------------------------------------------------
-
+// Base class for all assets (virtual)
 class CAsset
 {
 protected: 
-	std::string m_name;
+	std::string m_name;		// this name is used to to get a pointer to this asset out of list of all loaded assets in memory
+
+public:
+	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);	// empty (needs to be overridden by derived class)
+	virtual void update(sf::RenderWindow* pWindow);							// empty (needs to be overridden by derived class)
+	std::string getName() const;											// return m_name of the asset
+	virtual sf::Sprite* getSprite();										// return sprite of the asset (needs to be overridden by derived class)
+};
+
+// ----------------------------------------------------------------------------
+// Base class for all spriteMaps (virtual)
+class CSpriteMap
+{
+protected:
+	sf::Texture m_Texture;	// store the texture asset with all the sprites in it
 
 public:
 	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);
-	virtual void update(sf::RenderWindow* pWindow);
-	std::string getName() const;
-	virtual sf::Sprite* getSprite();
+	sf::Texture* getTexture();	// return m_Texture
 };
 
 // ----------------------------------------------------------------------------
@@ -39,13 +39,13 @@ public:
 class CSpriteAsset : public CAsset
 {
 protected:
-	sf::Texture m_Texture;
-	sf::Sprite m_Sprite;
+	sf::Texture m_Texture;	// stores the texture
+	sf::Sprite m_Sprite;	// stores the sprite
 
 public:
-	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);
-	virtual void update(sf::RenderWindow* pWindow);
-	virtual sf::Sprite* getSprite();
+	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);	// Initialize the Asset (load texture and asign to sprite)
+	virtual void update(sf::RenderWindow* pWindow);	// calls the drawing function
+	virtual sf::Sprite* getSprite();	// return the sprite
 };
 
 // ----------------------------------------------------------------------------
@@ -53,12 +53,13 @@ public:
 class CSpriteMapImageAsset : public CSpriteAsset
 {
 protected:
-	sf::Texture* m_pTexture = NULL;
-	sf::IntRect m_Rect;
+	sf::Texture* m_pTexture = NULL;	// stores a pointer to a SpriteMapAsset's texture
+	sf::IntRect m_Rect;	// defines the part of m_pTexture that should be cut out and serves as the "childTexture" to be assigned to a sprite
 
 public:
+	// Initialize the asset (get a texture reference, cut out the image from the texture, and assign it to the sprite)
 	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode, CSpriteMap* pSpriteMap);
-	virtual void update(sf::RenderWindow* pWindow);
+	virtual void update(sf::RenderWindow* pWindow);	// calls the drawing function
 };
 
 // ----------------------------------------------------------------------------
@@ -74,6 +75,6 @@ public:
 	CAnimationComponent* m_pParentGameObject = NULL;
 
 public:
-	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode, CSpriteMap* pSpriteMap);
-	virtual void update(sf::RenderWindow* pWindow);
+	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode, CSpriteMap* pSpriteMap);	// Initialize the asset
+	virtual void update(sf::RenderWindow* pWindow);	// update the "current frame to show" of the animation and apply it to the sprite
 };

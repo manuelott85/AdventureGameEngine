@@ -26,6 +26,27 @@ CManager& CManager::instance()
 	return *instance;
 }
 
+void CManager::start(rapidxml::xml_node<>* pRootNode)
+{
+	loadEveryAssetFromXML(pRootNode);
+	createEverySceneFromXML(pRootNode);
+}
+
+void CManager::update(sf::RenderWindow* pWindow)
+{
+	drawScene(pWindow);
+}
+
+void CManager::drawScene(sf::RenderWindow* pWindow)
+{
+	// loop for the array of gameobjects
+	for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_GameObjects.begin(); it != m_pActiveScene->m_GameObjects.end(); ++it)
+	{
+		(*it)->update(pWindow);	// call their update function
+	}
+}
+
+// return a pointer to a loaded asset by its name
 CAsset* CManager::getAssetOnName(std::string name)
 {
 	for (std::list<CAsset*>::iterator it = m_Assets.begin(); it != m_Assets.end(); ++it)
@@ -39,35 +60,26 @@ CAsset* CManager::getAssetOnName(std::string name)
 	return NULL;
 }
 
-void CManager::start(rapidxml::xml_node<>* pRootNode)
-{
-	loadEveryAssetFromXML(pRootNode);
-	createEverySceneFromXML(pRootNode);
-}
-
-void CManager::update(sf::RenderWindow* pWindow)
-{
-	drawScene(pWindow);
-}
-
+// read the XML and load the assets into the memory
 void CManager::loadEveryAssetFromXML(rapidxml::xml_node<>* pRootNode)
 {
 	// Create an entity for every asset in the XML
-	 rapidxml::xml_node<>* pAssets = CRapidXMLAdditions::findChildNode(pRootNode, "assets");
+	 rapidxml::xml_node<>* pAssets = CRapidXMLAdditions::findChildNode(pRootNode, "assets");	// get the "assets" container
 	if (pAssets != NULL)
 	{
-		// Save the path into the manager
-		CManager::instance().m_strAssetPath = CRapidXMLAdditions::getAttributeValue(pAssets, "path");
+		CManager::instance().m_strAssetPath = CRapidXMLAdditions::getAttributeValue(pAssets, "path"); // Save the path into the manager
 
 		// read out every type asset and create it
 		for (rapidxml::xml_node<>* pChild = pAssets->first_node(); pChild != NULL; pChild = pChild->next_sibling())
 		{
 			loadSprite(pChild);	// if asset is of type sprite
 			loadSpriteMap(pChild);	// if asset is of type spriteMap
+			loadAudio(pChild);	// if asset is of type audio
 		}
 	}
 }
 
+// Create and initialize a sprite asset
 void CManager::loadSprite(rapidxml::xml_node<>* pNode)
 {
 	// e.g. <sprite name="street">cyberpunk-street.png</sprite>
@@ -79,6 +91,7 @@ void CManager::loadSprite(rapidxml::xml_node<>* pNode)
 	}
 }
 
+// Create and initialize a spriteMap asset
 void CManager::loadSpriteMap(rapidxml::xml_node<>* pNode)
 {
 	// e.g. <spritemap src="cursors.png">
@@ -87,6 +100,7 @@ void CManager::loadSpriteMap(rapidxml::xml_node<>* pNode)
 		CSpriteMap *pSpriteMap = new CSpriteMap();	// create the asset's object
 		pSpriteMap->start(this, pNode);	// call its start function
 
+		// loop through each child
 		for (rapidxml::xml_node<>* pChild = pNode->first_node(); pChild != NULL; pChild = pChild->next_sibling())
 		{
 			// if static image
@@ -96,7 +110,6 @@ void CManager::loadSpriteMap(rapidxml::xml_node<>* pNode)
 				CSpriteMapImageAsset *pSprite = new CSpriteMapImageAsset();	// create the asset's object
 				pSprite->start(this, pChild, pSpriteMap);	// call its start function
 				m_Assets.push_back(pSprite);	// make it available in the manager
-				int i = 5;
 			}
 
 			// if animation
@@ -111,32 +124,50 @@ void CManager::loadSpriteMap(rapidxml::xml_node<>* pNode)
 	}
 }
 
+// Create and initialize an audio asset
+void CManager::loadAudio(rapidxml::xml_node<>* pNode)
+{
+	// e.g. <audio name="lightswitch">nameOfFile.ogg</audio>
+	if (strcmp(pNode->name(), "audio") == 0)
+	{
+		//#### AudioType is missing ####
+		//CSpriteAsset *pAudio = new CSpriteAsset();	// create the asset's object
+		//pAudio->start(this, pNode);	// call its start function
+		//m_Assets.push_back(pAudio);	// make it available in the manager
+	}
+}
+
+// create all scenes and store them
 void CManager::createEverySceneFromXML(rapidxml::xml_node<>* pRootNode)
 {
+	// Loop through every childnode of root
 	for (rapidxml::xml_node<>* pSceneNode = pRootNode->first_node(); pSceneNode != NULL; pSceneNode = pSceneNode->next_sibling())
 	{
+		// Find all scenes
 		if (strcmp(pSceneNode->name(), "scene") == 0)
 		{
-			CScene* pScene = new CScene();
-			m_Scenes.push_back(pScene);
+			CScene* pScene = new CScene();	// create the scene's object
+			m_Scenes.push_back(pScene);	// make it available in the manager
+			// if there us no active scene, assign the first one found
 			if (m_pActiveScene == NULL)
 				m_pActiveScene = pScene;
 
-			createEveryGameObjectFromXML(pSceneNode, pScene);
+			createEveryGameObjectFromXML(pSceneNode, pScene);	// create all gameobjects of that scene
 		}
 	}
 }
 
-void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pNode, CScene* pScene)
+// create gameobjects of a scene according to the XML
+void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pSceneNode, CScene* pScene)
 {
 	// Create all the gameobjects defined in the scene
-	for (rapidxml::xml_node<>* pNodeGameObject = pNode->first_node(); pNodeGameObject != NULL; pNodeGameObject = pNodeGameObject->next_sibling())
+	for (rapidxml::xml_node<>* pNodeGameObject = pSceneNode->first_node(); pNodeGameObject != NULL; pNodeGameObject = pNodeGameObject->next_sibling())
 	{
 		// e.g. <gameobject name="background" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
 		if (strcmp(pNodeGameObject->name(), "gameobject") == 0)
 		{
 			CGameObject* pGameObject = new CGameObject();	// create a gameobject
-			pScene->m_GameObjects.push_back(pGameObject);	// add it to the manager's list
+			pScene->m_GameObjects.push_back(pGameObject);	// add it to the manager's list of gameobjects of that given scene
 
 			// Store the name of the object
 			pGameObject->m_name = CRapidXMLAdditions::getAttributeValue(pNodeGameObject, "name");
@@ -159,12 +190,13 @@ void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pNode, CScene*
 			{
 				createSpriteComponentFromXML(pNodeComponent, pGameObject);	// create the sprite component
 				createAnimationComponentFromXML(pNodeComponent, pGameObject);	// create the animation component
-				createCursorComponent(pNodeComponent, pGameObject);	// create the animation component
+				createCursorComponent(pNodeComponent, pGameObject);	// create the cursor component
 			}
 		}
 	}
 }
 
+// create a sprite components to a given gameobject
 void CManager::createSpriteComponentFromXML(rapidxml::xml_node<>* pNode, CGameObject* pGameObject)
 {
 	// e.g. <sprite load = "street" posX = "0" posY = "0" scaleX = "4" scaleY = "4" rotation = "0" originX = "0.5" originY = "0.5" / >
@@ -172,15 +204,16 @@ void CManager::createSpriteComponentFromXML(rapidxml::xml_node<>* pNode, CGameOb
 	{
 		CSpriteComponent* pSpriteComp = new CSpriteComponent();	// create the component itself
 		pGameObject->m_components.push_back(pSpriteComp);	// add it to the gameobject
-		pSpriteComp->m_pParentGameObject = pGameObject;
+		pSpriteComp->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
 
 		std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the asset to load
-		pSpriteComp->m_pAsset = (CSpriteAsset*)getAssetOnName(assetNameToLoad);	// assign the pointer to the asset
+		pSpriteComp->m_pAsset = (CSpriteAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
 
 		createSpriteComponentBasicData(pNode, pSpriteComp);	// load basic sprite data from XML
 	}
 }
 
+// create an animation components to a given gameobject
 void CManager::createAnimationComponentFromXML(rapidxml::xml_node<>* pNode, CGameObject* pGameObject)
 {
 	// e.g. <animation name="moveRight" xOffset="200" yOffset="0" width="50" height="80" steps="8" time="200"/>
@@ -188,10 +221,10 @@ void CManager::createAnimationComponentFromXML(rapidxml::xml_node<>* pNode, CGam
 	{
 		CAnimationComponent* pAnimationComp = new CAnimationComponent();	// create the component itself
 		pGameObject->m_components.push_back(pAnimationComp);	// add it to the gameobject
-		pAnimationComp->m_pParentGameObject = pGameObject;
+		pAnimationComp->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
 
 		std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the asset to load
-		pAnimationComp->m_pAsset = (CSpriteMapAnimationAsset*)getAssetOnName(assetNameToLoad);	// assign the pointer to the asset
+		pAnimationComp->m_pAsset = (CSpriteMapAnimationAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
 
 		createSpriteComponentBasicData(pNode, pAnimationComp);	// load basic sprite data from XML
 
@@ -199,12 +232,10 @@ void CManager::createAnimationComponentFromXML(rapidxml::xml_node<>* pNode, CGam
 		pAnimationComp->m_bReversePlay = (bool)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "reverseplay"));
 		pAnimationComp->m_bMirrorX = (bool)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "mirrorX"));
 		pAnimationComp->m_bMirrorY = (bool)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "mirrorY"));
-
-		m_pActiveScene->m_GameObjects;
-		int i = 5;
 	}
 }
 
+// read out basic parameter and store them in the component
 void CManager::createSpriteComponentBasicData(rapidxml::xml_node<>* pNode, CComponent* pComponent)
 {
 	// Store the position of the object
@@ -229,36 +260,37 @@ void CManager::createSpriteComponentBasicData(rapidxml::xml_node<>* pNode, CComp
 	pComponent->m_bEnabled = (bool)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "enabled"));
 }
 
+// create the cursor components
 void CManager::createCursorComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject)
 {
+	// e.g. <cursor compIndexGeneric="0" compIndexHighlight="1"/>
 	if (strcmp(pNode->name(), "cursor") == 0)
 	{
-		m_pCursor = pGameObject;
+		m_pCursor = pGameObject;	// letting the manager know which gameobject is to be considered as the mouse cursor
 
 		CCursorComponent* pCursorComp = new CCursorComponent();	// create the component itself
-		pCursorComp->m_pParentGameObject = pGameObject;
+		pGameObject->m_components.push_back(pCursorComp);	// add it to the gameobject
+		pCursorComp->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
 
-		int indexGeneric = atoi(CRapidXMLAdditions::getAttributeValue(pNode, "compIndexGeneric"));
-		int indexHighlight = atoi(CRapidXMLAdditions::getAttributeValue(pNode, "compIndexHighlight"));
-		int index = 0;
+		// Get through every component attached to the cursor gameobject and look for the first two assigned spriteComponents
 		for (std::list<CComponent*>::iterator it = pGameObject->m_components.begin(); it != pGameObject->m_components.end(); ++it)
 		{
-			(*it);
-			// iterate through every asset by the index defined above and assign the pointer in the component
-			/*m_pSpriteGeneric = ;
-			m_pSpriteHighlight = ;
-			m_pCurrentAsset = ;*/
-			// update the cursor etc
-		}
-
-		pGameObject->m_components.push_back(pCursorComp);	// add it to the gameobject
-	}
-}
-
-void CManager::drawScene(sf::RenderWindow* pWindow)
-{
-	for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_GameObjects.begin(); it != m_pActiveScene->m_GameObjects.end(); ++it)
-	{
-		(*it)->update(pWindow);
+			// if it is a SpriteComponent
+			if ((CSpriteComponent*)(*it))
+			{
+				// If we haven't set SpriteGeneric allready, set it
+				if (pCursorComp->m_pSpriteGeneric == NULL)
+				{
+					pCursorComp->m_pSpriteGeneric = dynamic_cast<CSpriteComponent*>(*it)->m_pAsset;
+					pCursorComp->m_bCurrentAsset = 0;	// make it also the active one by default
+				}
+				// If we haven't set SpriteHighlight allready, set it
+				else
+				{
+					if (pCursorComp->m_pSpriteHighlight == NULL)
+						pCursorComp->m_pSpriteHighlight = dynamic_cast<CSpriteComponent*>(*it)->m_pAsset;
+				}
+			}
+		}		
 	}
 }
