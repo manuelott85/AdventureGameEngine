@@ -125,12 +125,17 @@ void CMoveToTarget::update(sf::RenderWindow* pWindow)
 	if (m_objectToMove->m_v2fPosition != m_pParentGameObject->m_v2fPosition)
 	{
 		sf::Vector2f v2fDirection = m_pParentGameObject->m_v2fPosition - m_objectToMove->m_v2fPosition;	// calculate the direction
-		float magnitude = sqrt(v2fDirection.x * v2fDirection.x + v2fDirection.y * v2fDirection.y);	// calculate the magnitude
-		v2fDirection = v2fDirection / magnitude;	// normalize the vector
+		float magnitudeToDestination = sqrt(v2fDirection.x * v2fDirection.x + v2fDirection.y * v2fDirection.y);	// calculate the magnitude
+		v2fDirection = v2fDirection / magnitudeToDestination;	// normalize the vector
 		float movementspeed = m_moveSpeed * CManager::instance().m_deltaTime;	// calculate the new lenght of the vector
 		v2fDirection = { v2fDirection.x * movementspeed, v2fDirection.y * movementspeed };	// apply the new lenght to the vector (distance to move per frame)
 		v2fDirection = m_objectToMove->m_v2fPosition + v2fDirection;	// add everything up to get the next frame's position
-		m_objectToMove->m_v2fPosition = v2fDirection;	// perform the move action
+
+		// In case the movement would overshoot the destination, set the object directly to the destination
+		if (magnitudeToDestination < movementspeed)
+			m_objectToMove->m_v2fPosition = m_pParentGameObject->m_v2fPosition;	// perform the set to destination action
+		else
+			m_objectToMove->m_v2fPosition = v2fDirection;	// perform the move action
 	}
 }
 
