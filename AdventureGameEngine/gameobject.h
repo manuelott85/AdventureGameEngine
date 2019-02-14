@@ -94,9 +94,8 @@ class CMoveToTarget : public CComponent
 {
 public:
 	sf::Clock m_clockTiming;
-	sf::Vector2f m_lastOrderPos;
-	sf::Vector2f m_lastFramePos;
 	CGameObject* m_objectToMove = NULL;
+	float m_moveSpeed = 0;
 public:
 	virtual void update(sf::RenderWindow* pWindow);
 };

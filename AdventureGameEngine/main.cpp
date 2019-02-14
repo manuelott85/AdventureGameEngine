@@ -8,45 +8,8 @@
 
 #include "rapidxml.hpp"
 #include "rapidXMLAdditions.h"
-//#include "interpolation.h"
 
 #include "manager.h"
-
-//void interTemp(sf::Vector2f startVector, sf::Vector2f endVector)
-//{
-//	//magnitude
-//	sf::Vector2f direction = (endVector - startVector);
-//	float distance = sqrtf(direction.x * direction.x + direction.y * direction.y);
-//
-//	std::vector<double> xData = { startVector.x, endVector.x };
-//	std::vector<double> yData = { startVector.y, endVector.y };
-//	float speed = 2;
-//
-//	sf::Clock clock;
-//	clock.getElapsedTime();
-//	
-//	//xData.
-//
-//	// Set up some points for interpolation in xVals
-//	const int NPTS = xData.at(1);
-//	std::vector<double> xVals, yVals;
-//	for (float i = xData.at(0); i <= NPTS; i = i + speed)
-//		xVals.push_back((double)i);
-//
-//	// Interpolate
-//	for (double x : xVals)
-//	{
-//		double y = interpolate(xData, yData, x, true);
-//		yVals.push_back(y);
-//	}
-//
-//	// Output
-//#define SP << std::fixed << setw( 15 ) << setprecision( 6 ) <<
-//	std::cout << "Original data:\n";
-//	for (int i = 0; i < xData.size(); i++) std::cout SP xData[i] SP yData[i] << '\n';
-//	std::cout << "\nInterpolated data:\n";
-//	for (int i = 0; i < xVals.size(); i++) std::cout SP xVals[i] SP yVals[i] << '\n';
-//}
 
 int main()
 {
@@ -70,8 +33,6 @@ int main()
 
 	CManager::instance().start(pRootNode);	// initiate the manager
 	//window.setMouseCursorVisible(false);	// hide the windows mouse cursor
-
-	//interTemp({ 10,10 }, { 100, 400 });
 
 	// main Game loop
 	while (window.isOpen())

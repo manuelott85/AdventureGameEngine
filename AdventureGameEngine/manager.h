@@ -34,6 +34,8 @@ public:
 	std::list<CScene*> m_Scenes;	// list of all loaded scenes
 	CScene* m_pActiveScene = NULL;	// points to current scene that will be drawn
 	CGameObject* m_pCursor;			// Pointer to the cursor object
+	sf::Clock m_managerClock;		// clock to count the frameDelta
+	float m_deltaTime;				// last frame's delta
 
 public:
 	~CManager();

@@ -1,5 +1,4 @@
 #include "gameobject.h"
-#include "interpolation.h"
 
 // ---------- CGameObject ---------------------------------------------------------------------------------------------------------------
 
@@ -118,30 +117,19 @@ void CCursorComponent::update(sf::RenderWindow* pWindow)
 	}
 }
 
-// ---------- CPlayerMoveToTarget ---------------------------------------------------------------------------------------------------------------
+// ---------- CMoveToTarget ---------------------------------------------------------------------------------------------------------------
 void CMoveToTarget::update(sf::RenderWindow* pWindow)
 {
-	if (m_lastOrderPos != m_pParentGameObject->m_v2fPosition)
-	{
-		// Debug Message
-		std::cout << m_lastOrderPos.x << "|" << m_lastOrderPos.y << " updated to: " << m_pParentGameObject->m_v2fPosition.x << "|" << m_pParentGameObject->m_v2fPosition.y << std::endl;
-
-		m_lastOrderPos = m_pParentGameObject->m_v2fPosition;	// Set lastOrderPos
-		m_clockTiming.restart();	// restart the timer
-
-		m_lastFramePos = m_objectToMove->m_v2fPosition;	// initialize movement
-	}
-
+	// if the player is not at the same position than this object,
+	// move it in that direction
 	if (m_objectToMove->m_v2fPosition != m_pParentGameObject->m_v2fPosition)
 	{
-		std::vector<double> xData = { m_objectToMove->m_v2fPosition.x, m_pParentGameObject->m_v2fPosition.x };
-		std::vector<double> yData = { m_objectToMove->m_v2fPosition.y, m_pParentGameObject->m_v2fPosition.y };
-		float movementSpeed = 0.001;
-
-		//float x = m_clockTiming.getElapsedTime().asSeconds() * movementSpeed + m_objectToMove->m_v2fPosition.x;
-		m_lastFramePos.y = interpolate(xData, yData, m_lastFramePos.x, true);
-		m_objectToMove->m_v2fPosition = m_lastFramePos;
-		std::cout << "Current MoveCoord: " << m_lastFramePos.x << "|" << m_lastFramePos.y << std::endl;
-		m_lastFramePos.x = m_lastFramePos.x + m_clockTiming.getElapsedTime().asSeconds() * movementSpeed;
+		sf::Vector2f v2fDirection = m_pParentGameObject->m_v2fPosition - m_objectToMove->m_v2fPosition;	// calculate the direction
+		float magnitude = sqrt(v2fDirection.x * v2fDirection.x + v2fDirection.y * v2fDirection.y);	// calculate the magnitude
+		v2fDirection = v2fDirection / magnitude;	// normalize the vector
+		float movementspeed = m_moveSpeed * CManager::instance().m_deltaTime;	// calculate the new lenght of the vector
+		v2fDirection = { v2fDirection.x * movementspeed, v2fDirection.y * movementspeed };	// apply the new lenght to the vector (distance to move per frame)
+		v2fDirection = m_objectToMove->m_v2fPosition + v2fDirection;	// add everything up to get the next frame's position
+		m_objectToMove->m_v2fPosition = v2fDirection;	// perform the move action
 	}
 }

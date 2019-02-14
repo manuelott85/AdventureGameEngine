@@ -35,6 +35,10 @@ void CManager::start(rapidxml::xml_node<>* pRootNode)
 
 void CManager::update(sf::RenderWindow* pWindow)
 {
+	// Calculate the delta time
+	m_deltaTime = m_managerClock.getElapsedTime().asSeconds();
+	m_managerClock.restart();
+
 	drawScene(pWindow);
 }
 
@@ -312,7 +316,6 @@ void CManager::createMoveToTargetComponent(rapidxml::xml_node<>* pNode, CGameObj
 		CMoveToTarget* pComponent = new CMoveToTarget();	// create the component itself
 		pGameObject->m_components.push_back(pComponent);	// add it to the gameobject
 		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
-		pComponent->m_lastOrderPos = pGameObject->m_v2fPosition;	// init position storage
 
 		// Store object reference
 		for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_GameObjects.begin(); it != m_pActiveScene->m_GameObjects.end(); ++it)
@@ -321,6 +324,9 @@ void CManager::createMoveToTargetComponent(rapidxml::xml_node<>* pNode, CGameObj
 			if ((*it)->getName() == temp)
 				pComponent->m_objectToMove = *it;
 		}
+
+		// Store movement speed variable
+		pComponent->m_moveSpeed = (float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "movespeed"));
 	}
 }
 
@@ -329,7 +335,7 @@ void CManager::setReferences()
 {
 	for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_GameObjects.begin(); it != m_pActiveScene->m_GameObjects.end(); ++it)
 	{
-		if ((*it)->getName() == "player0")
+		if ((*it)->getName() == "player")
 			m_pActiveScene->m_player = *it;
 		if ((*it)->getName() == "playerMoveToTarget")
 			m_pActiveScene->m_playerMoveToTarget = *it;
