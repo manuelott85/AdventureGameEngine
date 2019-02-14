@@ -32,7 +32,7 @@
       <animation name="moveUp" xOffset="600" yOffset="0" width="50" height="80" steps="6" time="200"/>
       <animation name="moveDown" xOffset="150" yOffset="80" width="50" height="80" steps="5" time="200"/>
       <sprite name="idleFromRight" xOffset="0" yOffset="0" width="50" height="80"/>
-      <sprite name="idleFromLeft" xOffset="0" yOffset="50" width="50" height="80"/>
+      <sprite name="idleFromLeft" xOffset="50" yOffset="0" width="50" height="80"/>
     </spritemap>
 
     <audio name="lightswitch">nameOfFile.ogg</audio>
@@ -59,17 +59,16 @@
       </navigationmesh>
     </gameobject>
     
-    <gameobject name="player" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
-      <animation load="moveUp" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="1"/>
-      <animationset>
-        <idle/>
-        <moveUp/>
-        <moveDown/>
-        <moveLeft/>
-        <moveRight/>
-      </animationset>
+    <gameobject name="player" posX="500" posY="700" scaleX="1" scaleY="1" rotation="0">
+      <sprite load="idleFromRight" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
+      <sprite load="idleFromLeft" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
+      <animation load="moveUp" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
+      <animation load="moveDown" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
+      <animation load="moveRight" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0"/>
+      <animation load="moveRight" posX="-80" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0" mirrorX="1"/>
+      <animationController idleRightIndex="0" idleLeftIndex="1" moveRightIndex="4" moveLeftIndex="5" moveUpIndex="2" moveDownIndex="3"/>
     </gameobject>
-
+    <!--
     <gameobject name="player0" posX="400" posY="700" scaleX="1" scaleY="1" rotation="0" enabled="1">
       <animation load="moveRightReverse" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="1" reverseplay="1"/>
     </gameobject>
@@ -85,7 +84,7 @@
     <gameobject name="player2" posX="700" posY="700" scaleX="1" scaleY="1" rotation="0" enabled="0">
       <animation load="moveDown" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="1"/>
     </gameobject>
-    
+    -->
     <gameobject name="key" posX="230" posY="780" scaleX="1" scaleY="1" rotation="0">
       <sprite load="keyYellow" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0" originY="0" enabled="1"/>
       <description id="1">This is a key for a door.</description>
@@ -108,7 +107,7 @@
     </gameobject>
 
     <gameobject name="playerMoveToTarget" posX="100" posY="100" scaleX="1" scaleY="1" rotation="0">
-      <moveToTarget gameobject="player" movespeed="200"/>
+      <moveToTarget gameobject="player" movespeed="10"/>
       <sprite load="keyRed" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0" originY="0" enabled="1"/>
     </gameobject>
 

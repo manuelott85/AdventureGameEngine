@@ -18,10 +18,10 @@ class CCursorComponent;
 class CGameObject
 {
 public:
-	std::string m_name;
-	sf::Vector2f m_v2fPosition;
-	sf::Vector2f m_v2fScale;
-	float m_nRotation;
+	std::string m_name = "";
+	sf::Vector2f m_v2fPosition = { 0,0 };
+	sf::Vector2f m_v2fScale = { 0,0 };
+	float m_nRotation = NULL;
 	bool m_bEnabled = true;
 	std::list<CComponent*> m_components;
 
@@ -37,10 +37,10 @@ public:
 class CComponent
 {
 public:
-	sf::Vector2f m_v2fPosition;
-	sf::Vector2f m_v2fScale;
-	sf::Vector2f m_v2fOrigin;
-	float m_nRotation;
+	sf::Vector2f m_v2fPosition = { 0,0 };
+	sf::Vector2f m_v2fScale = { 0,0 };
+	sf::Vector2f m_v2fOrigin = { 0,0 };
+	float m_nRotation = NULL;
 	CGameObject* m_pParentGameObject = NULL;
 	bool m_bEnabled = true;
 
@@ -67,9 +67,9 @@ public:
 	CSpriteMapAnimationAsset* m_pAsset = NULL;
 
 public:
-	bool m_bReversePlay;
-	bool m_bMirrorX;
-	bool m_bMirrorY;
+	bool m_bReversePlay = NULL;
+	bool m_bMirrorX = NULL;
+	bool m_bMirrorY = NULL;
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
@@ -98,4 +98,18 @@ public:
 	float m_moveSpeed = 0;
 public:
 	virtual void update(sf::RenderWindow* pWindow);
+};
+
+// ----------------------------------------------------------------------------
+
+class CAnimationCtrl : public CComponent
+{
+public:
+	sf::Vector2f m_v2fLastFramePos = { 0,0 };
+	// storage for saving the "list of component" index to given animation
+	int m_idleRightIndex = 0, m_idleLeftIndex = 0, m_moveRightIndex = 0, m_moveLeftIndex = 0, m_moveUpIndex = 0, m_moveDownIndex = 0;
+public:
+	virtual void update(sf::RenderWindow* pWindow);
+private:
+	void activateAnimationWithGivenIndex(int index);
 };

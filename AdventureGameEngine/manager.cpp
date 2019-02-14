@@ -203,6 +203,7 @@ void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pSceneNode, CS
 				createAnimationComponentFromXML(pNodeComponent, pGameObject);	// create the animation component
 				createCursorComponent(pNodeComponent, pGameObject);	// create the cursor component
 				createMoveToTargetComponent(pNodeComponent, pGameObject);	// create the moveToTarget component
+				createAnimationCtrlComponent(pNodeComponent, pGameObject);	// create the Animation Controller
 			}
 		}
 	}
@@ -327,6 +328,26 @@ void CManager::createMoveToTargetComponent(rapidxml::xml_node<>* pNode, CGameObj
 
 		// Store movement speed variable
 		pComponent->m_moveSpeed = (float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "movespeed"));
+	}
+}
+
+// create the Animation Controller
+void CManager::createAnimationCtrlComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject)
+{
+	// e.g. <animationController idleRightIndex="0" idleLeftIndex="1" moveRightIndex="4" moveLeftIndex="5" moveUpIndex="2" moveDownIndex="3"/>
+	if (strcmp(pNode->name(), "animationController") == 0)
+	{
+		CAnimationCtrl* pComponent = new CAnimationCtrl();	// create the component itself
+		pGameObject->m_components.push_back(pComponent);	// add it to the gameobject
+		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
+
+		// read out the parameters
+		pComponent->m_idleRightIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "idleRightIndex"));
+		pComponent->m_idleLeftIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "idleLeftIndex"));
+		pComponent->m_moveRightIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "moveRightIndex"));
+		pComponent->m_moveLeftIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "moveLeftIndex"));
+		pComponent->m_moveUpIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "moveUpIndex"));
+		pComponent->m_moveDownIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "moveDownIndex"));
 	}
 }
 

@@ -60,6 +60,7 @@ private:
 	void createSpriteComponentBasicData(rapidxml::xml_node<>* pNode, CComponent* pComponent);	// read out basic parameter and store them in the component
 	void createCursorComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the cursor components
 	void createMoveToTargetComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the moveToTarget components
+	void createAnimationCtrlComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the Animation Controller
 
 	void setReferences();	// set all available references
 };

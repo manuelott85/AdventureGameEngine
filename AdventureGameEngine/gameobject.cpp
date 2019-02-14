@@ -133,3 +133,91 @@ void CMoveToTarget::update(sf::RenderWindow* pWindow)
 		m_objectToMove->m_v2fPosition = v2fDirection;	// perform the move action
 	}
 }
+
+// ---------- CAnimationCtrl ---------------------------------------------------------------------------------------------------------------
+void CAnimationCtrl::update(sf::RenderWindow* pWindow)
+{
+	// In case there is NO movement
+	if (m_v2fLastFramePos == m_pParentGameObject->m_v2fPosition)
+		activateAnimationWithGivenIndex(m_idleRightIndex);
+	// in case there IS movement
+	else
+	{
+		// get the move direction
+		sf::Vector2f direction = m_pParentGameObject->m_v2fPosition - m_v2fLastFramePos;
+		//float sqrMagnitude = direction.x * direction.x + direction.y * direction.y;
+
+		// movement towards the right
+		if (direction.x > 0)
+		{
+			// movement towards the right AND bottom
+			if (direction.y > 0)
+			{
+				if (direction.x > direction.y)	// play moveRight anim
+					activateAnimationWithGivenIndex(m_moveRightIndex);
+				else
+					activateAnimationWithGivenIndex(m_moveDownIndex);
+			}
+
+			// movement towards the right AND top
+			if (direction.y < 0)
+			{
+				if (direction.x > (direction.y * -1))	// play moveRight anim
+					activateAnimationWithGivenIndex(m_moveRightIndex);
+				else
+					activateAnimationWithGivenIndex(m_moveUpIndex);
+			}
+		}
+		// movement towards the left
+		if (direction.x < 0)
+		{
+			// movement towards the left AND bottom
+			if (direction.y > 0)
+			{
+				if (direction.x < (direction.y * -1))	// play moveLeft anim
+					activateAnimationWithGivenIndex(m_moveLeftIndex);
+				else
+					activateAnimationWithGivenIndex(m_moveDownIndex);
+			}
+
+			// movement towards the left AND top
+			if (direction.y < 0)
+			{
+				if (direction.x < direction.y)	// play moveLeft anim
+					activateAnimationWithGivenIndex(m_moveLeftIndex);
+				else
+					activateAnimationWithGivenIndex(m_moveUpIndex);
+			}
+		}
+
+		//if (sqrMagnitude > 0)	// if moving right- or upwards
+		//{
+		//	if (direction.x > direction.y)	// movement towards the right is dominant
+		//		activateAnimationWithGivenIndex(m_moveRightIndex);
+		//	else	// movement towards the top is dominant
+		//		activateAnimationWithGivenIndex(m_moveDownIndex);
+		//}		
+		//else // if moving left- or downwards
+		//{
+		//	if (direction.x < direction.y)	// movement towards the left is dominant
+		//		activateAnimationWithGivenIndex(m_moveLeftIndex);
+		//	else	// movement towards the bottom is dominant
+		//		activateAnimationWithGivenIndex(m_moveUpIndex);
+		//}
+	}
+
+	m_v2fLastFramePos = m_pParentGameObject->m_v2fPosition;
+}
+
+void CAnimationCtrl::activateAnimationWithGivenIndex(int index)
+{
+	int currentIndex = 0;
+	for (std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin(); it != m_pParentGameObject->m_components.end(); ++it)
+	{
+		if (currentIndex == index)
+			(*it)->m_bEnabled = true;
+		else
+			(*it)->m_bEnabled = false;
+		currentIndex++;
+	}
+}
