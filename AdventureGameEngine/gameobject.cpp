@@ -1,4 +1,5 @@
 #include "gameobject.h"
+#include "interpolation.h"
 
 // ---------- CGameObject ---------------------------------------------------------------------------------------------------------------
 
@@ -150,7 +151,6 @@ void CAnimationCtrl::update(sf::RenderWindow* pWindow)
 	{
 		// get the move direction
 		sf::Vector2f direction = m_pParentGameObject->m_v2fPosition - m_v2fLastFramePos;
-		//float sqrMagnitude = direction.x * direction.x + direction.y * direction.y;
 
 		// movement towards the right
 		if (direction.x > 0)
@@ -194,35 +194,32 @@ void CAnimationCtrl::update(sf::RenderWindow* pWindow)
 					activateAnimationWithGivenIndex(m_moveUpIndex);
 			}
 		}
-
-		//if (sqrMagnitude > 0)	// if moving right- or upwards
-		//{
-		//	if (direction.x > direction.y)	// movement towards the right is dominant
-		//		activateAnimationWithGivenIndex(m_moveRightIndex);
-		//	else	// movement towards the top is dominant
-		//		activateAnimationWithGivenIndex(m_moveDownIndex);
-		//}		
-		//else // if moving left- or downwards
-		//{
-		//	if (direction.x < direction.y)	// movement towards the left is dominant
-		//		activateAnimationWithGivenIndex(m_moveLeftIndex);
-		//	else	// movement towards the bottom is dominant
-		//		activateAnimationWithGivenIndex(m_moveUpIndex);
-		//}
 	}
 
-	m_v2fLastFramePos = m_pParentGameObject->m_v2fPosition;
+	m_v2fLastFramePos = m_pParentGameObject->m_v2fPosition;	// save the position of the object in this frame, to be able to compare movement in the next frame
 }
 
+// enable the object with given index and deactivate every one else, also scale accordingly to the y-axis and a factor
 void CAnimationCtrl::activateAnimationWithGivenIndex(int index)
 {
 	int currentIndex = 0;
 	for (std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin(); it != m_pParentGameObject->m_components.end(); ++it)
 	{
+		// if it is the element we are looking for, scale and enable it
 		if (currentIndex == index)
-			(*it)->m_bEnabled = true;
-		else
+		{
+			// interpolate the scaling
+			float scale = (float)interpolate(vector<double>{ 688, 900 }, vector<double>{ 1.25, 2 }, m_pParentGameObject->m_v2fPosition.y, true);
+			// Clamp the value towards a minimum scale
+			if (scale < 0.5)
+				scale = 0.5;
+			(*it)->m_v2fScale = { scale,scale };	// only the active component needs to be scaled, the others arn't visible anyways
+
+			(*it)->m_bEnabled = true;	// enable the component
+		}
+		else  // otherwise disable it by default
 			(*it)->m_bEnabled = false;
+
 		currentIndex++;
 	}
 }

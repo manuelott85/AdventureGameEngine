@@ -111,5 +111,5 @@ public:
 public:
 	virtual void update(sf::RenderWindow* pWindow);
 private:
-	void activateAnimationWithGivenIndex(int index);
+	void activateAnimationWithGivenIndex(int index);	// enable the object with given index and deactivate every one else, also scale accordingly to the y-axis and a factor
 };
