@@ -44,7 +44,7 @@ void CManager::update(sf::RenderWindow* pWindow)
 
 void CManager::drawScene(sf::RenderWindow* pWindow)
 {
-	// loop for the array of gameobjects
+	// loop through the array of gameobjects
 	for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_GameObjects.begin(); it != m_pActiveScene->m_GameObjects.end(); ++it)
 	{
 		if ((*it)->m_bEnabled)
@@ -204,6 +204,7 @@ void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pSceneNode, CS
 				createCursorComponent(pNodeComponent, pGameObject);	// create the cursor component
 				createMoveToTargetComponent(pNodeComponent, pGameObject);	// create the moveToTarget component
 				createAnimationCtrlComponent(pNodeComponent, pGameObject);	// create the Animation Controller
+				createInteractionComponent(pNodeComponent, pGameObject);	// create the interaction component
 			}
 		}
 	}
@@ -295,7 +296,6 @@ void CManager::createCursorComponent(rapidxml::xml_node<>* pNode, CGameObject* p
 				if (pCursorComp->m_pSpriteGeneric == NULL)
 				{
 					pCursorComp->m_pSpriteGeneric = dynamic_cast<CSpriteComponent*>(*it)->m_pAsset;
-					pCursorComp->m_bCurrentAsset = 0;	// make it also the active one by default
 				}
 				// If we haven't set SpriteHighlight allready, set it
 				else
@@ -348,6 +348,21 @@ void CManager::createAnimationCtrlComponent(rapidxml::xml_node<>* pNode, CGameOb
 		pComponent->m_moveLeftIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "moveLeftIndex"));
 		pComponent->m_moveUpIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "moveUpIndex"));
 		pComponent->m_moveDownIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "moveDownIndex"));
+	}
+}
+
+// create the interaction components
+void CManager::createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject)
+{
+	// e.g. <interaction type="pickUp" range="100"/> || all types = combination, pickUp, clickable
+	if (strcmp(pNode->name(), "interaction") == 0)
+	{
+		CInteractionComponent* pComponent = new CInteractionComponent();	// create the component itself
+		pGameObject->m_components.push_back(pComponent);	// add it to the gameobject
+		CManager::instance().m_pActiveScene->m_Interactables.push_back(pGameObject);	// add it to the manager's list of interactive gameobjects of that given scene
+
+		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
+		pGameObject->m_interactionComponent = pComponent;	// store the interaction component for quick access
 	}
 }
 

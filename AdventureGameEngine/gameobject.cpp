@@ -16,6 +16,7 @@ std::string CGameObject::getName() { return m_name; }
 
 // ---------- CComponent ---------------------------------------------------------------------------------------------------------------
 void CComponent::update(sf::RenderWindow* pWindow) { }	// function should be overridden by derived class
+sf::Sprite* CComponent::getSprite() { return NULL; }
 
 // ---------- CSpriteComponent ---------------------------------------------------------------------------------------------------------------
 
@@ -40,6 +41,11 @@ void CSpriteComponent::update(sf::RenderWindow* pWindow)
 		pSprite->setRotation(m_pParentGameObject->m_nRotation + m_nRotation);
 	}
 	m_pAsset->update(pWindow);	// draw it on screen
+}
+
+sf::Sprite* CSpriteComponent::getSprite()
+{
+	return m_pAsset->getSprite();
 }
 
 // ---------- CAnimationComponent ---------------------------------------------------------------------------------------------------------------
@@ -95,26 +101,44 @@ void CCursorComponent::update(sf::RenderWindow* pWindow)
 
 	m_pParentGameObject->m_v2fPosition = (sf::Vector2f)sf::Mouse::getPosition(*pWindow);	// match cursorSprite to mouse pos
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+	/*if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 		m_bCurrentAsset = 1;
 	else
-		m_bCurrentAsset = 0;
+		m_bCurrentAsset = 0;*/
 
-	if (!m_bCurrentAsset)
+	// Check if the cursor collides with an object the player could interact with
+	for (std::list<CGameObject*>::iterator it = CManager::instance().m_pActiveScene->m_Interactables.begin(); it != CManager::instance().m_pActiveScene->m_Interactables.end(); ++it)
 	{
-		// show generic cursor
-		std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin();
-		(*it)->m_bEnabled = 1;
-		it++;
-		(*it)->m_bEnabled = 0;
+		if ((*it)->m_interactionComponent)
+		{
+			if ((*it)->m_interactionComponent->checkCollisionPoint((sf::Vector2f)sf::Mouse::getPosition(*pWindow)))
+			{
+				switchAppearance(true);	// select the highlight sprite
+				break;
+			}
+			else
+				switchAppearance(false);	// select the generic sprite
+		}
 	}
-	else
+}
+
+void CCursorComponent::switchAppearance(bool showHightlichtCursor)
+{
+	if (showHightlichtCursor)
 	{
 		// show highlight cursor
 		std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin();
 		(*it)->m_bEnabled = 0;
 		it++;
 		(*it)->m_bEnabled = 1;
+	}
+	else
+	{
+		// show generic cursor
+		std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin();
+		(*it)->m_bEnabled = 1;
+		it++;
+		(*it)->m_bEnabled = 0;
 	}
 }
 
@@ -222,4 +246,45 @@ void CAnimationCtrl::activateAnimationWithGivenIndex(int index)
 
 		currentIndex++;
 	}
+}
+
+// ---------- CInteractionComponent ---------------------------------------------------------------------------------------------------------------
+void CInteractionComponent::update(sf::RenderWindow* pWindow)
+{
+	// get the bounding box of the largest currently active drawable object (currently sf::Sprite only)
+	for (std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin(); it != m_pParentGameObject->m_components.end(); ++it)
+	{
+		if ((*it)->m_bEnabled)	// skip every disabled component
+		{
+			float currentSize = m_boundingBox.height * m_boundingBox.width;	// calculate the face
+
+			// continue only if the current component does have a sprite
+			sf::Sprite* sampleSprite = (*it)->getSprite();
+			if (sampleSprite)
+			{
+				sf::FloatRect sample = sampleSprite->getGlobalBounds();	// get boundaries of the current component
+				// if the current component boundaries-face is larger than the current stored one, exchange it
+				if (currentSize < (sample.height * sample.width))
+					m_boundingBox = sample;
+			}
+		}
+	}
+}
+
+// Check if a given point is within the assets limits
+bool CInteractionComponent::checkCollisionPoint(sf::Vector2f point)
+{
+	if (m_boundingBox.contains(point))
+		return true;
+	else
+		return false;
+}
+
+// Check if another bounding box collides with the assets limits
+bool CInteractionComponent::checkCollisionBoundingBox(sf::FloatRect otherBox)
+{
+	if (m_boundingBox.intersects(otherBox))
+		return true;
+	else
+		return false;
 }

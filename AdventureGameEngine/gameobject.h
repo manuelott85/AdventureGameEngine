@@ -10,6 +10,7 @@ class CSpriteAsset;
 class CSpriteMapAnimationAsset;
 class CComponent;
 class CCursorComponent;
+class CInteractionComponent;
 
 // ----------------------------------------------------------------------------
 
@@ -24,6 +25,7 @@ public:
 	float m_nRotation = NULL;
 	bool m_bEnabled = true;
 	std::list<CComponent*> m_components;
+	CInteractionComponent* m_interactionComponent = NULL;
 
 public:
 	void update(sf::RenderWindow* pWindow);
@@ -46,6 +48,7 @@ public:
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
+	virtual sf::Sprite* getSprite();
 };
 
 // ----------------------------------------------------------------------------
@@ -57,6 +60,7 @@ public:
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
+	virtual sf::Sprite* getSprite();
 };
 
 // ----------------------------------------------------------------------------
@@ -82,10 +86,10 @@ class CCursorComponent : public CComponent
 public:
 	CSpriteAsset* m_pSpriteGeneric = NULL;
 	CSpriteAsset* m_pSpriteHighlight = NULL;
-	bool m_bCurrentAsset = 0;
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
+	void switchAppearance(bool showHightlichtCursor = false);
 };
 
 // ----------------------------------------------------------------------------
@@ -112,4 +116,17 @@ public:
 	virtual void update(sf::RenderWindow* pWindow);
 private:
 	void activateAnimationWithGivenIndex(int index);	// enable the object with given index and deactivate every one else, also scale accordingly to the y-axis and a factor
+};
+
+// ----------------------------------------------------------------------------
+
+class CInteractionComponent : public CComponent
+{
+private:
+	sf::FloatRect m_boundingBox;	// collision dimension of current asset
+public:
+	virtual void update(sf::RenderWindow* pWindow);
+
+	bool checkCollisionPoint(sf::Vector2f point);	// Check if a given point is within the assets limits
+	bool checkCollisionBoundingBox(sf::FloatRect otherBox);	// Check if another bounding box collides with the assets limits
 };

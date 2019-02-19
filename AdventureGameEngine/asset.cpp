@@ -8,7 +8,6 @@ void CAsset::start(CManager *pManager, rapidxml::xml_node<>* pNode) { }	// empty
 void CAsset::update(sf::RenderWindow* pWindow) { }	// empty (needs to be overridden by derived class)
 
 std::string CAsset::getName() const { return m_name; }	// return the name of the asset
-sf::Sprite* CAsset::getSprite() { return NULL; }	// should be overridden by derived class, otherwise, this implementation prevents crashing
 
 // ---------- CSpriteMap ---------------------------------------------------------------------------------------------------------------
 
@@ -96,7 +95,7 @@ void CSpriteMapAnimationAsset::update(sf::RenderWindow* pWindow)
 
 			// in case the next frame would be outside the texture's space,
 			// move to the next row and begin from x = 0
-			if (rectLeft + m_Rect.width > m_pTexture->getSize().x)
+			if (rectLeft + m_Rect.width > (int)m_pTexture->getSize().x)
 			{
 				rectLeft = (m_nStepIndex - m_nStepIndexFirstRow) * m_Rect.width;	// calculate column include steps left
 				rectTop += m_Rect.height;	// move to next row
@@ -123,9 +122,9 @@ void CSpriteMapAnimationAsset::update(sf::RenderWindow* pWindow)
 
 			// in case the next frame would be outside the texture's space,
 			// move to the previous row and begin from x = 0
-			if (rectLeft + m_Rect.width > m_pTexture->getSize().x)
+			if (rectLeft + m_Rect.width > (int)m_pTexture->getSize().x)
 			{
-				float temp = (rectLeft + m_Rect.width - m_pTexture->getSize().x) / m_Rect.width;
+				int temp = (rectLeft + m_Rect.width - m_pTexture->getSize().x) / m_Rect.width;
 				rectLeft = (m_nStepIndex - m_nStepIndexFirstRow - temp) * m_Rect.width;	// calculate column include steps left
 				m_nStepIndexFirstRow++;
 				rectTop += m_Rect.height;	// move to previous row

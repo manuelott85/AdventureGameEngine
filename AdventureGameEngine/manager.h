@@ -20,6 +20,7 @@ class CScene
 {
 public:
 	std::list<CGameObject*> m_GameObjects;	// list of current gameobjects
+	std::list<CGameObject*> m_Interactables;	// list of current gameobjects that do have a collision enabled
 	CGameObject* m_player = NULL;	// a reference to the player's gameobject
 	CGameObject* m_playerMoveToTarget = NULL;	// a reference to the player's moving gameobject
 };
@@ -61,6 +62,7 @@ private:
 	void createCursorComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the cursor components
 	void createMoveToTargetComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the moveToTarget components
 	void createAnimationCtrlComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the Animation Controller
+	void createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the interaction components
 
 	void setReferences();	// set all available references
 };

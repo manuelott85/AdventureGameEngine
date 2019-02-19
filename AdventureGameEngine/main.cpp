@@ -37,6 +37,11 @@ int main()
 	// main Game loop
 	while (window.isOpen())
 	{
+		// Draw Calls
+		window.clear(sf::Color::Black);	// remove the last frame
+		CManager::instance().update(&window);	// call the update function which includes drawing
+		window.display();	// show the current frame
+
 		// Events
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -54,11 +59,6 @@ int main()
 				}
 			}
 		}
-
-		// Draw Calls
-		window.clear(sf::Color::Black);	// remove the last frame
-		CManager::instance().update(&window);	// call the update function which includes drawing
-		window.display();	// show the current frame
 	}
 	return 0;
 }

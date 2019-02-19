@@ -19,7 +19,7 @@ public:
 	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);	// empty (needs to be overridden by derived class)
 	virtual void update(sf::RenderWindow* pWindow);							// empty (needs to be overridden by derived class)
 	std::string getName() const;											// return m_name of the asset
-	virtual sf::Sprite* getSprite();										// return sprite of the asset (needs to be overridden by derived class)
+	virtual sf::Sprite* getSprite() = 0;									// return sprite of the asset (needs to be overridden by derived class)
 };
 
 // ----------------------------------------------------------------------------
