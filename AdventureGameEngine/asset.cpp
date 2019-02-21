@@ -147,3 +147,23 @@ void CSpriteMapAnimationAsset::update(sf::RenderWindow* pWindow)
 
 	pWindow->draw(m_Sprite);	// draw on screen
 }
+
+// ---------- CFontAsset ---------------------------------------------------------------------------------------------------------------
+
+void CFontAsset::start(CManager *pManager, rapidxml::xml_node<>* pNode)
+{
+	// load the font
+	m_name = CRapidXMLAdditions::getAttributeValue(pNode, "name");	// get name from XML
+
+	// Load texture and assign to sprite
+	std::string file = pManager->m_strAssetPath + pNode->value();
+
+	// Load ressource
+	if (!m_font.loadFromFile(file))
+		std::cout << "ERROR: Could not load font: 'Montserrat - Regular.ttf'" << std::endl;
+}
+
+sf::Sprite* CFontAsset::getSprite()
+{
+	return NULL;
+}

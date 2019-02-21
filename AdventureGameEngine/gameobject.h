@@ -2,6 +2,7 @@
 
 #include <string>
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 #include "asset.h"
 
@@ -129,4 +130,15 @@ public:
 
 	bool checkCollisionPoint(sf::Vector2f point);	// Check if a given point is within the assets limits
 	bool checkCollisionBoundingBox(sf::FloatRect otherBox);	// Check if another bounding box collides with the assets limits
+};
+
+// ----------------------------------------------------------------------------
+
+class CDescriptionComponent : public CComponent
+{
+public:
+	sf::Text m_descriptionText;
+
+public:
+	virtual void update(sf::RenderWindow* pWindow);
 };

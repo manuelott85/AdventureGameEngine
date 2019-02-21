@@ -53,6 +53,7 @@ private:
 	void loadSprite(rapidxml::xml_node<>* pNode);	// Create and initialize a sprite asset
 	void loadSpriteMap(rapidxml::xml_node<>* pNode);	// Create and initialize a spriteMap asset
 	void loadAudio(rapidxml::xml_node<>* pNode);	// Create and initialize an audio asset
+	void loadFont(rapidxml::xml_node<>* pNode);	// Create and initialize a font asset
 
 	void createEverySceneFromXML(rapidxml::xml_node<>* pRootNode);	// create all scenes and store them
 	void createEveryGameObjectFromXML(rapidxml::xml_node<>* pNode, CScene* pScene);	// create gameobjects of a scene according to the XML
@@ -63,6 +64,7 @@ private:
 	void createMoveToTargetComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the moveToTarget components
 	void createAnimationCtrlComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the Animation Controller
 	void createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the interaction components
+	void createDescriptionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the description components
 
 	void setReferences();	// set all available references
 };

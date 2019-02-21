@@ -78,3 +78,15 @@ public:
 	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode, CSpriteMap* pSpriteMap);	// Initialize the asset
 	virtual void update(sf::RenderWindow* pWindow);	// update the "current frame to show" of the animation and apply it to the sprite
 };
+
+// ----------------------------------------------------------------------------
+
+class CFontAsset : public CAsset
+{
+public:
+	sf::Font m_font;
+
+public:
+	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);	// Initialize the Asset (load the font)
+	virtual sf::Sprite* getSprite();
+};

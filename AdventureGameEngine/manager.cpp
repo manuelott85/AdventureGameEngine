@@ -81,6 +81,7 @@ void CManager::loadEveryAssetFromXML(rapidxml::xml_node<>* pRootNode)
 			loadSprite(pChild);	// if asset is of type sprite
 			loadSpriteMap(pChild);	// if asset is of type spriteMap
 			loadAudio(pChild);	// if asset is of type audio
+			loadFont(pChild);	// if asset is of type font
 		}
 	}
 }
@@ -140,6 +141,19 @@ void CManager::loadAudio(rapidxml::xml_node<>* pNode)
 		//CSpriteAsset *pAudio = new CSpriteAsset();	// create the asset's object
 		//pAudio->start(this, pNode);	// call its start function
 		//m_Assets.push_back(pAudio);	// make it available in the manager
+	}
+}
+
+// Create and initialize a font asset
+void CManager::loadFont(rapidxml::xml_node<>* pNode)
+{
+	// e.g. <font name="montserratR" src="Montserrat-Regular.ttf"/>
+	if (strcmp(pNode->name(), "font") == 0)
+	{
+		CFontAsset *pFont = new CFontAsset();	// create the asset's object
+		pFont->start(this, pNode);	// call its start function
+		m_Assets.push_back(pFont);	// make it available in the manager
+		int i = 5;
 	}
 }
 
@@ -205,6 +219,7 @@ void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pSceneNode, CS
 				createMoveToTargetComponent(pNodeComponent, pGameObject);	// create the moveToTarget component
 				createAnimationCtrlComponent(pNodeComponent, pGameObject);	// create the Animation Controller
 				createInteractionComponent(pNodeComponent, pGameObject);	// create the interaction component
+				createDescriptionComponent(pNodeComponent, pGameObject);	// create the description component
 			}
 		}
 	}
@@ -363,6 +378,25 @@ void CManager::createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObje
 
 		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
 		pGameObject->m_interactionComponent = pComponent;	// store the interaction component for quick access
+	}
+}
+
+// create the description components
+void CManager::createDescriptionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject)
+{
+	// e.g. <description load="montserratR">This is a key for a door.</description>
+	if (strcmp(pNode->name(), "description") == 0)
+	{
+		CDescriptionComponent* pComponent = new CDescriptionComponent();	// create the component itself
+		pGameObject->m_components.push_back(pComponent);	// add it to the gameobject
+		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
+
+		pComponent->m_descriptionText.setString(pNode->value());	// read text from XML and store it in the gameobject
+
+		std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the asset to load
+		CFontAsset* m_pAsset = (CFontAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
+		if(m_pAsset)
+			pComponent->m_descriptionText.setFont(m_pAsset->m_font);
 	}
 }
 

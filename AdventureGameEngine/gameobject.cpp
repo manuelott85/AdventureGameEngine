@@ -288,3 +288,15 @@ bool CInteractionComponent::checkCollisionBoundingBox(sf::FloatRect otherBox)
 	else
 		return false;
 }
+
+// ---------- CDescriptionComponent ---------------------------------------------------------------------------------------------------------------
+void CDescriptionComponent::update(sf::RenderWindow* pWindow)
+{
+	// Process transform
+	m_descriptionText.setOrigin(m_v2fOrigin);
+	m_descriptionText.setPosition(m_pParentGameObject->m_v2fPosition + m_v2fPosition);
+	//m_descriptionText.setScale(sf::Vector2f(m_pParentGameObject->m_v2fScale.x * m_v2fScale.x, m_pParentGameObject->m_v2fScale.y * m_v2fScale.y));
+	m_descriptionText.setRotation(m_pParentGameObject->m_nRotation + m_nRotation);
+
+	pWindow->draw(m_descriptionText);	// draw the text
+}
