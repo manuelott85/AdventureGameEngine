@@ -22,7 +22,7 @@ class CGameObject
 public:
 	std::string m_name = "";
 	sf::Vector2f m_v2fPosition = { 0,0 };
-	sf::Vector2f m_v2fScale = { 0,0 };
+	sf::Vector2f m_v2fScale = { 1,1 };
 	float m_nRotation = NULL;
 	bool m_bEnabled = true;
 	std::list<CComponent*> m_components;
@@ -41,11 +41,12 @@ class CComponent
 {
 public:
 	sf::Vector2f m_v2fPosition = { 0,0 };
-	sf::Vector2f m_v2fScale = { 0,0 };
+	sf::Vector2f m_v2fScale = { 1,1 };
 	sf::Vector2f m_v2fOrigin = { 0,0 };
 	float m_nRotation = NULL;
 	CGameObject* m_pParentGameObject = NULL;
 	bool m_bEnabled = true;
+	bool m_drawLate = false;
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
@@ -136,8 +137,11 @@ public:
 
 class CDescriptionComponent : public CComponent
 {
+private:
+	float m_fontSizePreScaling;	// save the original fontsize for scaling calculations
+
 public:
-	sf::Text m_descriptionText;
+	sf::Text m_descriptionText;	// the text object itself
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);

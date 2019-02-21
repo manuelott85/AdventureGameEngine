@@ -42,7 +42,7 @@
 
   <!-- #### SCENE 1 ####-->
   <scene name="street">
-    <!--
+ 
     <gameobject name="background" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
       <sprite load="street" posX="0" posY="0" scaleX="5" scaleY="5" rotation="0" originX="0" originY="0" enabled="1"/>
       <navigationmesh scaleOnYDepth="0.5">
@@ -59,7 +59,7 @@
           <vector x="650" y="650"></vector>
         </polygon>
       </navigationmesh>
-    </gameobject>-->
+    </gameobject>
     
     <gameobject name="player" posX="500" posY="688" scaleX="1" scaleY="1" rotation="0">
       <sprite load="idleFromRight" posX="0" posY="0" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
@@ -89,17 +89,17 @@
     -->
     <gameobject name="key" posX="230" posY="780" scaleX="1" scaleY="1" rotation="0">
       <sprite load="keyYellow" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0" originY="0" enabled="1"/>
-      <description load="montserratR">This is a key for a door.</description>
+      <description load="montserratR" posX="-180" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1">This is a key for a door.</description>
       <interaction type="pickUp" range="100"/>
     </gameobject>
     
     <gameobject name="door" posX="32" posY="670" scaleX="1" scaleY="1" rotation="0">
       <sprite load="doorClosed" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="0" originY="0" enabled="1"/>
       <sprite load="doorOpen" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="0" originY="0" enabled="0"/>
-      <description id="1" enabled="1">This door is closed.</description>
-      <description id="2" enabled="0">This door is open.</description>
+      <description load="montserratR" id="1" enabled="1">This door is closed.</description>
+      <description load="montserratR" id="2" enabled="0">This door is open.</description>
       <triggerZone id="1" range="100" loadScene="indoor"/>
-      <interaction type="combination" useItem="key" range="100">
+      <interaction type="combination" useItem="key">
         <enable type="sprite">doorOpen</enable>
         <disable type="sprite">doorOpen</disable>
         <enable type="description">2</enable>
@@ -156,7 +156,7 @@
     
     <gameobject name="lightswitch" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
       <sprite load="lightswitchOff" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1"/>
-      <description id="1" enabled="1">A lightswitch.</description>
+      <description load="montserratR" id="1" enabled="1">A lightswitch.</description>
       <interaction type="clickable" range="100">
         <enable type="gameobject">background</enable>
         <playaudio load="lightswitch"/>

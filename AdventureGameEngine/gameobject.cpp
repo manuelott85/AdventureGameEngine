@@ -8,7 +8,8 @@ void CGameObject::update(sf::RenderWindow* pWindow)
 	// for each component
 	for (std::list<CComponent*>::iterator it = m_components.begin(); it != m_components.end(); ++it)
 	{
-		(*it)->update(pWindow);	// call its update function
+		if(!(*it)->m_drawLate)	// exclude components that should be drawn at last e.g. DescriptionComponent
+			(*it)->update(pWindow);	// call its update function
 	}
 }
 
@@ -292,10 +293,14 @@ bool CInteractionComponent::checkCollisionBoundingBox(sf::FloatRect otherBox)
 // ---------- CDescriptionComponent ---------------------------------------------------------------------------------------------------------------
 void CDescriptionComponent::update(sf::RenderWindow* pWindow)
 {
+	// exit if component is disabled
+	if (!m_bEnabled)
+		return;
+
 	// Process transform
 	m_descriptionText.setOrigin(m_v2fOrigin);
 	m_descriptionText.setPosition(m_pParentGameObject->m_v2fPosition + m_v2fPosition);
-	//m_descriptionText.setScale(sf::Vector2f(m_pParentGameObject->m_v2fScale.x * m_v2fScale.x, m_pParentGameObject->m_v2fScale.y * m_v2fScale.y));
+	m_descriptionText.setScale(sf::Vector2f(m_pParentGameObject->m_v2fScale.x * m_v2fScale.x, m_pParentGameObject->m_v2fScale.y * m_v2fScale.y));
 	m_descriptionText.setRotation(m_pParentGameObject->m_nRotation + m_nRotation);
 
 	pWindow->draw(m_descriptionText);	// draw the text
