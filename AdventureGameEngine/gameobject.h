@@ -128,9 +128,9 @@ private:
 	sf::FloatRect m_boundingBox;	// collision dimension of current asset
 public:
 	virtual void update(sf::RenderWindow* pWindow);
-
 	bool checkCollisionPoint(sf::Vector2f point);	// Check if a given point is within the assets limits
 	bool checkCollisionBoundingBox(sf::FloatRect otherBox);	// Check if another bounding box collides with the assets limits
+	bool processMouseButton(sf::Vector2f mousePos, bool leftMouseBtnWasUsed = true);	// call the different components depending on button and interaction type, will return true if the interaction component "used/consumes" that call
 };
 
 // ----------------------------------------------------------------------------

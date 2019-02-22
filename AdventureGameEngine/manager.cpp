@@ -421,3 +421,26 @@ void CManager::setReferences()
 			m_pActiveScene->m_playerMoveToTarget = *it;
 	}
 }
+
+// tell each interaction module that the mouse was used
+void CManager::processMouseInput(sf::RenderWindow* pWindow, bool leftMouseBtnWasUsed)
+{
+	bool bUsedInput = false;
+
+	// Offer each interaction components to use that input. If no one will consume that input, a default action will be performed
+	// like a moveing action for the charater on the left mouse button
+	for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_Interactables.begin(); it != m_pActiveScene->m_Interactables.end(); ++it)
+	{
+		bUsedInput = (*it)->m_interactionComponent->processMouseButton((sf::Vector2f)sf::Mouse::getPosition(*pWindow), leftMouseBtnWasUsed);	// Offer component to consume the input
+
+		// only perform the first action that fits
+		if (bUsedInput)
+			break;
+	}
+
+	if (leftMouseBtnWasUsed && !bUsedInput)
+	{
+		// move the player's character to that location
+		CManager::instance().m_pActiveScene->m_playerMoveToTarget->m_v2fPosition = (sf::Vector2f)sf::Mouse::getPosition(*pWindow);
+	}
+}

@@ -252,7 +252,7 @@ void CAnimationCtrl::activateAnimationWithGivenIndex(int index)
 // ---------- CInteractionComponent ---------------------------------------------------------------------------------------------------------------
 void CInteractionComponent::update(sf::RenderWindow* pWindow)
 {
-	// get the bounding box of the largest currently active drawable object (currently sf::Sprite only)
+	// get the bounding box of the largest currently active drawable object (currently sf::Sprite only); Does it need to be calculated on each frame? Optimization potential here!
 	for (std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin(); it != m_pParentGameObject->m_components.end(); ++it)
 	{
 		if ((*it)->m_bEnabled)	// skip every disabled component
@@ -288,6 +288,26 @@ bool CInteractionComponent::checkCollisionBoundingBox(sf::FloatRect otherBox)
 		return true;
 	else
 		return false;
+}
+
+// call the different components depending on button and interaction type, will return true if the interaction component "used/consumes" that call
+bool CInteractionComponent::processMouseButton(sf::Vector2f mousePos, bool leftMouseBtnWasUsed)
+{
+	// check if the component "collides" with the mouse cursor position
+	if (checkCollisionPoint(mousePos))
+		return true;
+	else
+		return false;
+
+
+	/*if (leftMouseBtnWasUsed)
+	{
+		return false;
+	}
+	else
+	{
+		
+	}*/
 }
 
 // ---------- CDescriptionComponent ---------------------------------------------------------------------------------------------------------------

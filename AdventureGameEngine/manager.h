@@ -68,4 +68,7 @@ private:
 	void createDescriptionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene); // create the description components
 
 	void setReferences();	// set all available references
+
+public:
+	void processMouseInput(sf::RenderWindow* pWindow, bool leftMouseBtnWasUsed = true);	// tell each interaction module that the mouse was used
 };

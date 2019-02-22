@@ -54,8 +54,14 @@ int main()
 				// check for left mouse button
 				if (event.mouseButton.button == sf::Mouse::Button::Left)
 				{
-					// move the player's character to that location
-					CManager::instance().m_pActiveScene->m_playerMoveToTarget->m_v2fPosition = (sf::Vector2f)sf::Mouse::getPosition(window);
+					// Tell the interaction modules that the right mouse button was used
+					CManager::instance().processMouseInput(&window, true);
+				}
+				// check for right mouse button
+				if (event.mouseButton.button == sf::Mouse::Button::Right)
+				{
+					// Tell the interaction modules that the right mouse button was used
+					CManager::instance().processMouseInput(&window, false);
 				}
 			}
 		}
