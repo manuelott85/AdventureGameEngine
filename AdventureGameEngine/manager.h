@@ -67,6 +67,7 @@ private:
 	void createAnimationCtrlComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the Animation Controller
 	void createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the interaction components
 	void createDescriptionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene); // create the description components
+	void createTextboxComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene); // create the textbox components
 
 	void setReferences();	// set all available references
 

@@ -336,30 +336,11 @@ void CDescriptionComponent::update(sf::RenderWindow* pWindow)
 			CManager::instance().m_pActiveScene->m_playerMoveToTarget->m_v2fPosition = m_pParentGameObject->m_v2fPosition;
 		else
 		{
-			showDescriptionText();	// show the text
+			CManager::instance().m_pActiveScene->m_player->m_textComponent->showText(m_descriptionText.getString(), m_lifetime, m_descriptionText.getFont());	// show the text
 			m_bStillPerformingAction = false;	// tell the component that its action was performed completly
 			CManager::instance().m_bInputDisabled = false;	// activate input again
 		}
 	}
-
-	// exit if component is disabled
-	if (!m_bEnabled)
-		return;
-
-	// Disable the component after lifetime
-	if (timer.getElapsedTime().asSeconds() > m_lifetime)
-	{
-		m_bEnabled = false;
-		return;
-	}
-
-	// Process transform
-	m_descriptionText.setOrigin(m_v2fOrigin);
-	m_descriptionText.setPosition(m_pParentGameObject->m_v2fPosition + m_v2fPosition);
-	m_descriptionText.setScale(sf::Vector2f(m_pParentGameObject->m_v2fScale.x * m_v2fScale.x, m_pParentGameObject->m_v2fScale.y * m_v2fScale.y));
-	m_descriptionText.setRotation(m_pParentGameObject->m_nRotation + m_nRotation);
-
-	pWindow->draw(m_descriptionText);	// draw the text
 }
 
 bool CDescriptionComponent::performAction(bool leftMouseBtnWasUsed)
@@ -373,8 +354,39 @@ bool CDescriptionComponent::performAction(bool leftMouseBtnWasUsed)
 		return false;
 }
 
-void CDescriptionComponent::showDescriptionText()
+// ---------- CTextbox ---------------------------------------------------------------------------------------------------------------
+void CTextbox::update(sf::RenderWindow* pWindow)
 {
+	// exit if component is disabled
+	/*if (!m_bEnabled)
+		return;*/
+
+	//std::cout << "EXECUTE" << std::endl;
+
+	// Disable the component after lifetime
+	if (timer.getElapsedTime().asSeconds() > m_lifetime)
+	{
+		CTextbox* temp = this;
+		m_bEnabled = false;
+		return;
+	}
+
+	// Process transform
+	m_descriptionText.setOrigin(m_v2fOrigin);
+	m_descriptionText.setPosition(m_pParentGameObject->m_v2fPosition + m_v2fPosition);
+	m_descriptionText.setScale(sf::Vector2f(m_pParentGameObject->m_v2fScale.x * m_v2fScale.x, m_pParentGameObject->m_v2fScale.y * m_v2fScale.y));
+	m_descriptionText.setRotation(m_pParentGameObject->m_nRotation + m_nRotation);
+
+	pWindow->draw(m_descriptionText);	// draw the text
+}
+
+void CTextbox::showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset)
+{
+	CTextbox* temp = this;
+	m_descriptionText.setString(text);	// assign text to say
+	m_lifetime = lifetimeInSec;	// assign lifetime
+	m_descriptionText.setFont(*pFontAsset);	// assign the font
+
 	timer.restart();
-	m_bEnabled = true;
+	m_bEnabled = true;	// activate the component
 }

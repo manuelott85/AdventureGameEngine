@@ -12,6 +12,8 @@ class CSpriteMapAnimationAsset;
 class CComponent;
 class CCursorComponent;
 class CInteractionComponent;
+class CFontAsset;
+class CTextbox;
 
 // ----------------------------------------------------------------------------
 
@@ -27,6 +29,7 @@ public:
 	bool m_bEnabled = true;
 	std::list<CComponent*> m_components;
 	CInteractionComponent* m_interactionComponent = NULL;
+	CTextbox* m_textComponent = NULL;
 
 public:
 	void update(sf::RenderWindow* pWindow);
@@ -157,8 +160,6 @@ public:
 class CDescriptionComponent : public CComponent
 {
 private:
-	float m_fontSizePreScaling;	// save the original fontsize for scaling calculations
-	sf::Clock timer;	// to measure the lifetime of the text
 	bool m_bStillPerformingAction = false;	// prevent additional calls and perform the full action in a sequence
 
 public:
@@ -168,5 +169,20 @@ public:
 public:
 	virtual void update(sf::RenderWindow* pWindow);
 	virtual bool performAction(bool leftMouseBtnWasUsed);
-	void showDescriptionText();
+};
+
+// ----------------------------------------------------------------------------
+class CTextbox : public CComponent
+{
+private:
+	//float m_fontSizePreScaling;	// save the original fontsize for scaling calculations
+	sf::Clock timer;	// to measure the lifetime of the text
+
+public:
+	sf::Text m_descriptionText;	// the text object itself
+	float m_lifetime = 2;
+
+public:
+	virtual void update(sf::RenderWindow* pWindow);
+	void showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset);
 };

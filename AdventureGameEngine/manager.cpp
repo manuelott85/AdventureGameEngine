@@ -226,6 +226,7 @@ void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pSceneNode, CS
 				createAnimationCtrlComponent(pNodeComponent, pGameObject);	// create the Animation Controller
 				createInteractionComponent(pNodeComponent, pGameObject);	// create the interaction component
 				createDescriptionComponent(pNodeComponent, pGameObject, pScene);	// create the description component
+				createTextboxComponent(pNodeComponent, pGameObject, pScene);	// create the textbox component
 			}
 		}
 	}
@@ -399,7 +400,7 @@ void CManager::createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObje
 // create the description components
 void CManager::createDescriptionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene)
 {
-	// <description load="montserratR" posX="-180" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1">This is a key for a door.</description>
+	// e.g. <description load="montserratR" posX="-180" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1">This is a key for a door.</description>
 	if (strcmp(pNode->name(), "description") == 0)
 	{
 		CDescriptionComponent* pComponent = new CDescriptionComponent();	// create the component itself
@@ -416,6 +417,23 @@ void CManager::createDescriptionComponent(rapidxml::xml_node<>* pNode, CGameObje
 			pComponent->m_descriptionText.setFont(m_pAsset->m_font);
 
 		pComponent->m_drawLate = true;
+		createSpriteComponentBasicData(pNode, pComponent);	// load basic sprite data from XML
+	}
+}
+
+// create the textbox components
+void CManager::createTextboxComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene)
+{
+	// e.g. <textbox posX="-180" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
+	if (strcmp(pNode->name(), "textbox") == 0)
+	{
+		CTextbox* pComponent = new CTextbox();	// create the component itself
+		pGameObject->m_components.push_back(pComponent);	// add it to the gameobject
+		pScene->m_ComponentsDrawLate.push_back(pComponent);	// add the component to the late update / late drawCall function
+		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
+		pGameObject->m_textComponent = pComponent;	// assign the textbox component reference
+
+		pComponent->m_drawLate = true;	// tell the component to get drawn after everything else in a second call
 		createSpriteComponentBasicData(pNode, pComponent);	// load basic sprite data from XML
 	}
 }
