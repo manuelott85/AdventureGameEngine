@@ -399,6 +399,7 @@ void CManager::createDescriptionComponent(rapidxml::xml_node<>* pNode, CGameObje
 		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
 
 		pComponent->m_descriptionText.setString(pNode->value());	// read text from XML and store it in the gameobject
+		pComponent->m_lifetime = (float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "lifetime"));	// read the lifetime from XML
 
 		std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the asset to load
 		CFontAsset* m_pAsset = (CFontAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load

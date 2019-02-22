@@ -35,9 +35,21 @@ public:
 
 // ----------------------------------------------------------------------------
 
+// This interface will process the inputs. Each action that is performed is depending on the specific component
+// I may not understand interfaces completely. Cause I could have defined the only function directly in the CComponent itself,
+// as it is the only one using this interface
+class CInteractionInterface
+{
+public:
+	virtual bool performAction(bool leftMouseBtnWasUsed) = 0;
+};
+
+// ----------------------------------------------------------------------------
+
 // The CComponent is a base class for all components, it is quite similar to the gameobject, but instead of having a list of components
 // it does only know the gameobject it is attached to. It has its own transform, to be able to offset it from the gameobject itself.
-class CComponent
+// it also enables each component to process inputs if so desired
+class CComponent : public CInteractionInterface
 {
 public:
 	sf::Vector2f m_v2fPosition = { 0,0 };
@@ -51,6 +63,7 @@ public:
 public:
 	virtual void update(sf::RenderWindow* pWindow);
 	virtual sf::Sprite* getSprite();
+	virtual bool performAction(bool leftMouseBtnWasUsed) { return false; };	// is overriden by each component if needed
 };
 
 // ----------------------------------------------------------------------------
@@ -139,10 +152,13 @@ class CDescriptionComponent : public CComponent
 {
 private:
 	float m_fontSizePreScaling;	// save the original fontsize for scaling calculations
+	sf::Clock timer;
 
 public:
 	sf::Text m_descriptionText;	// the text object itself
+	float m_lifetime = 2;
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
+	virtual bool performAction(bool leftMouseBtnWasUsed);
 };

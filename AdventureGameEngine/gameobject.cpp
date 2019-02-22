@@ -295,19 +295,16 @@ bool CInteractionComponent::processMouseButton(sf::Vector2f mousePos, bool leftM
 {
 	// check if the component "collides" with the mouse cursor position
 	if (checkCollisionPoint(mousePos))
-		return true;
-	else
-		return false;
-
-
-	/*if (leftMouseBtnWasUsed)
 	{
-		return false;
+		for (std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin(); it != m_pParentGameObject->m_components.end(); ++it)
+		{
+			if (((CDescriptionComponent*)(*it))->performAction(leftMouseBtnWasUsed))
+				break;
+		}
+		return true;
 	}
 	else
-	{
-		
-	}*/
+		return false;
 }
 
 // ---------- CDescriptionComponent ---------------------------------------------------------------------------------------------------------------
@@ -317,6 +314,13 @@ void CDescriptionComponent::update(sf::RenderWindow* pWindow)
 	if (!m_bEnabled)
 		return;
 
+	// Disable the component after lifetime
+	if (timer.getElapsedTime().asSeconds() > m_lifetime)
+	{
+		m_bEnabled = false;
+		return;
+	}
+
 	// Process transform
 	m_descriptionText.setOrigin(m_v2fOrigin);
 	m_descriptionText.setPosition(m_pParentGameObject->m_v2fPosition + m_v2fPosition);
@@ -324,4 +328,16 @@ void CDescriptionComponent::update(sf::RenderWindow* pWindow)
 	m_descriptionText.setRotation(m_pParentGameObject->m_nRotation + m_nRotation);
 
 	pWindow->draw(m_descriptionText);	// draw the text
+}
+
+bool CDescriptionComponent::performAction(bool leftMouseBtnWasUsed)
+{
+	if (!leftMouseBtnWasUsed)
+	{
+		timer.restart();
+		m_bEnabled = true;
+		return true;
+	}
+	else
+		return false;
 }
