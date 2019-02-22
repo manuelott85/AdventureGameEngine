@@ -45,7 +45,7 @@ public:
 	static CManager& instance();	// function to access the singleton instance
 	void start(rapidxml::xml_node<>* pRootNode);
 	void update(sf::RenderWindow* pWindow);
-	void drawScene(sf::RenderWindow* pWindow);
+	void processFrame(sf::RenderWindow* pWindow);
 
 private:
 	CManager();	// making the constructor private prevent anyone of creating an instance of it, as it is a singleton class
@@ -61,7 +61,7 @@ private:
 	void createEveryGameObjectFromXML(rapidxml::xml_node<>* pNode, CScene* pScene);	// create gameobjects of a scene according to the XML
 	void createSpriteComponentFromXML(rapidxml::xml_node<>* pNode, CGameObject* pGameObject);	// create a sprite components to a given gameobject
 	void createAnimationComponentFromXML(rapidxml::xml_node<>* pNode, CGameObject* pGameObject);	// create an animation components to a given gameobject
-	void createSpriteComponentBasicData(rapidxml::xml_node<>* pNode, CComponent* pComponent);	// read out basic parameter and store them in the component
+	void processBasicData(rapidxml::xml_node<>* pNode, CComponent* pComponent);	// read out basic parameter and store them in the component
 	void createCursorComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the cursor components
 	void createMoveToTargetComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the moveToTarget components
 	void createAnimationCtrlComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the Animation Controller

@@ -40,6 +40,7 @@ int main()
 		// Draw Calls
 		window.clear(sf::Color::Black);	// remove the last frame
 		CManager::instance().update(&window);	// call the update function which includes drawing
+
 		window.display();	// show the current frame
 
 		// Events

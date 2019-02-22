@@ -258,7 +258,11 @@ void CAnimationCtrl::activateAnimationWithGivenIndex(int index)
 			(*it)->m_bEnabled = true;	// enable the component
 		}
 		else  // otherwise disable it by default
-			(*it)->m_bEnabled = false;
+		{
+			// except the text box of the player; this line is a very specific workaround, but due to time constrains...
+			if ((*it) != CManager::instance().m_pActiveScene->m_player->m_textComponent)
+				(*it)->m_bEnabled = false;
+		}
 
 		currentIndex++;
 	}
@@ -358,10 +362,8 @@ bool CDescriptionComponent::performAction(bool leftMouseBtnWasUsed)
 void CTextbox::update(sf::RenderWindow* pWindow)
 {
 	// exit if component is disabled
-	/*if (!m_bEnabled)
-		return;*/
-
-	//std::cout << "EXECUTE" << std::endl;
+	if (!m_bEnabled)
+		return;
 
 	// Disable the component after lifetime
 	if (timer.getElapsedTime().asSeconds() > m_lifetime)
@@ -389,4 +391,5 @@ void CTextbox::showText(const sf::String& text, float lifetimeInSec, const sf::F
 
 	timer.restart();
 	m_bEnabled = true;	// activate the component
+	CManager::instance().m_pActiveScene->m_player->m_textComponent->m_bEnabled = true;
 }

@@ -39,10 +39,10 @@ void CManager::update(sf::RenderWindow* pWindow)
 	m_deltaTime = m_managerClock.getElapsedTime().asSeconds();
 	m_managerClock.restart();
 
-	drawScene(pWindow);
+	processFrame(pWindow);
 }
 
-void CManager::drawScene(sf::RenderWindow* pWindow)
+void CManager::processFrame(sf::RenderWindow* pWindow)
 {
 	// loop through the array of gameobjects
 	for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_GameObjects.begin(); it != m_pActiveScene->m_GameObjects.end(); ++it)
@@ -51,7 +51,7 @@ void CManager::drawScene(sf::RenderWindow* pWindow)
 			(*it)->update(pWindow);	// call their update function
 	}
 
-	// late update for each component
+	// late update for each late component
 	for (std::list<CComponent*>::iterator it = m_pActiveScene->m_ComponentsDrawLate.begin(); it != m_pActiveScene->m_ComponentsDrawLate.end(); ++it)
 	{
 		(*it)->update(pWindow);	// call its update function
@@ -245,7 +245,7 @@ void CManager::createSpriteComponentFromXML(rapidxml::xml_node<>* pNode, CGameOb
 		std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the asset to load
 		pSpriteComp->m_pAsset = (CSpriteAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
 
-		createSpriteComponentBasicData(pNode, pSpriteComp);	// load basic sprite data from XML
+		processBasicData(pNode, pSpriteComp);	// load basic data from XML
 	}
 }
 
@@ -262,7 +262,7 @@ void CManager::createAnimationComponentFromXML(rapidxml::xml_node<>* pNode, CGam
 		std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the asset to load
 		pAnimationComp->m_pAsset = (CSpriteMapAnimationAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
 
-		createSpriteComponentBasicData(pNode, pAnimationComp);	// load basic sprite data from XML
+		processBasicData(pNode, pAnimationComp);	// load basic data from XML
 
 		// load animation specific data from XML
 		pAnimationComp->m_bReversePlay = (bool)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "reverseplay"));
@@ -272,7 +272,7 @@ void CManager::createAnimationComponentFromXML(rapidxml::xml_node<>* pNode, CGam
 }
 
 // read out basic parameter and store them in the component
-void CManager::createSpriteComponentBasicData(rapidxml::xml_node<>* pNode, CComponent* pComponent)
+void CManager::processBasicData(rapidxml::xml_node<>* pNode, CComponent* pComponent)
 {
 	// Store the position of the object
 	pComponent->m_v2fPosition = sf::Vector2f(
@@ -417,7 +417,7 @@ void CManager::createDescriptionComponent(rapidxml::xml_node<>* pNode, CGameObje
 			pComponent->m_descriptionText.setFont(m_pAsset->m_font);
 
 		pComponent->m_drawLate = true;
-		createSpriteComponentBasicData(pNode, pComponent);	// load basic sprite data from XML
+		processBasicData(pNode, pComponent);	// load basic data from XML
 	}
 }
 
@@ -434,7 +434,7 @@ void CManager::createTextboxComponent(rapidxml::xml_node<>* pNode, CGameObject* 
 		pGameObject->m_textComponent = pComponent;	// assign the textbox component reference
 
 		pComponent->m_drawLate = true;	// tell the component to get drawn after everything else in a second call
-		createSpriteComponentBasicData(pNode, pComponent);	// load basic sprite data from XML
+		processBasicData(pNode, pComponent);	// load basic data from XML
 	}
 }
 
