@@ -307,22 +307,31 @@ void CManager::createCursorComponent(rapidxml::xml_node<>* pNode, CGameObject* p
 		pGameObject->m_components.push_back(pCursorComp);	// add it to the gameobject
 		pCursorComp->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
 
-		// Get through every component attached to the cursor gameobject and look for the first two assigned spriteComponents
+		// Get through every component attached to the cursor gameobject and look for the first three assigned spriteComponents
 		for (std::list<CComponent*>::iterator it = pGameObject->m_components.begin(); it != pGameObject->m_components.end(); ++it)
 		{
-			// if it is a SpriteComponent
+			// if it is a SpriteComponent; seems not to work as the CursorComponent can also pass this line?!
 			if ((CSpriteComponent*)(*it))
 			{
 				// If we haven't set SpriteGeneric allready, set it
 				if (pCursorComp->m_pSpriteGeneric == NULL)
 				{
 					pCursorComp->m_pSpriteGeneric = dynamic_cast<CSpriteComponent*>(*it)->m_pAsset;
+					continue;
 				}
+
 				// If we haven't set SpriteHighlight allready, set it
-				else
+				if (pCursorComp->m_pSpriteHighlight == NULL)
 				{
-					if (pCursorComp->m_pSpriteHighlight == NULL)
-						pCursorComp->m_pSpriteHighlight = dynamic_cast<CSpriteComponent*>(*it)->m_pAsset;
+					pCursorComp->m_pSpriteHighlight = dynamic_cast<CSpriteComponent*>(*it)->m_pAsset;
+					continue;
+				}
+
+				// If we haven't set SpriteLoad allready, set it
+				if (pCursorComp->m_pSpriteLoading == NULL)
+				{
+					pCursorComp->m_pSpriteLoading = dynamic_cast<CSpriteComponent*>(*it)->m_pAsset;
+					continue;
 				}
 			}
 		}		

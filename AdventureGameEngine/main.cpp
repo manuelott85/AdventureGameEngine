@@ -48,8 +48,8 @@ int main()
 		{
 			if (event.type == sf::Event::Closed) window.close();	// close the programm, when window is closed
 
-			// Check for a mouse button
-			if (event.type == sf::Event::MouseButtonPressed)
+			// Check for a mouse button and only if the input is enabled
+			if (event.type == sf::Event::MouseButtonPressed && !CManager::instance().m_bInputDisabled)
 			{
 				// check for left mouse button
 				if (event.mouseButton.button == sf::Mouse::Button::Left)

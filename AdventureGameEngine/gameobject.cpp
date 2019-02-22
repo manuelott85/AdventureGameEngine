@@ -97,49 +97,64 @@ void CCursorComponent::update(sf::RenderWindow* pWindow)
 		return;
 
 	// skip if there are no asset assigned
-	if (m_pSpriteGeneric == NULL || m_pSpriteHighlight == NULL)
+	if (m_pSpriteGeneric == NULL || m_pSpriteHighlight == NULL || m_pSpriteLoading == NULL)
 		return;
 
 	m_pParentGameObject->m_v2fPosition = (sf::Vector2f)sf::Mouse::getPosition(*pWindow);	// match cursorSprite to mouse pos
 
-	/*if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-		m_bCurrentAsset = 1;
+	// in case there is a sequence or something playing, show the loading cursor
+	if (CManager::instance().m_bInputDisabled)
+		switchAppearance(eCursorSprite::load);
 	else
-		m_bCurrentAsset = 0;*/
-
-	// Check if the cursor collides with an object the player could interact with
-	for (std::list<CGameObject*>::iterator it = CManager::instance().m_pActiveScene->m_Interactables.begin(); it != CManager::instance().m_pActiveScene->m_Interactables.end(); ++it)
 	{
-		if ((*it)->m_interactionComponent)
+		// Check if the cursor collides with an object the player could interact with
+		for (std::list<CGameObject*>::iterator it = CManager::instance().m_pActiveScene->m_Interactables.begin(); it != CManager::instance().m_pActiveScene->m_Interactables.end(); ++it)
 		{
-			if ((*it)->m_interactionComponent->checkCollisionPoint((sf::Vector2f)sf::Mouse::getPosition(*pWindow)))
+			if ((*it)->m_interactionComponent)
 			{
-				switchAppearance(true);	// select the highlight sprite
-				break;
+				if ((*it)->m_interactionComponent->checkCollisionPoint((sf::Vector2f)sf::Mouse::getPosition(*pWindow)))
+				{
+					switchAppearance(eCursorSprite::highlight);	// select the highlight sprite
+					break;
+				}
+				else
+					switchAppearance(eCursorSprite::generic);	// select the generic sprite
 			}
-			else
-				switchAppearance(false);	// select the generic sprite
 		}
 	}
 }
 
-void CCursorComponent::switchAppearance(bool showHightlichtCursor)
+void CCursorComponent::switchAppearance(eCursorSprite cursorToShow)
 {
-	if (showHightlichtCursor)
+	if (cursorToShow == eCursorSprite::highlight)
 	{
 		// show highlight cursor
 		std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin();
 		(*it)->m_bEnabled = 0;
 		it++;
 		(*it)->m_bEnabled = 1;
+		it++;
+		(*it)->m_bEnabled = 0;
 	}
-	else
+	if (cursorToShow == eCursorSprite::generic)
 	{
 		// show generic cursor
 		std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin();
 		(*it)->m_bEnabled = 1;
 		it++;
 		(*it)->m_bEnabled = 0;
+		it++;
+		(*it)->m_bEnabled = 0;
+	}
+	if (cursorToShow == eCursorSprite::load)
+	{
+		// show generic cursor
+		std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin();
+		(*it)->m_bEnabled = 0;
+		it++;
+		(*it)->m_bEnabled = 0;
+		it++;
+		(*it)->m_bEnabled = 1;
 	}
 }
 
@@ -310,6 +325,23 @@ bool CInteractionComponent::processMouseButton(sf::Vector2f mousePos, bool leftM
 // ---------- CDescriptionComponent ---------------------------------------------------------------------------------------------------------------
 void CDescriptionComponent::update(sf::RenderWindow* pWindow)
 {
+	if (m_bStillPerformingAction)
+	{
+		CManager::instance().m_bInputDisabled = true;	// deactivate additional input
+
+		// In case the player is to far away, move him to the gameobject first
+		sf::Vector2f distanceVector = CManager::instance().m_pActiveScene->m_player->m_v2fPosition - m_pParentGameObject->m_v2fPosition;
+		float distance = sqrt(distanceVector.x * distanceVector.x + distanceVector.y * distanceVector.y);
+		if (distance > 10)
+			CManager::instance().m_pActiveScene->m_playerMoveToTarget->m_v2fPosition = m_pParentGameObject->m_v2fPosition;
+		else
+		{
+			showDescriptionText();	// show the text
+			m_bStillPerformingAction = false;	// tell the component that its action was performed completly
+			CManager::instance().m_bInputDisabled = false;	// activate input again
+		}
+	}
+
 	// exit if component is disabled
 	if (!m_bEnabled)
 		return;
@@ -334,10 +366,15 @@ bool CDescriptionComponent::performAction(bool leftMouseBtnWasUsed)
 {
 	if (!leftMouseBtnWasUsed)
 	{
-		timer.restart();
-		m_bEnabled = true;
+		m_bStillPerformingAction = true;
 		return true;
 	}
 	else
 		return false;
+}
+
+void CDescriptionComponent::showDescriptionText()
+{
+	timer.restart();
+	m_bEnabled = true;
 }

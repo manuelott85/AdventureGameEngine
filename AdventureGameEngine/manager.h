@@ -38,6 +38,7 @@ public:
 	CGameObject* m_pCursor;			// Pointer to the cursor object
 	sf::Clock m_managerClock;		// clock to count the frameDelta
 	float m_deltaTime;				// last frame's delta
+	bool m_bInputDisabled = false;	// used to prevent additional input from the player in case there is a little sequence running (e.g. move to an object first, before picking it up)
 
 public:
 	~CManager();

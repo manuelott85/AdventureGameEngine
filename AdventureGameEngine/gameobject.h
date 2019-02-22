@@ -96,15 +96,21 @@ public:
 
 // ----------------------------------------------------------------------------
 
+enum eCursorSprite
+{
+	generic, highlight, load
+};
+
 class CCursorComponent : public CComponent
 {
 public:
 	CSpriteAsset* m_pSpriteGeneric = NULL;
 	CSpriteAsset* m_pSpriteHighlight = NULL;
+	CSpriteAsset* m_pSpriteLoading = NULL;
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
-	void switchAppearance(bool showHightlichtCursor = false);
+	void switchAppearance(eCursorSprite cursorToShow = eCursorSprite::generic);
 };
 
 // ----------------------------------------------------------------------------
@@ -152,7 +158,8 @@ class CDescriptionComponent : public CComponent
 {
 private:
 	float m_fontSizePreScaling;	// save the original fontsize for scaling calculations
-	sf::Clock timer;
+	sf::Clock timer;	// to measure the lifetime of the text
+	bool m_bStillPerformingAction = false;	// prevent additional calls and perform the full action in a sequence
 
 public:
 	sf::Text m_descriptionText;	// the text object itself
@@ -161,4 +168,5 @@ public:
 public:
 	virtual void update(sf::RenderWindow* pWindow);
 	virtual bool performAction(bool leftMouseBtnWasUsed);
+	void showDescriptionText();
 };
