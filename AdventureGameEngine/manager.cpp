@@ -228,6 +228,7 @@ void CManager::createEverySequenceFromXML(rapidxml::xml_node<>* pNode, CScene* p
 
 				pAction->m_text = pNodeAction->value();	// assign the text
 				pAction->m_lifetime = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "lifetime"));	// assign the lifetime
+				pAction->m_charSize = (unsigned int)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "charsize"));	// assign the lifetime
 
 				// assign the move to position
 				float x = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "posX"));	// assign the x value
@@ -501,6 +502,7 @@ void CManager::createTextComponent(rapidxml::xml_node<>* pNode, CGameObject* pGa
 
 		pComponent->m_text.setString(pNode->value());	// read text from XML and store it in the gameobject
 		pComponent->m_lifetime = (float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "lifetime"));	// read the lifetime from XML
+		pComponent->m_charSize = (unsigned int)atof(CRapidXMLAdditions::getAttributeValue(pNode, "charsize"));	// read the character size from XML
 
 		std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the asset to load
 		CFontAsset* m_pAsset = (CFontAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load

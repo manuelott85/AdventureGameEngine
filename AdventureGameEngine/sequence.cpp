@@ -52,7 +52,7 @@ void CSequenceAction::update(sf::RenderWindow* pWindow)
 		break;
 	case eActionType::say :
 		if (!m_targetObject->m_textComponent->m_bEnabled)
-			m_targetObject->m_textComponent->showText(m_text, m_lifetime, m_font);	// show the text
+			m_targetObject->m_textComponent->showText(m_text, m_lifetime, m_font, m_charSize);	// show the text
 		break;
 	default:
 		m_bFinished = true;

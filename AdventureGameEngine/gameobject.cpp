@@ -468,7 +468,7 @@ bool CTextComponent::performAction(bool leftMouseBtnWasUsed)
 {
 	/*if (!leftMouseBtnWasUsed)
 	{*/
-		CManager::instance().m_pActiveScene->m_player->m_textComponent->showText(m_text.getString(), m_lifetime, m_text.getFont());	// show the text
+		CManager::instance().m_pActiveScene->m_player->m_textComponent->showText(m_text.getString(), m_lifetime, m_text.getFont(), m_charSize);	// show the text
 		return true;
 	/*}
 	else
@@ -503,15 +503,37 @@ void CTextbox::update(sf::RenderWindow* pWindow)
 	m_text.setScale(sf::Vector2f(m_pParentGameObject->m_v2fScale.x * m_v2fScale.x, m_pParentGameObject->m_v2fScale.y * m_v2fScale.y));
 	m_text.setRotation(m_pParentGameObject->m_nRotation + m_nRotation);
 
+	// set position centered (very very roughly, as each character is not from the same size)
+	sf::Vector2f v2fOffset;
+	v2fOffset.x = (float)m_text.getString().getSize() / 2;	// only half is needed to center
+	v2fOffset.x = v2fOffset.x * -15; // 15px offset
+
+	sf::Vector2f targetPos = m_pParentGameObject->m_v2fPosition + m_v2fPosition + v2fOffset;	// add everything up to get the "should be" position
+
+	// Check if the sentence would be outside the screen and fix it
+	if (targetPos.x < 0)
+		targetPos.x = 0;
+	if (targetPos.y < 0)
+		targetPos.y = 0;
+	sf::Vector2u screenBoarder = pWindow->getSize();
+	screenBoarder.x = screenBoarder.x + 2 * (unsigned int)v2fOffset.x;
+	if (targetPos.x > screenBoarder.x)
+		targetPos.x = (float)screenBoarder.x;
+	if (targetPos.y > screenBoarder.y)
+		targetPos.y = (float)screenBoarder.y;
+	m_text.setPosition(targetPos);
+
 	pWindow->draw(m_text);	// draw the text
 }
 
-void CTextbox::showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset)
+void CTextbox::showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset, unsigned int charSize)
 {
 	CTextbox* temp = this;
 	m_text.setString(text);	// assign text to say
 	m_lifetime = lifetimeInSec;	// assign lifetime
 	m_text.setFont(*pFontAsset);	// assign the font
+	m_text.setCharacterSize(charSize);	// assign the character size
+	//m_text.setFillColor(sf::Color::);
 
 	timer.restart();
 	m_bEnabled = true;	// activate the component

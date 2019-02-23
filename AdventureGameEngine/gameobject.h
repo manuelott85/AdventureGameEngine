@@ -173,6 +173,7 @@ class CTextComponent : public CComponent
 public:
 	sf::Text m_text;	// the text object itself
 	float m_lifetime = 2;
+	unsigned int m_charSize = 30;
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
@@ -192,5 +193,5 @@ public:
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
-	void showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset);
+	void showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset, unsigned int charSize);
 };

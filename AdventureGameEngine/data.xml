@@ -39,6 +39,7 @@
     <audio name="lightswitch">nameOfFile.ogg</audio>
 
     <font name="montserratR">Montserrat-Regular.ttf</font>
+    <font name="montserratB">Montserrat-Black.ttf</font>
   </assets>
 
   <!-- #### SCENE 1 ####-->
@@ -70,7 +71,7 @@
       <animation load="moveRight" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0"/>
       <animation load="moveRight" posX="-80" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0" mirrorX="1"/>
       <animationController idleRightIndex="0" idleLeftIndex="1" moveRightIndex="4" moveLeftIndex="5" moveUpIndex="2" moveDownIndex="3"/>
-      <textbox posX="-180" posY="-90" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
+      <textbox posX="0" posY="-90" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
     </gameobject>
 
     <gameobject name="girl" posX="1630" posY="710" scaleX="1" scaleY="1" rotation="0">
@@ -80,17 +81,18 @@
 
     <gameobject name="key" posX="1330" posY="780" scaleX="1" scaleY="1" rotation="0">
       <sprite load="keyYellow" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0" originY="0" enabled="1"/>
-      <text name="description" load="montserratR" lifetime="4">This is a key for a door.</text>
-      <text name="pickup" load="montserratR" lifetime="4">This might be usefull.</text>
+      <!--<text name="description" load="montserratB" lifetime="4">This is a key for a door.</text>-->
+      <text name="description" load="montserratB" lifetime="4" charsize="25">Hasdfsfamghjf fgdhjjhgd asfdafds hm,jfuzi dfgh sdgfmhjfg</text>
+      <text name="pickup" load="montserratB" lifetime="4" charsize="25">This might be usefull.</text>
       <interaction type="pickup" enabled="1"/>
     </gameobject>
 
     <gameobject name="door" posX="32" posY="670" scaleX="1" scaleY="1" rotation="0">
       <sprite load="doorClosed" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="0" originY="0" enabled="1"/>
       <sprite load="doorOpen" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="0" originY="0" enabled="0"/>
-      <text name="description" load="montserratR" lifetime="4">This is a door.</text>
-      <text name="useFailure" load="montserratR" lifetime="4">I don't have the key to unlock the door.</text>
-      <text name="useSuccess" load="montserratR" lifetime="4">This door is now open.</text>
+      <text name="description" load="montserratB" lifetime="4" charsize="25">This is a door.</text>
+      <text name="useFailure" load="montserratB" lifetime="4" charsize="25">I don't have the key to unlock the door.</text>
+      <text name="useSuccess" load="montserratB" lifetime="4" charsize="25">This door is now open.</text>
       <interaction name="openDoor" type="useWithRequirement" neededGameObject="key" enabled="1">
         <enable>doorOpen</enable>
         <disable>doorClosed</disable>
@@ -115,21 +117,22 @@
       <cursor/>
     </gameobject>
 
+    
     <sequence name="intro" enabled="1">
       <move object="player" posX="1000" posY="800"/>
-      <say object="girl" load="montserratR" lifetime="4">Thank you for comming by!</say>
-      <say object="player" load="montserratR" lifetime="4">Phew... Hi, I am Indy.</say>
-      <say object="player" load="montserratR" lifetime="4">An Indie-Developer, and I am going to walk you through the features of this Engine</say>
-      <say object="player" load="montserratR" lifetime="4">Right now, you are in a sequence and therefore cannot interact with the game.</say>
-      <say object="player" load="montserratR" lifetime="4">This is indicated by the hourglass at your cursor.</say>
+      <say object="girl" load="montserratB" lifetime="4" charsize="25">Thank you for comming by!</say>
+      <say object="player" load="montserratB" lifetime="4" charsize="25">Phew... Hi, I am Indy.</say>
+      <say object="player" load="montserratB" lifetime="4" charsize="25">An Indie-Developer, and I am going to walk you through the features of this Engine</say>
+      <say object="player" load="montserratB" lifetime="4" charsize="25">Right now, you are in a sequence and therefore cannot interact with the game.</say>
+      <say object="player" load="montserratB" lifetime="4" charsize="25">This is indicated by the hourglass at your cursor.</say>
       <move object="player" posX="200" posY="200"/>
-      <say object="player" load="montserratR" lifetime="4">After this sequence, the cursor will either be an arrow indicating that you can go there...</say>
-      <say object="player" load="montserratR" lifetime="4">Or it will be a magnifying glass telling that you can interact with something.</say>
-      <say object="player" load="montserratR" lifetime="4">Left clicking will perform a default action like picking up or moveing to.</say>
-      <say object="player" load="montserratR" lifetime="4">I will tell you more about an object, if you click it with the right mouse button.</say>
+      <say object="player" load="montserratB" lifetime="4" charsize="25">After this sequence, the cursor will either be an arrow indicating that you can go there...</say>
+      <say object="player" load="montserratB" lifetime="4" charsize="25">Or it will be a magnifying glass telling that you can interact with something.</say>
+      <say object="player" load="montserratB" lifetime="4" charsize="25">Left clicking will perform a default action like picking up or moveing to.</say>
+      <say object="player" load="montserratB" lifetime="4" charsize="25">I will tell you more about an object, if you click it with the right mouse button.</say>
       <move object="player" posX="300" posY="300"/>
-      <say object="player" load="montserratR" lifetime="4">The girls are fine. So you and I should check out the bar.</say>
-      <say object="player" load="montserratR" lifetime="4">The bar is at the left end of this scene.</say>
+      <say object="player" load="montserratB" lifetime="4" charsize="25">The girls are fine. So you and I should check out the bar.</say>
+      <say object="player" load="montserratB" lifetime="4" charsize="25">The bar is at the left end of this scene.</say>
     </sequence>
 
   </scene>
@@ -173,7 +176,7 @@
     
     <gameobject name="lightswitch" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0">
       <sprite load="lightswitchOff" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1"/>
-      <description load="montserratR" id="1" enabled="1">A lightswitch.</description>
+      <description load="montserratB" id="1" enabled="1">A lightswitch.</description>
       <interaction type="clickable" range="100">
         <enable type="gameobject">background</enable>
         <playaudio load="lightswitch"/>
