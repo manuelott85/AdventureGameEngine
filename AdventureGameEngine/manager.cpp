@@ -8,6 +8,7 @@
 #include "rapidXMLAdditions.h"
 #include "asset.h"
 #include "gameobject.h"
+#include "inventory.h"
 
 CManager::CManager()
 {
@@ -28,9 +29,10 @@ CManager& CManager::instance()
 
 void CManager::start(rapidxml::xml_node<>* pRootNode)
 {
-	loadEveryAssetFromXML(pRootNode);
-	createEverySceneFromXML(pRootNode);
-	setReferences();
+	loadEveryAssetFromXML(pRootNode);			// read all the assets out of the XML
+	createEverySceneFromXML(pRootNode);			// create each scene with its gameobjects
+	setReferences();							// loop through each created gameobject and collect some references for easy access
+	CInventoryContainer::instance().start();	// init the inventory
 }
 
 void CManager::update(sf::RenderWindow* pWindow)
