@@ -175,10 +175,12 @@ void CManager::createEverySceneFromXML(rapidxml::xml_node<>* pRootNode)
 		if (strcmp(pSceneNode->name(), "scene") == 0)
 		{
 			CScene* pScene = new CScene();	// create the scene's object
-			m_Scenes.push_back(pScene);	// make it available in the manager
+			m_pScenes.push_back(pScene);	// make it available in the manager
 			// if there us no active scene, assign the first one found
 			if (m_pActiveScene == NULL)
 				m_pActiveScene = pScene;
+
+			pScene->m_name = CRapidXMLAdditions::getAttributeValue(pSceneNode, "name");	// get the name of the asset to load
 
 			createEveryGameObjectFromXML(pSceneNode, pScene);	// create all gameobjects of that scene
 		}
@@ -297,7 +299,14 @@ void CManager::processBasicData(rapidxml::xml_node<>* pNode, CComponent* pCompon
 	pComponent->m_nRotation = (float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "rotation"));
 
 	// Store enabled
-	pComponent->m_bEnabled = (bool)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "enabled"));
+	char* boolean = CRapidXMLAdditions::getAttributeValue(pNode, "enabled");
+	if (boolean != "")
+		pComponent->m_bEnabled = (bool)atoi(boolean);
+
+	// Store name
+	std::string name = CRapidXMLAdditions::getAttributeValue(pNode, "name");
+	if (name != "")
+		pComponent->m_name = name;
 }
 
 // create the cursor components
@@ -389,7 +398,7 @@ void CManager::createAnimationCtrlComponent(rapidxml::xml_node<>* pNode, CGameOb
 // create the interaction components
 void CManager::createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject)
 {
-	// e.g. <interaction type="pickUp" range="100"/> || all types = combination, pickUp, clickable
+	// e.g. <interaction type="pickup" enabled="1"/>
 	if (strcmp(pNode->name(), "interaction") == 0)
 	{
 		CInteractionComponent* pComponent = new CInteractionComponent();	// create the component itself
@@ -399,7 +408,7 @@ void CManager::createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObje
 		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
 		pComponent->m_type = CRapidXMLAdditions::getAttributeValue(pNode, "type");	// read the name from XML
 		pComponent->m_neededGameObject = CRapidXMLAdditions::getAttributeValue(pNode, "neededGameObject");	// read the name from XML
-		pGameObject->m_interactionComponent = pComponent;	// store the interaction component for quick access
+		pGameObject->m_interactionComponents.push_back(pComponent);	// store the interaction component for quick access
 
 		// fill the list of objects to enable and disable
 		for (rapidxml::xml_node<>* pNodeSubComponent = pNode->first_node(); pNodeSubComponent != NULL; pNodeSubComponent = pNodeSubComponent->next_sibling())
@@ -409,6 +418,8 @@ void CManager::createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObje
 			if (strcmp(pNodeSubComponent->name(), "disable") == 0)
 				pComponent->m_pListToDisable.push_back(pNodeSubComponent->value());
 		}
+
+		processBasicData(pNode, pComponent);	// load basic data from XML
 	}
 }
 
@@ -425,7 +436,6 @@ void CManager::createTextComponent(rapidxml::xml_node<>* pNode, CGameObject* pGa
 
 		pComponent->m_text.setString(pNode->value());	// read text from XML and store it in the gameobject
 		pComponent->m_lifetime = (float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "lifetime"));	// read the lifetime from XML
-		pComponent->m_name = CRapidXMLAdditions::getAttributeValue(pNode, "name");	// read the name from XML
 
 		std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the asset to load
 		CFontAsset* m_pAsset = (CFontAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
@@ -457,12 +467,16 @@ void CManager::createTextboxComponent(rapidxml::xml_node<>* pNode, CGameObject* 
 // set all available references
 void CManager::setReferences()
 {
-	for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_GameObjects.begin(); it != m_pActiveScene->m_GameObjects.end(); ++it)
+	for (std::list<CScene*>::iterator itScene = m_pScenes.begin(); itScene != m_pScenes.end(); ++itScene)
 	{
-		if ((*it)->getName() == "player")
-			m_pActiveScene->m_player = *it;
-		if ((*it)->getName() == "playerMoveToTarget")
-			m_pActiveScene->m_playerMoveToTarget = *it;
+
+		for (std::list<CGameObject*>::iterator it = (*itScene)->m_GameObjects.begin(); it != (*itScene)->m_GameObjects.end(); ++it)
+		{
+			if ((*it)->getName() == "player")
+				(*itScene)->m_player = *it;
+			if ((*it)->getName() == "playerMoveToTarget")
+				(*itScene)->m_playerMoveToTarget = *it;
+		}
 	}
 }
 
@@ -473,10 +487,16 @@ void CManager::processMouseInput(sf::RenderWindow* pWindow, bool leftMouseBtnWas
 
 	// Offer each interaction components to use that input. If no one will consume that input, a default action will be performed
 	// like a moveing action for the charater on the left mouse button
-	for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_Interactables.begin(); it != m_pActiveScene->m_Interactables.end(); ++it)
+	for (std::list<CGameObject*>::iterator itGameObject = m_pActiveScene->m_Interactables.begin(); itGameObject != m_pActiveScene->m_Interactables.end(); ++itGameObject)
 	{
-		bUsedInput = (*it)->m_interactionComponent->processMouseButton((sf::Vector2f)sf::Mouse::getPosition(*pWindow), leftMouseBtnWasUsed);	// Offer component to consume the input
-
+		for (std::list<CInteractionComponent*>::iterator itComponents = (*itGameObject)->m_interactionComponents.begin(); itComponents != (*itGameObject)->m_interactionComponents.end(); ++itComponents)
+		{
+			if((*itComponents)->m_bEnabled)
+				bUsedInput = (*itComponents)->processMouseButton((sf::Vector2f)sf::Mouse::getPosition(*pWindow), leftMouseBtnWasUsed);	// Offer component to consume the input
+			if (bUsedInput)
+				break;
+		}
+		
 		// only perform the first action that fits
 		if (bUsedInput)
 			break;

@@ -28,7 +28,7 @@ public:
 	float m_nRotation = NULL;
 	bool m_bEnabled = true;
 	std::list<CComponent*> m_components;
-	CInteractionComponent* m_interactionComponent = NULL;
+	std::list<CInteractionComponent*> m_interactionComponents;
 	CTextbox* m_textComponent = NULL;
 
 public:

@@ -19,6 +19,7 @@ class CComponent;
 class CScene
 {
 public:
+	std::string m_name;	// name of the scene
 	std::list<CGameObject*> m_GameObjects;	// list of current gameobjects
 	std::list<CComponent*> m_ComponentsDrawLate; // list of components that should be drawn after the regular drawcalls (e.g. Text)
 	std::list<CGameObject*> m_Interactables;	// list of current gameobjects that do have a collision enabled
@@ -33,7 +34,7 @@ class CManager
 public:
 	std::string m_strAssetPath;		// general path to the assets
 	std::list<CAsset*> m_Assets;	// list of all loaded assets in memory
-	std::list<CScene*> m_Scenes;	// list of all loaded scenes
+	std::list<CScene*> m_pScenes;	// list of all loaded scenes
 	CScene* m_pActiveScene = NULL;	// points to current scene that will be drawn
 	CGameObject* m_pCursor;			// Pointer to the cursor object
 	sf::Clock m_managerClock;		// clock to count the frameDelta

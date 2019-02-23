@@ -108,20 +108,28 @@ void CCursorComponent::update(sf::RenderWindow* pWindow)
 		switchAppearance(eCursorSprite::load);
 	else
 	{
+		bool bShowHighlightCursor = false;
+
 		// Check if the cursor collides with an object the player could interact with
-		for (std::list<CGameObject*>::iterator it = CManager::instance().m_pActiveScene->m_Interactables.begin(); it != CManager::instance().m_pActiveScene->m_Interactables.end(); ++it)
+		for (std::list<CGameObject*>::iterator itGameObject = CManager::instance().m_pActiveScene->m_Interactables.begin(); itGameObject != CManager::instance().m_pActiveScene->m_Interactables.end(); ++itGameObject)
 		{
-			if ((*it)->m_interactionComponent)
+			for (std::list<CInteractionComponent*>::iterator itComponents = (*itGameObject)->m_interactionComponents.begin(); itComponents != (*itGameObject)->m_interactionComponents.end(); ++itComponents)
 			{
-				if ((*it)->m_interactionComponent->checkCollisionPoint((sf::Vector2f)sf::Mouse::getPosition(*pWindow)))
+				if ((*itComponents)->m_bEnabled)
 				{
-					switchAppearance(eCursorSprite::highlight);	// select the highlight sprite
-					break;
+					if ((*itComponents)->checkCollisionPoint((sf::Vector2f)sf::Mouse::getPosition(*pWindow)))
+					{
+						bShowHighlightCursor = true;
+						break;
+					}
 				}
-				else
-					switchAppearance(eCursorSprite::generic);	// select the generic sprite
 			}
 		}
+
+		if (bShowHighlightCursor)
+			switchAppearance(eCursorSprite::highlight);	// select the highlight sprite
+		else
+			switchAppearance(eCursorSprite::generic);	// select the generic sprite
 	}
 }
 
@@ -272,7 +280,6 @@ void CAnimationCtrl::activateAnimationWithGivenIndex(int index)
 // ---------- CInteractionComponent ---------------------------------------------------------------------------------------------------------------
 void CInteractionComponent::update(sf::RenderWindow* pWindow)
 {
-	this;
 	// skip if deactivated
 	if (!m_bEnabled)
 		return;
@@ -372,11 +379,11 @@ void CInteractionComponent::performTask(bool leftMouseBtnWasUsed)
 
 		if (m_type == "useWithRequirement")
 		{
+			// check if the required item is in the inventory
 			bool bRequirementMet = false;
 			CInventoryItem* pItem;
 			for (std::list<CInventoryItem*>::iterator it = CInventoryContainer::instance().m_pInventoryItems.begin(); it != CInventoryContainer::instance().m_pInventoryItems.end(); ++it)
 			{
-				// check if the required item is in the inventory
 				if ((*it)->m_name == m_neededGameObject)
 				{
 					bRequirementMet = true;
@@ -415,6 +422,18 @@ void CInteractionComponent::performTask(bool leftMouseBtnWasUsed)
 					if ((*it)->m_name == "useFailure")
 						if ((*it)->performAction(leftMouseBtnWasUsed))
 							break;
+				}
+			}
+		}
+
+		if (m_type == "loadScene")
+		{
+			for (std::list<CScene*>::iterator itScenes = CManager::instance().m_pScenes.begin(); itScenes != CManager::instance().m_pScenes.end(); ++itScenes)
+			{
+				if ((*itScenes)->m_name == *m_pListToEnable.begin())
+				{
+					CScene* tempScene = *itScenes;
+					CManager::instance().m_pActiveScene = (*itScenes);	// load desired scene
 				}
 			}
 		}
