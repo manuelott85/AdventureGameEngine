@@ -148,25 +148,28 @@ private:
 class CInteractionComponent : public CComponent
 {
 private:
+	bool m_bStillPerformingAction = false;	// prevent additional calls and perform the full action in a sequence
+	bool m_bLeftMouseBtnWasUsed = true;	// store the last mouse button pressed to perform actions
 	sf::FloatRect m_boundingBox;	// collision dimension of current asset
 
 public:
-	std::string m_type = "";		// story the type of interaction performed with the left mouse button
+	std::string m_type = "";		// store the type of interaction performed with the left mouse button
+	std::string m_neededGameObject = "";	// store the name of the gameobject that is needed to perform the action successfully
+	std::list<std::string> m_pListToEnable;		// store the name of components to ENABLE by performing the use action
+	std::list<std::string> m_pListToDisable;	// store the name of components to DISABLE by performing the use action
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
 	bool checkCollisionPoint(sf::Vector2f point);	// Check if a given point is within the assets limits
 	bool checkCollisionBoundingBox(sf::FloatRect otherBox);	// Check if another bounding box collides with the assets limits
 	bool processMouseButton(sf::Vector2f mousePos, bool leftMouseBtnWasUsed = true);	// call the different components depending on button and interaction type, will return true if the interaction component "used/consumes" that call
+	void performTask(bool leftMouseBtnWasUsed);
 };
 
 // ----------------------------------------------------------------------------
 
 class CTextComponent : public CComponent
 {
-private:
-	bool m_bStillPerformingAction = false;	// prevent additional calls and perform the full action in a sequence
-
 public:
 	sf::Text m_text;	// the text object itself
 	float m_lifetime = 2;

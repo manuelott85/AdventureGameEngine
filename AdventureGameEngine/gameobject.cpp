@@ -1,5 +1,6 @@
 #include "gameobject.h"
 #include "interpolation.h"
+#include "inventory.h"
 
 // ---------- CGameObject ---------------------------------------------------------------------------------------------------------------
 
@@ -271,6 +272,11 @@ void CAnimationCtrl::activateAnimationWithGivenIndex(int index)
 // ---------- CInteractionComponent ---------------------------------------------------------------------------------------------------------------
 void CInteractionComponent::update(sf::RenderWindow* pWindow)
 {
+	this;
+	// skip if deactivated
+	if (!m_bEnabled)
+		return;
+
 	// get the bounding box of the largest currently active drawable object (currently sf::Sprite only); Does it need to be calculated on each frame? Optimization potential here!
 	for (std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin(); it != m_pParentGameObject->m_components.end(); ++it)
 	{
@@ -287,6 +293,25 @@ void CInteractionComponent::update(sf::RenderWindow* pWindow)
 				if (currentSize < (sample.height * sample.width))
 					m_boundingBox = sample;
 			}
+		}
+	}
+
+	// In case there is a action sequence running
+	if (m_bStillPerformingAction)
+	{
+		CManager::instance().m_bInputDisabled = true;	// deactivate additional input
+
+		// In case the player is to far away, move him to the gameobject first
+		sf::Vector2f distanceVector = CManager::instance().m_pActiveScene->m_player->m_v2fPosition - m_pParentGameObject->m_v2fPosition;
+		float distance = sqrt(distanceVector.x * distanceVector.x + distanceVector.y * distanceVector.y);
+		if (distance > 10)
+			CManager::instance().m_pActiveScene->m_playerMoveToTarget->m_v2fPosition = m_pParentGameObject->m_v2fPosition;
+		else
+		{
+			// perform action
+			m_bStillPerformingAction = false;	// tell the component that its action was performed completly
+			CManager::instance().m_bInputDisabled = false;	// activate input again
+			performTask(m_bLeftMouseBtnWasUsed);
 		}
 	}
 }
@@ -315,59 +340,110 @@ bool CInteractionComponent::processMouseButton(sf::Vector2f mousePos, bool leftM
 	// check if the component "collides" with the mouse cursor position
 	if (checkCollisionPoint(mousePos))
 	{
-		for (std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin(); it != m_pParentGameObject->m_components.end(); ++it)
-		{
-			if (leftMouseBtnWasUsed)
-			{
-				if (m_type == "pickup")
-				{
-					if ((*it)->m_name == "pickup")
-					{
-						if (((CTextComponent*)(*it))->performAction(leftMouseBtnWasUsed))
-							break;
-					}
-				}
-			}
-
-			// If the right mouse button was used, look for the first description text component
-			if (!leftMouseBtnWasUsed && (*it)->m_name == "description")
-			{
-				if (((CTextComponent*)(*it))->performAction(leftMouseBtnWasUsed))
-					break;
-			}
-		}
+		m_bStillPerformingAction = true;	// activate action sequence controlled by the update function
+		m_bLeftMouseBtnWasUsed = leftMouseBtnWasUsed;	// store the last mouse button pressed
 		return true;
 	}
 	else
 		return false;
 }
 
+void CInteractionComponent::performTask(bool leftMouseBtnWasUsed)
+{
+	if (leftMouseBtnWasUsed)
+	{
+		if (m_type == "pickup")
+		{
+			std::string text = "";
+
+			// show pickup text
+			for (std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin(); it != m_pParentGameObject->m_components.end(); ++it)
+			{
+				if ((*it)->m_name == "pickup")
+					if ((*it)->performAction(leftMouseBtnWasUsed))
+						break;
+				//if ((*it)->m_name == "description")
+				//	text = "";	// read the value from the text component tagged with description
+			}
+
+			CInventoryContainer::instance().addItemToInventory(m_pParentGameObject->getName(), text);	// Add item to inventory
+			m_pParentGameObject->m_bEnabled = false;	// remove item from screen
+		}
+
+		if (m_type == "useWithRequirement")
+		{
+			bool bRequirementMet = false;
+			CInventoryItem* pItem;
+			for (std::list<CInventoryItem*>::iterator it = CInventoryContainer::instance().m_pInventoryItems.begin(); it != CInventoryContainer::instance().m_pInventoryItems.end(); ++it)
+			{
+				// check if the required item is in the inventory
+				if ((*it)->m_name == m_neededGameObject)
+				{
+					bRequirementMet = true;
+					pItem = *it;
+				}
+			}
+
+			if (bRequirementMet)
+			{
+				// show comment text
+				for (std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin(); it != m_pParentGameObject->m_components.end(); ++it)
+				{
+					if ((*it)->m_name == "useSuccess")
+						(*it)->performAction(leftMouseBtnWasUsed);
+
+					for (std::list<std::string>::iterator itString = m_pListToEnable.begin(); itString != m_pListToEnable.end(); ++itString)
+					{
+						if ((*it)->m_name == *itString)
+							(*it)->m_bEnabled = true;
+					}
+
+					for (std::list<std::string>::iterator itString = m_pListToDisable.begin(); itString != m_pListToDisable.end(); ++itString)
+					{
+						if ((*it)->m_name == *itString)
+							(*it)->m_bEnabled = false;
+					}
+				}
+
+				CInventoryContainer::instance().m_pInventoryItems.remove(pItem);	// remove the item from the inventory
+			}
+			else
+			{
+				// show instruction text
+				for (std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin(); it != m_pParentGameObject->m_components.end(); ++it)
+				{
+					if ((*it)->m_name == "useFailure")
+						if ((*it)->performAction(leftMouseBtnWasUsed))
+							break;
+				}
+			}
+		}
+	}
+	else    // If the right mouse button was used, show the description text
+	{
+		for (std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin(); it != m_pParentGameObject->m_components.end(); ++it)
+		{
+			if (!leftMouseBtnWasUsed && (*it)->m_name == "description")
+				if (((CTextComponent*)(*it))->performAction(leftMouseBtnWasUsed))
+					break;
+		}
+	}
+
+
+	
+}
+
 // ---------- CTextComponent ---------------------------------------------------------------------------------------------------------------
 void CTextComponent::update(sf::RenderWindow* pWindow)
 {
-	if (m_bStillPerformingAction)
-	{
-		CManager::instance().m_bInputDisabled = true;	// deactivate additional input
-
-		// In case the player is to far away, move him to the gameobject first
-		sf::Vector2f distanceVector = CManager::instance().m_pActiveScene->m_player->m_v2fPosition - m_pParentGameObject->m_v2fPosition;
-		float distance = sqrt(distanceVector.x * distanceVector.x + distanceVector.y * distanceVector.y);
-		if (distance > 10)
-			CManager::instance().m_pActiveScene->m_playerMoveToTarget->m_v2fPosition = m_pParentGameObject->m_v2fPosition;
-		else
-		{
-			CManager::instance().m_pActiveScene->m_player->m_textComponent->showText(m_text.getString(), m_lifetime, m_text.getFont());	// show the text
-			m_bStillPerformingAction = false;	// tell the component that its action was performed completly
-			CManager::instance().m_bInputDisabled = false;	// activate input again
-		}
-	}
+	
 }
 
 bool CTextComponent::performAction(bool leftMouseBtnWasUsed)
 {
 	/*if (!leftMouseBtnWasUsed)
 	{*/
-		m_bStillPerformingAction = true;
+		CManager::instance().m_pActiveScene->m_player->m_textComponent->showText(m_text.getString(), m_lifetime, m_text.getFont());	// show the text
 		return true;
 	/*}
 	else

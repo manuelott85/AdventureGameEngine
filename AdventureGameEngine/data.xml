@@ -77,22 +77,21 @@
       <sprite load="keyYellow" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0" originY="0" enabled="1"/>
       <text name="description" load="montserratR" lifetime="4">This is a key for a door.</text>
       <text name="pickup" load="montserratR" lifetime="4">This might be usefull.</text>
-      <interaction type="pickup" range="100"/>
+      <interaction type="pickup"/>
     </gameobject>
     
     <gameobject name="door" posX="32" posY="670" scaleX="1" scaleY="1" rotation="0">
       <sprite load="doorClosed" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="0" originY="0" enabled="1"/>
       <sprite load="doorOpen" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="0" originY="0" enabled="0"/>
-      <description load="montserratR" id="1" enabled="1">This door is closed.</description>
-      <description load="montserratR" id="2" enabled="0">This door is open.</description>
-      <triggerZone id="1" range="100" loadScene="indoor"/>
-      <interaction type="combination" useItem="key">
-        <enable type="sprite">doorOpen</enable>
-        <disable type="sprite">doorOpen</disable>
-        <enable type="description">2</enable>
-        <disable type="description">1</disable>
-        <enable type="triggerZone">1</enable>
+      <text name="description" load="montserratR" lifetime="4">This is a door.</text>
+      <text name="useFailure" load="montserratR" lifetime="4">I don't have the key to unlock the door.</text>
+      <text name="useSuccess" load="montserratR" lifetime="4">This door is now open.</text>
+      <interaction type="useWithRequirement" neededGameObject="key" enabled="0">
+        <enable>doorOpen</enable>
+        <disable>doorClosed</disable>
+        <enable>trigger</enable>
       </interaction>
+      <triggerZone name="trigger" height="100" width="100" loadScene="indoor"/>
     </gameobject>
 
     <gameobject name="playerMoveToTarget" posX="1550" posY="850" scaleX="1" scaleY="1" rotation="0">

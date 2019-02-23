@@ -246,6 +246,7 @@ void CManager::createSpriteComponentFromXML(rapidxml::xml_node<>* pNode, CGameOb
 
 		std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the asset to load
 		pSpriteComp->m_pAsset = (CSpriteAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
+		pSpriteComp->m_name = assetNameToLoad;	// read the name from XML
 
 		processBasicData(pNode, pSpriteComp);	// load basic data from XML
 	}
@@ -263,6 +264,7 @@ void CManager::createAnimationComponentFromXML(rapidxml::xml_node<>* pNode, CGam
 
 		std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the asset to load
 		pAnimationComp->m_pAsset = (CSpriteMapAnimationAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
+		pAnimationComp->m_name = assetNameToLoad;	// read the name from XML
 
 		processBasicData(pNode, pAnimationComp);	// load basic data from XML
 
@@ -396,7 +398,17 @@ void CManager::createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObje
 
 		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
 		pComponent->m_type = CRapidXMLAdditions::getAttributeValue(pNode, "type");	// read the name from XML
+		pComponent->m_neededGameObject = CRapidXMLAdditions::getAttributeValue(pNode, "neededGameObject");	// read the name from XML
 		pGameObject->m_interactionComponent = pComponent;	// store the interaction component for quick access
+
+		// fill the list of objects to enable and disable
+		for (rapidxml::xml_node<>* pNodeSubComponent = pNode->first_node(); pNodeSubComponent != NULL; pNodeSubComponent = pNodeSubComponent->next_sibling())
+		{
+			if (strcmp(pNodeSubComponent->name(), "enable") == 0)
+				pComponent->m_pListToEnable.push_back(pNodeSubComponent->value());
+			if (strcmp(pNodeSubComponent->name(), "disable") == 0)
+				pComponent->m_pListToDisable.push_back(pNodeSubComponent->value());
+		}
 	}
 }
 
