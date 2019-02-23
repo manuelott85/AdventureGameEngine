@@ -170,6 +170,7 @@ void CCursorComponent::switchAppearance(eCursorSprite cursorToShow)
 // ---------- CMoveToTarget ---------------------------------------------------------------------------------------------------------------
 void CMoveToTarget::update(sf::RenderWindow* pWindow)
 {
+	CGameObject* temp = CManager::instance().m_pActiveScene->m_player;
 	// if the player is not at the same position than this object,
 	// move it in that direction
 	if (m_objectToMove->m_v2fPosition != m_pParentGameObject->m_v2fPosition)
@@ -433,7 +434,9 @@ void CInteractionComponent::performTask(bool leftMouseBtnWasUsed)
 				if ((*itScenes)->m_name == *m_pListToEnable.begin())
 				{
 					CScene* tempScene = *itScenes;
-					CManager::instance().m_pActiveScene = (*itScenes);	// load desired scene
+					CManager::instance().m_pSceneToLoad = (*itScenes);	// tell the manager to load the scene with the beginning of the next frame
+																		// switching the scene inbetween a single frame will crash the engine
+																		// as there are some for-loops left and their iterators become invalid
 				}
 			}
 		}

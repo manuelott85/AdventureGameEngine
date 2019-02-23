@@ -36,6 +36,7 @@ public:
 	std::list<CAsset*> m_Assets;	// list of all loaded assets in memory
 	std::list<CScene*> m_pScenes;	// list of all loaded scenes
 	CScene* m_pActiveScene = NULL;	// points to current scene that will be drawn
+	CScene* m_pSceneToLoad = NULL;	// if this parameter has a valid pointer, the engine will switch the scene with the beginning of the next frame
 	CGameObject* m_pCursor;			// Pointer to the cursor object
 	sf::Clock m_managerClock;		// clock to count the frameDelta
 	float m_deltaTime;				// last frame's delta
@@ -64,7 +65,7 @@ private:
 	void createAnimationComponentFromXML(rapidxml::xml_node<>* pNode, CGameObject* pGameObject);	// create an animation components to a given gameobject
 	void processBasicData(rapidxml::xml_node<>* pNode, CComponent* pComponent);	// read out basic parameter and store them in the component
 	void createCursorComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the cursor components
-	void createMoveToTargetComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the moveToTarget components
+	void createMoveToTargetComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene); // create the moveToTarget components
 	void createAnimationCtrlComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the Animation Controller
 	void createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the interaction components
 	void createTextComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene); // create the text components

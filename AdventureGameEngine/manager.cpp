@@ -41,6 +41,13 @@ void CManager::update(sf::RenderWindow* pWindow)
 	m_deltaTime = m_managerClock.getElapsedTime().asSeconds();
 	m_managerClock.restart();
 
+	// switch Scene if needed
+	if (m_pSceneToLoad != NULL)
+	{
+		m_pActiveScene = m_pSceneToLoad;
+		m_pSceneToLoad = NULL;
+	}
+
 	processFrame(pWindow);
 }
 
@@ -226,7 +233,7 @@ void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pSceneNode, CS
 				createSpriteComponentFromXML(pNodeComponent, pGameObject);	// create the sprite component
 				createAnimationComponentFromXML(pNodeComponent, pGameObject);	// create the animation component
 				createCursorComponent(pNodeComponent, pGameObject);	// create the cursor component
-				createMoveToTargetComponent(pNodeComponent, pGameObject);	// create the moveToTarget component
+				createMoveToTargetComponent(pNodeComponent, pGameObject, pScene);	// create the moveToTarget component
 				createAnimationCtrlComponent(pNodeComponent, pGameObject);	// create the Animation Controller
 				createInteractionComponent(pNodeComponent, pGameObject);	// create the interaction component
 				createTextComponent(pNodeComponent, pGameObject, pScene);	// create the description component
@@ -353,7 +360,7 @@ void CManager::createCursorComponent(rapidxml::xml_node<>* pNode, CGameObject* p
 }
 
 // create the moveToTarget components
-void CManager::createMoveToTargetComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject)
+void CManager::createMoveToTargetComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene)
 {
 	// e.g. <moveToTarget gameobject="player0"/>
 	if (strcmp(pNode->name(), "moveToTarget") == 0)
@@ -363,7 +370,7 @@ void CManager::createMoveToTargetComponent(rapidxml::xml_node<>* pNode, CGameObj
 		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
 
 		// Store object reference
-		for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_GameObjects.begin(); it != m_pActiveScene->m_GameObjects.end(); ++it)
+		for (std::list<CGameObject*>::iterator it = pScene->m_GameObjects.begin(); it != pScene->m_GameObjects.end(); ++it)
 		{
 			char* temp = CRapidXMLAdditions::getAttributeValue(pNode, "gameobject");
 			if ((*it)->getName() == temp)
