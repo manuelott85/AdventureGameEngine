@@ -6,6 +6,9 @@
 
 void CGameObject::update(sf::RenderWindow* pWindow)
 {
+	if (!m_bEnabled)
+		return;
+
 	// for each component
 	for (std::list<CComponent*>::iterator it = m_components.begin(); it != m_components.end(); ++it)
 	{
@@ -484,6 +487,13 @@ void CTextbox::update(sf::RenderWindow* pWindow)
 	{
 		CTextbox* temp = this;
 		m_bEnabled = false;
+
+		for (std::list<CSequence*>::iterator it = CManager::instance().m_pActiveScene->m_listSequences.begin(); it != CManager::instance().m_pActiveScene->m_listSequences.end(); ++it)
+		{
+			if ((*it)->m_bEnabled)
+				(*it)->m_pActions.pop_front();
+		}
+
 		return;
 	}
 

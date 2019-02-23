@@ -56,16 +56,15 @@ void CManager::processFrame(sf::RenderWindow* pWindow)
 {
 	// loop through the array of gameobjects
 	for (std::list<CGameObject*>::iterator it = m_pActiveScene->m_GameObjects.begin(); it != m_pActiveScene->m_GameObjects.end(); ++it)
-	{
-		if ((*it)->m_bEnabled)
-			(*it)->update(pWindow);	// call their update function
-	}
+		(*it)->update(pWindow);	// call their update function
 
 	// late update for each late component
 	for (std::list<CComponent*>::iterator it = m_pActiveScene->m_ComponentsDrawLate.begin(); it != m_pActiveScene->m_ComponentsDrawLate.end(); ++it)
-	{
 		(*it)->update(pWindow);	// call its update function
-	}
+
+	// check if there is a sequence to play
+	for (std::list<CSequence*>::iterator it = m_pActiveScene->m_listSequences.begin(); it != m_pActiveScene->m_listSequences.end(); ++it)
+		(*it)->update(pWindow);
 }
 
 // return a pointer to a loaded asset by its name
@@ -236,7 +235,10 @@ void CManager::createEverySequenceFromXML(rapidxml::xml_node<>* pNode, CScene* p
 				pAction->m_moveToVector = { x,y };
 
 				// assign the font
-				pAction->m_font;
+				std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNodeAction, "load");	// get the name of the asset to load
+				CFontAsset* m_pAsset = (CFontAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
+				if (m_pAsset)
+					pAction->m_font = &m_pAsset->m_font;
 				
 				// assign the target object that should perform the action
 				const char* targetName = CRapidXMLAdditions::getAttributeValue(pNodeAction, "object");

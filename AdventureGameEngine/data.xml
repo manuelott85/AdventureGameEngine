@@ -70,7 +70,7 @@
       <animation load="moveRight" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0"/>
       <animation load="moveRight" posX="-80" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0" mirrorX="1"/>
       <animationController idleRightIndex="0" idleLeftIndex="1" moveRightIndex="4" moveLeftIndex="5" moveUpIndex="2" moveDownIndex="3"/>
-      <textbox posX="-180" posY="-90" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1"/>
+      <textbox posX="-180" posY="-90" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
     </gameobject>
 
     <gameobject name="girl" posX="1630" posY="710" scaleX="1" scaleY="1" rotation="0">
@@ -116,7 +116,7 @@
     </gameobject>
 
     <sequence name="intro" enabled="1">
-      <move object="player" posX="100" posY="100"/>
+      <move object="player" posX="1000" posY="800"/>
       <say object="girl" load="montserratR" lifetime="4">Thank you for comming by!</say>
       <say object="player" load="montserratR" lifetime="4">Phew... Hi, I am Indy.</say>
       <say object="player" load="montserratR" lifetime="4">An Indie-Developer, and I am going to walk you through the features of this Engine</say>
