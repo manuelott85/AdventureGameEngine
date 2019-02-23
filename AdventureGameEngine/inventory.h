@@ -4,6 +4,8 @@
 #include <list>
 #include <SFML/Graphics.hpp>
 
+class CInventoryItem;
+
 // ----------------------------------------------------------------------------
 
 // This is the container for every inventory item and functions to manipulate and use them

@@ -227,7 +227,7 @@ void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pSceneNode, CS
 				createMoveToTargetComponent(pNodeComponent, pGameObject);	// create the moveToTarget component
 				createAnimationCtrlComponent(pNodeComponent, pGameObject);	// create the Animation Controller
 				createInteractionComponent(pNodeComponent, pGameObject);	// create the interaction component
-				createDescriptionComponent(pNodeComponent, pGameObject, pScene);	// create the description component
+				createTextComponent(pNodeComponent, pGameObject, pScene);	// create the description component
 				createTextboxComponent(pNodeComponent, pGameObject, pScene);	// create the textbox component
 			}
 		}
@@ -395,28 +395,30 @@ void CManager::createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObje
 		CManager::instance().m_pActiveScene->m_Interactables.push_back(pGameObject);	// add it to the manager's list of interactive gameobjects of that given scene
 
 		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
+		pComponent->m_type = CRapidXMLAdditions::getAttributeValue(pNode, "type");	// read the name from XML
 		pGameObject->m_interactionComponent = pComponent;	// store the interaction component for quick access
 	}
 }
 
-// create the description components
-void CManager::createDescriptionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene)
+// create the text components
+void CManager::createTextComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene)
 {
-	// e.g. <description load="montserratR" posX="-180" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1">This is a key for a door.</description>
-	if (strcmp(pNode->name(), "description") == 0)
+	// e.g. <text name="description" load="montserratR" posX="-180" posY="0" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1">This is a key for a door.</text>
+	if (strcmp(pNode->name(), "text") == 0)
 	{
-		CDescriptionComponent* pComponent = new CDescriptionComponent();	// create the component itself
+		CTextComponent* pComponent = new CTextComponent();	// create the component itself
 		pGameObject->m_components.push_back(pComponent);	// add it to the gameobject
 		pScene->m_ComponentsDrawLate.push_back(pComponent);	// add the component to the late update / late drawCall function
 		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
 
-		pComponent->m_descriptionText.setString(pNode->value());	// read text from XML and store it in the gameobject
+		pComponent->m_text.setString(pNode->value());	// read text from XML and store it in the gameobject
 		pComponent->m_lifetime = (float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "lifetime"));	// read the lifetime from XML
+		pComponent->m_name = CRapidXMLAdditions::getAttributeValue(pNode, "name");	// read the name from XML
 
 		std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the asset to load
 		CFontAsset* m_pAsset = (CFontAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
 		if (m_pAsset)
-			pComponent->m_descriptionText.setFont(m_pAsset->m_font);
+			pComponent->m_text.setFont(m_pAsset->m_font);
 
 		pComponent->m_drawLate = true;
 		processBasicData(pNode, pComponent);	// load basic data from XML

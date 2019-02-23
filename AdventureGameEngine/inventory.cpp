@@ -2,6 +2,11 @@
 
 // ---------- CInventoryContainer ---------------------------------------------------------------------------------------------------------------
 
+CInventoryContainer::CInventoryContainer()
+{
+
+}
+
 CInventoryContainer& CInventoryContainer::instance()
 {
 	static CInventoryContainer* instance = new CInventoryContainer();

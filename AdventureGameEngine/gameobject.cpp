@@ -317,8 +317,24 @@ bool CInteractionComponent::processMouseButton(sf::Vector2f mousePos, bool leftM
 	{
 		for (std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin(); it != m_pParentGameObject->m_components.end(); ++it)
 		{
-			if (((CDescriptionComponent*)(*it))->performAction(leftMouseBtnWasUsed))
-				break;
+			if (leftMouseBtnWasUsed)
+			{
+				if (m_type == "pickup")
+				{
+					if ((*it)->m_name == "pickup")
+					{
+						if (((CTextComponent*)(*it))->performAction(leftMouseBtnWasUsed))
+							break;
+					}
+				}
+			}
+
+			// If the right mouse button was used, look for the first description text component
+			if (!leftMouseBtnWasUsed && (*it)->m_name == "description")
+			{
+				if (((CTextComponent*)(*it))->performAction(leftMouseBtnWasUsed))
+					break;
+			}
 		}
 		return true;
 	}
@@ -326,8 +342,8 @@ bool CInteractionComponent::processMouseButton(sf::Vector2f mousePos, bool leftM
 		return false;
 }
 
-// ---------- CDescriptionComponent ---------------------------------------------------------------------------------------------------------------
-void CDescriptionComponent::update(sf::RenderWindow* pWindow)
+// ---------- CTextComponent ---------------------------------------------------------------------------------------------------------------
+void CTextComponent::update(sf::RenderWindow* pWindow)
 {
 	if (m_bStillPerformingAction)
 	{
@@ -340,22 +356,22 @@ void CDescriptionComponent::update(sf::RenderWindow* pWindow)
 			CManager::instance().m_pActiveScene->m_playerMoveToTarget->m_v2fPosition = m_pParentGameObject->m_v2fPosition;
 		else
 		{
-			CManager::instance().m_pActiveScene->m_player->m_textComponent->showText(m_descriptionText.getString(), m_lifetime, m_descriptionText.getFont());	// show the text
+			CManager::instance().m_pActiveScene->m_player->m_textComponent->showText(m_text.getString(), m_lifetime, m_text.getFont());	// show the text
 			m_bStillPerformingAction = false;	// tell the component that its action was performed completly
 			CManager::instance().m_bInputDisabled = false;	// activate input again
 		}
 	}
 }
 
-bool CDescriptionComponent::performAction(bool leftMouseBtnWasUsed)
+bool CTextComponent::performAction(bool leftMouseBtnWasUsed)
 {
-	if (!leftMouseBtnWasUsed)
-	{
+	/*if (!leftMouseBtnWasUsed)
+	{*/
 		m_bStillPerformingAction = true;
 		return true;
-	}
+	/*}
 	else
-		return false;
+		return false;*/
 }
 
 // ---------- CTextbox ---------------------------------------------------------------------------------------------------------------
@@ -374,20 +390,20 @@ void CTextbox::update(sf::RenderWindow* pWindow)
 	}
 
 	// Process transform
-	m_descriptionText.setOrigin(m_v2fOrigin);
-	m_descriptionText.setPosition(m_pParentGameObject->m_v2fPosition + m_v2fPosition);
-	m_descriptionText.setScale(sf::Vector2f(m_pParentGameObject->m_v2fScale.x * m_v2fScale.x, m_pParentGameObject->m_v2fScale.y * m_v2fScale.y));
-	m_descriptionText.setRotation(m_pParentGameObject->m_nRotation + m_nRotation);
+	m_text.setOrigin(m_v2fOrigin);
+	m_text.setPosition(m_pParentGameObject->m_v2fPosition + m_v2fPosition);
+	m_text.setScale(sf::Vector2f(m_pParentGameObject->m_v2fScale.x * m_v2fScale.x, m_pParentGameObject->m_v2fScale.y * m_v2fScale.y));
+	m_text.setRotation(m_pParentGameObject->m_nRotation + m_nRotation);
 
-	pWindow->draw(m_descriptionText);	// draw the text
+	pWindow->draw(m_text);	// draw the text
 }
 
 void CTextbox::showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset)
 {
 	CTextbox* temp = this;
-	m_descriptionText.setString(text);	// assign text to say
+	m_text.setString(text);	// assign text to say
 	m_lifetime = lifetimeInSec;	// assign lifetime
-	m_descriptionText.setFont(*pFontAsset);	// assign the font
+	m_text.setFont(*pFontAsset);	// assign the font
 
 	timer.restart();
 	m_bEnabled = true;	// activate the component

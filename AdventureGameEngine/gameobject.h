@@ -55,6 +55,7 @@ public:
 class CComponent : public CInteractionInterface
 {
 public:
+	std::string m_name = "";
 	sf::Vector2f m_v2fPosition = { 0,0 };
 	sf::Vector2f m_v2fScale = { 1,1 };
 	sf::Vector2f m_v2fOrigin = { 0,0 };
@@ -148,6 +149,10 @@ class CInteractionComponent : public CComponent
 {
 private:
 	sf::FloatRect m_boundingBox;	// collision dimension of current asset
+
+public:
+	std::string m_type = "";		// story the type of interaction performed with the left mouse button
+
 public:
 	virtual void update(sf::RenderWindow* pWindow);
 	bool checkCollisionPoint(sf::Vector2f point);	// Check if a given point is within the assets limits
@@ -157,13 +162,13 @@ public:
 
 // ----------------------------------------------------------------------------
 
-class CDescriptionComponent : public CComponent
+class CTextComponent : public CComponent
 {
 private:
 	bool m_bStillPerformingAction = false;	// prevent additional calls and perform the full action in a sequence
 
 public:
-	sf::Text m_descriptionText;	// the text object itself
+	sf::Text m_text;	// the text object itself
 	float m_lifetime = 2;
 
 public:
@@ -179,7 +184,7 @@ private:
 	sf::Clock timer;	// to measure the lifetime of the text
 
 public:
-	sf::Text m_descriptionText;	// the text object itself
+	sf::Text m_text;	// the text object itself
 	float m_lifetime = 2;
 
 public:
