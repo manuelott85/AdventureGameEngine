@@ -9,6 +9,7 @@
 #include "rapidxml.hpp"
 #include "asset.h"
 #include "gameobject.h"
+#include "sequence.h"
 
 class CAsset;
 class CGameObject;
@@ -23,6 +24,7 @@ public:
 	std::list<CGameObject*> m_GameObjects;	// list of current gameobjects
 	std::list<CComponent*> m_ComponentsDrawLate; // list of components that should be drawn after the regular drawcalls (e.g. Text)
 	std::list<CGameObject*> m_Interactables;	// list of current gameobjects that do have a collision enabled
+	std::list<CSequence*> m_listSequences;	// list of all sequences of that scene
 	CGameObject* m_player = NULL;	// a reference to the player's gameobject
 	CGameObject* m_playerMoveToTarget = NULL;	// a reference to the player's moving gameobject
 };
@@ -60,6 +62,7 @@ private:
 	void loadFont(rapidxml::xml_node<>* pNode);	// Create and initialize a font asset
 
 	void createEverySceneFromXML(rapidxml::xml_node<>* pRootNode);	// create all scenes and store them
+	void createEverySequenceFromXML(rapidxml::xml_node<>* pNode, CScene* pScene);	// create all sequences and store them
 	void createEveryGameObjectFromXML(rapidxml::xml_node<>* pNode, CScene* pScene);	// create gameobjects of a scene according to the XML
 	void createSpriteComponentFromXML(rapidxml::xml_node<>* pNode, CGameObject* pGameObject);	// create a sprite components to a given gameobject
 	void createAnimationComponentFromXML(rapidxml::xml_node<>* pNode, CGameObject* pGameObject);	// create an animation components to a given gameobject

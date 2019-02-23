@@ -9,6 +9,7 @@
 #include "asset.h"
 #include "gameobject.h"
 #include "inventory.h"
+#include "sequence.h"
 
 CManager::CManager()
 {
@@ -190,6 +191,61 @@ void CManager::createEverySceneFromXML(rapidxml::xml_node<>* pRootNode)
 			pScene->m_name = CRapidXMLAdditions::getAttributeValue(pSceneNode, "name");	// get the name of the asset to load
 
 			createEveryGameObjectFromXML(pSceneNode, pScene);	// create all gameobjects of that scene
+			createEverySequenceFromXML(pSceneNode, pScene);	// create all sequences of that scene
+		}
+	}
+}
+
+// create all sequences and store them
+void CManager::createEverySequenceFromXML(rapidxml::xml_node<>* pNode, CScene* pScene)
+{
+	// Create all the sequences defined in the scene
+	for (rapidxml::xml_node<>* pNodeSequence = pNode->first_node(); pNodeSequence != NULL; pNodeSequence = pNodeSequence->next_sibling())
+	{
+		// e.g. <sequence name="intro" enabled="1">
+		if (strcmp(pNodeSequence->name(), "sequence") == 0)
+		{
+			CSequence* pSequence = new CSequence();
+			pScene->m_listSequences.push_back(pSequence);
+
+			pSequence->m_name = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the sequence
+
+			// Store enabled
+			char* objectEnabled = CRapidXMLAdditions::getAttributeValue(pNodeSequence, "enabled");
+			if (objectEnabled != "")	// set this value only if it is actually specified in the XML
+				pSequence->m_bEnabled = (bool)atoi(objectEnabled);
+
+			// Create all actions of that sequence
+			for (rapidxml::xml_node<>* pNodeAction = pNodeSequence->first_node(); pNodeAction != NULL; pNodeAction = pNodeAction->next_sibling())
+			{
+				CSequenceAction* pAction = new CSequenceAction();	// create the action
+				pSequence->m_pActions.push_back(pAction);	// add it to the list of actions
+
+				// Assign type
+				if (strcmp(pNodeAction->name(), "move") == 0)
+					pAction->m_type = eActionType::move;
+				if (strcmp(pNodeAction->name(), "say") == 0)
+					pAction->m_type = eActionType::say;
+
+				pAction->m_text = pNodeAction->value();	// assign the text
+				pAction->m_lifetime = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "lifetime"));	// assign the lifetime
+
+				// assign the move to position
+				float x = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "posX"));	// assign the x value
+				float y = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "posY"));	// assign the y value
+				pAction->m_moveToVector = { x,y };
+
+				// assign the font
+				pAction->m_font;
+				
+				// assign the target object that should perform the action
+				const char* targetName = CRapidXMLAdditions::getAttributeValue(pNodeAction, "object");
+				for (std::list<CGameObject*>::iterator it = pScene->m_GameObjects.begin(); it != pScene->m_GameObjects.end(); ++it)
+				{
+					if (strcmp(((*it)->m_name).c_str(), targetName) == 0)	// In case we have found the corret object
+						pAction->m_targetObject = *it;	// assign the object
+				}
+			}
 		}
 	}
 }
