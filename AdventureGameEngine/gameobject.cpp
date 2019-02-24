@@ -493,23 +493,25 @@ void CTextbox::update(sf::RenderWindow* pWindow)
 	if (!m_bEnabled)
 		return;
 
-	// Disable the component after lifetime
-	if (timer.getElapsedTime().asSeconds() > m_lifetime)
+	if (m_bIsPrimary)	// only the primary (white) text should count
 	{
-		CTextbox* temp = this;
-		m_bEnabled = false;
-
-		// tell the current going sequence (if there is one), that one action has been accomblished
-		if (m_bIsPrimary)	// only the primary (white) text should count
+		// Disable the component after lifetime
+		if (timer.getElapsedTime().asSeconds() > m_lifetime)
 		{
+			CTextbox* temp = this;
+			for (std::list<CTextbox*>::iterator it = m_pParentGameObject->m_pTextComponents.begin(); it != m_pParentGameObject->m_pTextComponents.end(); ++it)
+				(*it)->m_bEnabled = false;
+
+			// tell the current going sequence (if there is one), that one action has been accomblished
+
 			for (std::list<CSequence*>::iterator it = CManager::instance().m_pActiveScene->m_listSequences.begin(); it != CManager::instance().m_pActiveScene->m_listSequences.end(); ++it)
 			{
 				if ((*it)->m_bEnabled)
 					(*it)->m_pActions.pop_front();
 			}
-		}
 
-		return;
+			return;
+		}
 	}
 
 	// Process transform
