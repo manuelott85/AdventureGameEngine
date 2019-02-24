@@ -82,7 +82,7 @@
       <text name="description" load="montserratB" lifetime="4" charsize="25">This is the entrance to my bar.</text>
       <text name="useFailure" load="montserratB" lifetime="4" charsize="25">I don't have the key to unlock the door.</text>
       <text name="useSuccess" load="montserratB" lifetime="4" charsize="25">This door is now open.</text>
-      <text name="use" load="montserratB" lifetime="4" charsize="25">Closed...</text>
+      <text name="use" load="montserratB" lifetime="4" charsize="25">Where are my keys? Doh... I left them at the girls' place.</text>
       <interaction name="tryDoor" type="use" enabled="1">
         <enable>indoor</enable>
       </interaction>
@@ -121,25 +121,44 @@
       <sprite load="cursorLoad" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="75" originY="53" enabled="0"/>
       <cursor/>
     </gameobject>
-    
-    <!--
-    <sequence name="intro" enabled="1">
-      <move object="player" posX="1600" posY="850"/>
-      <say object="girl" load="montserratB" lifetime="4" charsize="25" color="magenta" shadow="black">Please, come back soon!  </say>
-      <say object="player" load="montserratB" lifetime="4" charsize="25">Phew... Hi, I am Indy.</say>
-      <say object="player" load="montserratB" lifetime="4" charsize="25">An Indie-Developer, and I am going to walk you through the features of this Engine.</say>
-      <say object="player" load="montserratB" lifetime="4" charsize="25">Right now, you are in a sequence and therefore cannot interact with the game.</say>
-      <say object="player" load="montserratB" lifetime="4" charsize="25">This is indicated by the hourglass at your cursor.</say>
-      <move object="player" posX="1200" posY="900"/>
-      <say object="player" load="montserratB" lifetime="4" charsize="25">After this sequence, the cursor will either be an arrow indicating that you can go there...</say>
-      <say object="player" load="montserratB" lifetime="4" charsize="25">Or it will be a magnifying glass telling that you can interact with something.</say>
-      <say object="player" load="montserratB" lifetime="4" charsize="25">Left clicking will perform a default action like picking up or moveing to.</say>
-      <say object="player" load="montserratB" lifetime="4" charsize="25">I will tell you more about an object, if you click it with the right mouse button.</say>
-      <move object="player" posX="850" posY="750"/>
-      <say object="player" load="montserratB" lifetime="4" charsize="25">The girls are fine. So you and I should check out the bar.</say>
-      <say object="player" load="montserratB" lifetime="4" charsize="25">The bar is at the left end of this scene.</say>
-    </sequence>
-    -->
+
+    <gameobject name="intro" enabled="1">
+      <sequence>
+        <move object="player" posX="1600" posY="850"/>
+        <say object="girl" load="montserratB" lifetime="4" charsize="25" color="magenta" shadow="black">Please, come back soon!  </say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">Phew... Hi, I am Indy.</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">An Indie-Developer, and I am going to walk you through the features of this Engine.</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">Right now, you are in a sequence and therefore cannot interact with the game.</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">This is indicated by the hourglass at your cursor.</say>
+        <move object="player" posX="1200" posY="900"/>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">After this sequence, the cursor will either be an arrow indicating that you can go there...</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">Or it will be a magnifying glass telling that you can interact with something.</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">Left clicking will perform a default action like picking up or moveing to.</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">I will tell you more about an object, if you click it with the right mouse button.</say>
+        <move object="player" posX="850" posY="750"/>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">The girls are fine. So you and I should check out the bar.</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">The bar is at the left end of this scene.</say>
+      </sequence>
+    </gameobject>
+
+    <gameobject name="intro" enabled="1">
+      <sequence>
+        <move object="player" posX="1600" posY="850"/>
+        <say object="girl" load="montserratB" lifetime="4" charsize="25" color="magenta" shadow="black">Please, come back soon!  </say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">Phew... Hi, I am Indy.</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">An Indie-Developer, and I am going to walk you through the features of this Engine.</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">Right now, you are in a sequence and therefore cannot interact with the game.</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">This is indicated by the hourglass at your cursor.</say>
+        <move object="player" posX="1200" posY="900"/>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">After this sequence, the cursor will either be an arrow indicating that you can go there...</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">Or it will be a magnifying glass telling that you can interact with something.</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">Left clicking will perform a default action like picking up or moveing to.</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">I will tell you more about an object, if you click it with the right mouse button.</say>
+        <move object="player" posX="850" posY="750"/>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">The girls are fine. So you and I should check out the bar.</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">The bar is at the left end of this scene.</say>
+      </sequence>
+    </gameobject>
 
   </scene>
 

@@ -9,12 +9,12 @@
 #include "rapidxml.hpp"
 #include "asset.h"
 #include "gameobject.h"
-#include "sequence.h"
 
 class CAsset;
 class CGameObject;
 class CComponent;
 struct sColorReturn;
+class CSequenceComponent;
 
 // ----------------------------------------------------------------------------
 
@@ -25,7 +25,7 @@ public:
 	std::list<CGameObject*> m_GameObjects;	// list of current gameobjects
 	std::list<CComponent*> m_ComponentsDrawLate; // list of components that should be drawn after the regular drawcalls (e.g. Text)
 	std::list<CGameObject*> m_Interactables;	// list of current gameobjects that do have a collision enabled
-	std::list<CSequence*> m_listSequences;	// list of all sequences of that scene
+	std::list<CSequenceComponent*> m_listSequences;	// list of all sequences of that scene
 	CGameObject* m_player = NULL;	// a reference to the player's gameobject
 	CGameObject* m_playerMoveToTarget = NULL;	// a reference to the player's moving gameobject
 };
@@ -74,6 +74,7 @@ private:
 	void createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the interaction components
 	void createTextComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene); // create the text components
 	void createTextboxComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene); // create the textbox components
+	void createSequenceComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene); // create the sequence components
 
 	void setReferences();	// set all available references
 	sColorReturn translateStringToColor(std::string string);

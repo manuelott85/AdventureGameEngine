@@ -29,7 +29,6 @@
     <ClInclude Include="rapidxml_iterators.hpp" />
     <ClInclude Include="rapidxml_print.hpp" />
     <ClInclude Include="rapidxml_utils.hpp" />
-    <ClInclude Include="sequence.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="asset.cpp" />
@@ -38,7 +37,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="rapidXMLAdditions.cpp" />
-    <ClCompile Include="sequence.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="data.xml">
