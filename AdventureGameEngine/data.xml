@@ -63,35 +63,23 @@
       </navigationmesh>
     </gameobject>
 
-    <gameobject name="player" posX="1630" posY="710" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="idleFromRight" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
-      <sprite load="idleFromLeft" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
-      <animation load="moveUp" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
-      <animation load="moveDown" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
-      <animation load="moveRight" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0"/>
-      <animation load="moveRight" posX="-80" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0" mirrorX="1"/>
-      <animationController idleRightIndex="0" idleLeftIndex="1" moveRightIndex="4" moveLeftIndex="5" moveUpIndex="2" moveDownIndex="3"/>
-      <textbox posX="0" posY="-90" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
-      <textbox posX="-2" posY="-88" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
-    </gameobject>
-
     <gameobject name="girl" posX="1630" posY="710" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="keyBlue" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0" originY="0" enabled="1"/>
+      <!--<sprite load="keyBlue" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0" originY="0" enabled="1"/>-->
       <textbox posX="0" posY="-90" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
       <textbox posX="-2" posY="-88" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
     </gameobject>
-
-    <gameobject name="key" posX="1330" posY="780" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="keyYellow" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0" originY="0" enabled="1"/>
+    
+    <gameobject name="key" posX="1680" posY="800" scaleX="1" scaleY="1" rotation="0">
+      <sprite load="keyYellow" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="28" originY="64" enabled="1"/>
       <text name="description" load="montserratB" lifetime="4" charsize="25" color="black" shadow="white">This is a key for a door.</text>
       <text name="pickup" load="montserratB" lifetime="4" charsize="25">This might be usefull.</text>
       <interaction type="pickup" enabled="1"/>
     </gameobject>
 
-    <gameobject name="door" posX="32" posY="670" scaleX="1" scaleY="1" rotation="0">
-      <sprite load="doorClosed" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="0" originY="0" enabled="1"/>
-      <sprite load="doorOpen" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="0" originY="0" enabled="0"/>
-      <text name="description" load="montserratB" lifetime="4" charsize="25">This is a door.</text>
+    <gameobject name="door" posX="110" posY="820" scaleX="1" scaleY="1" rotation="0">
+      <sprite load="doorClosed" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="48" originY="104" enabled="1"/>
+      <sprite load="doorOpen" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="48" originY="104" enabled="0"/>
+      <text name="description" load="montserratB" lifetime="4" charsize="25">This is the entrance to my bar.</text>
       <text name="useFailure" load="montserratB" lifetime="4" charsize="25">I don't have the key to unlock the door.</text>
       <text name="useSuccess" load="montserratB" lifetime="4" charsize="25">This door is now open.</text>
       <interaction name="openDoor" type="useWithRequirement" neededGameObject="key" enabled="1">
@@ -105,9 +93,21 @@
       </interaction>
     </gameobject>
 
+    <gameobject name="player" posX="1630" posY="710" scaleX="1" scaleY="1" rotation="0">
+      <sprite load="idleFromRight" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
+      <sprite load="idleFromLeft" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
+      <animation load="moveUp" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
+      <animation load="moveDown" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
+      <animation load="moveRight" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0"/>
+      <animation load="moveRight" posX="-80" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0" mirrorX="1"/>
+      <animationController idleRightIndex="0" idleLeftIndex="1" moveRightIndex="4" moveLeftIndex="5" moveUpIndex="2" moveDownIndex="3"/>
+      <textbox posX="0" posY="-90" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
+      <textbox posX="-2" posY="-88" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
+    </gameobject>
+
     <gameobject name="playerMoveToTarget" posX="1550" posY="850" scaleX="1" scaleY="1" rotation="0">
       <moveToTarget gameobject="player" movespeed="200"/>
-      <sprite load="keyRed" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0" originY="0" enabled="1"/>
+      <!--<sprite load="keyRed" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0" originY="0" enabled="1"/>-->
     </gameobject>
 
     <!-- #### CURSOR ####-->
@@ -118,6 +118,7 @@
       <cursor/>
     </gameobject>
     
+    <!--
     <sequence name="intro" enabled="1">
       <move object="player" posX="1600" posY="850"/>
       <say object="girl" load="montserratB" lifetime="4" charsize="25" color="magenta" shadow="black">Please, come back soon!  </say>
@@ -134,6 +135,7 @@
       <say object="player" load="montserratB" lifetime="4" charsize="25">The girls are fine. So you and I should check out the bar.</say>
       <say object="player" load="montserratB" lifetime="4" charsize="25">The bar is at the left end of this scene.</say>
     </sequence>
+    -->
 
   </scene>
 

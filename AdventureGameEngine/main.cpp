@@ -32,7 +32,7 @@ int main()
 		window.setTitle(pTitle->value());
 
 	CManager::instance().start(pRootNode);	// initiate the manager
-	//window.setMouseCursorVisible(false);	// hide the windows mouse cursor
+	window.setMouseCursorVisible(false);	// hide the windows mouse cursor
 
 	// main Game loop
 	while (window.isOpen())
