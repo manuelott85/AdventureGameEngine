@@ -70,7 +70,7 @@ public:
 	int	m_nSteps;
 	int	m_nTime;
 	int	m_nStepIndex;
-	int	m_nStepIndexFirstRow;
+	int	m_nStepIndexFirstRow = 0;
 	sf::Clock m_clockTiming;
 	CAnimationComponent* m_pParentGameObject = NULL;
 

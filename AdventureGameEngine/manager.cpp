@@ -241,7 +241,7 @@ void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pSceneNode, CS
 				createCursorComponent(pNodeComponent, pGameObject);	// create the cursor component
 				createMoveToTargetComponent(pNodeComponent, pGameObject, pScene);	// create the moveToTarget component
 				createAnimationCtrlComponent(pNodeComponent, pGameObject);	// create the Animation Controller
-				createInteractionComponent(pNodeComponent, pGameObject);	// create the interaction component
+				createInteractionComponent(pNodeComponent, pGameObject, pScene);	// create the interaction component
 				createTextComponent(pNodeComponent, pGameObject, pScene);	// create the description component
 				createTextboxComponent(pNodeComponent, pGameObject, pScene);	// create the textbox component
 				createSequenceComponent(pNodeComponent, pGameObject, pScene);	// create the sequence component
@@ -410,14 +410,14 @@ void CManager::createAnimationCtrlComponent(rapidxml::xml_node<>* pNode, CGameOb
 }
 
 // create the interaction components
-void CManager::createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject)
+void CManager::createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene)
 {
 	// e.g. <interaction type="pickup" enabled="1"/>
 	if (strcmp(pNode->name(), "interaction") == 0)
 	{
 		CInteractionComponent* pComponent = new CInteractionComponent();	// create the component itself
 		pGameObject->m_components.push_back(pComponent);	// add it to the gameobject
-		CManager::instance().m_pActiveScene->m_Interactables.push_back(pGameObject);	// add it to the manager's list of interactive gameobjects of that given scene
+		pScene->m_Interactables.push_back(pGameObject);	// add it to the manager's list of interactive gameobjects of that given scene
 
 		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
 		pComponent->m_type = CRapidXMLAdditions::getAttributeValue(pNode, "type");	// read the name from XML

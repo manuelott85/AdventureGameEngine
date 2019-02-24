@@ -26,7 +26,7 @@ rapidxml::xml_node<>* CRapidXMLAdditions::findChildNodeWithID(rapidxml::xml_node
 	{
 		if (strcmp(pChild->name(), szName) == 0)
 		{
-			char buffer[65];
+			//char buffer[65];
 			rapidxml::xml_attribute<>* pAttr = findAttribute(pChild, "id");
 			if (atoi(pAttr->value()) == id)
 				return pChild;

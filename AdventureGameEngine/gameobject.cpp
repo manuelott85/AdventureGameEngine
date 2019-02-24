@@ -480,12 +480,15 @@ void CInteractionComponent::performTask(bool leftMouseBtnWasUsed)
 		{
 			for (std::list<CScene*>::iterator itScenes = CManager::instance().m_pScenes.begin(); itScenes != CManager::instance().m_pScenes.end(); ++itScenes)
 			{
-				if ((*itScenes)->m_name == *m_pComponentsToEnable.begin())
+				if (m_pComponentsToEnable.size() > 0)	// Crash Fix
 				{
-					CScene* tempScene = *itScenes;
-					CManager::instance().m_pSceneToLoad = (*itScenes);	// tell the manager to load the scene with the beginning of the next frame
-																		// switching the scene inbetween a single frame will crash the engine
-																		// as there are some for-loops left and their iterators become invalid
+					if ((*itScenes)->m_name == *m_pComponentsToEnable.begin())
+					{
+						CScene* tempScene = *itScenes;
+						CManager::instance().m_pSceneToLoad = (*itScenes);	// tell the manager to load the scene with the beginning of the next frame
+																			// switching the scene inbetween a single frame will crash the engine
+																			// as there are some for-loops left and their iterators become invalid
+					}
 				}
 			}
 		}
@@ -542,11 +545,13 @@ void CTextbox::update(sf::RenderWindow* pWindow)
 				(*it)->m_bEnabled = false;
 
 			// tell the current going sequence (if there is one), that one action has been accomblished
-
 			for (std::list<CSequenceComponent*>::iterator it = CManager::instance().m_pActiveScene->m_listSequences.begin(); it != CManager::instance().m_pActiveScene->m_listSequences.end(); ++it)
 			{
-				if ((*it)->m_bEnabled)
-					(*it)->m_pActions.pop_front();
+				if ((*it)->m_pParentGameObject->m_bEnabled)
+				{
+					if((*it)->m_pActions.size() > 0)
+						(*it)->m_pActions.pop_front();
+				}
 			}
 
 			return;
@@ -634,7 +639,7 @@ void CSequenceComponent::update(sf::RenderWindow* pWindow)
 void CSequenceAction::update(sf::RenderWindow* pWindow)
 {
 	// switch on action type
-	switch (m_type) {
+	switch (m_type){
 	case eActionType::move:
 	{
 		float distance = 0;
