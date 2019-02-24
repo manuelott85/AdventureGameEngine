@@ -396,15 +396,30 @@ void CInteractionComponent::performTask(bool leftMouseBtnWasUsed)
 				if ((*it)->m_name == "use")
 					(*it)->performAction(leftMouseBtnWasUsed);
 
-				// switch gameobjects to enabled
-				for (std::list<std::string>::iterator itString = m_pListToEnable.begin(); itString != m_pListToEnable.end(); ++itString)
+				// switch components to enabled
+				for (std::list<std::string>::iterator itString = m_pComponentsToEnable.begin(); itString != m_pComponentsToEnable.end(); ++itString)
 				{
 					if ((*it)->m_name == *itString)
 						(*it)->m_bEnabled = true;
 				}
+				// switch components to disabled
+				for (std::list<std::string>::iterator itString = m_pComponentsToDisable.begin(); itString != m_pComponentsToDisable.end(); ++itString)
+				{
+					if ((*it)->m_name == *itString)
+						(*it)->m_bEnabled = false;
+				}
+			}
 
-				// switch gameobjects to disabled
-				for (std::list<std::string>::iterator itString = m_pListToDisable.begin(); itString != m_pListToDisable.end(); ++itString)
+			for (std::list<CGameObject*>::iterator it = CManager::instance().m_pActiveScene->m_GameObjects.begin(); it != CManager::instance().m_pActiveScene->m_GameObjects.end(); ++it)
+			{
+				// switch game objects to enabled
+				for (std::list<std::string>::iterator itString = m_pGameObjectsToEnable.begin(); itString != m_pGameObjectsToEnable.end(); ++itString)
+				{
+					if ((*it)->m_name == *itString)
+						(*it)->m_bEnabled = true;
+				}
+				// switch components to disabled
+				for (std::list<std::string>::iterator itString = m_pGameObjectsToDisable.begin(); itString != m_pGameObjectsToDisable.end(); ++itString)
 				{
 					if ((*it)->m_name == *itString)
 						(*it)->m_bEnabled = false;
@@ -434,13 +449,13 @@ void CInteractionComponent::performTask(bool leftMouseBtnWasUsed)
 					if ((*it)->m_name == "useSuccess")
 						(*it)->performAction(leftMouseBtnWasUsed);
 
-					for (std::list<std::string>::iterator itString = m_pListToEnable.begin(); itString != m_pListToEnable.end(); ++itString)
+					for (std::list<std::string>::iterator itString = m_pComponentsToEnable.begin(); itString != m_pComponentsToEnable.end(); ++itString)
 					{
 						if ((*it)->m_name == *itString)
 							(*it)->m_bEnabled = true;
 					}
 
-					for (std::list<std::string>::iterator itString = m_pListToDisable.begin(); itString != m_pListToDisable.end(); ++itString)
+					for (std::list<std::string>::iterator itString = m_pComponentsToDisable.begin(); itString != m_pComponentsToDisable.end(); ++itString)
 					{
 						if ((*it)->m_name == *itString)
 							(*it)->m_bEnabled = false;
@@ -465,7 +480,7 @@ void CInteractionComponent::performTask(bool leftMouseBtnWasUsed)
 		{
 			for (std::list<CScene*>::iterator itScenes = CManager::instance().m_pScenes.begin(); itScenes != CManager::instance().m_pScenes.end(); ++itScenes)
 			{
-				if ((*itScenes)->m_name == *m_pListToEnable.begin())
+				if ((*itScenes)->m_name == *m_pComponentsToEnable.begin())
 				{
 					CScene* tempScene = *itScenes;
 					CManager::instance().m_pSceneToLoad = (*itScenes);	// tell the manager to load the scene with the beginning of the next frame
@@ -590,7 +605,7 @@ CSequenceComponent::CSequenceComponent()
 void CSequenceComponent::update(sf::RenderWindow* pWindow)
 {
 	// only process sequences that are enabled
-	if (!m_bEnabled)
+	if (!m_pParentGameObject->m_bEnabled)
 		return;
 
 	CManager::instance().m_bInputDisabled = true;

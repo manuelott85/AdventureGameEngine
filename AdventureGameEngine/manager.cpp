@@ -427,10 +427,14 @@ void CManager::createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObje
 		// fill the list of objects to enable and disable
 		for (rapidxml::xml_node<>* pNodeSubComponent = pNode->first_node(); pNodeSubComponent != NULL; pNodeSubComponent = pNodeSubComponent->next_sibling())
 		{
-			if (strcmp(pNodeSubComponent->name(), "enable") == 0)
-				pComponent->m_pListToEnable.push_back(pNodeSubComponent->value());
-			if (strcmp(pNodeSubComponent->name(), "disable") == 0)
-				pComponent->m_pListToDisable.push_back(pNodeSubComponent->value());
+			if (strcmp(pNodeSubComponent->name(), "enableComponent") == 0)
+				pComponent->m_pComponentsToEnable.push_back(pNodeSubComponent->value());
+			if (strcmp(pNodeSubComponent->name(), "disableComponent") == 0)
+				pComponent->m_pComponentsToDisable.push_back(pNodeSubComponent->value());
+			if (strcmp(pNodeSubComponent->name(), "enableGameObject") == 0)
+				pComponent->m_pGameObjectsToEnable.push_back(pNodeSubComponent->value());
+			if (strcmp(pNodeSubComponent->name(), "disableGameObject") == 0)
+				pComponent->m_pGameObjectsToDisable.push_back(pNodeSubComponent->value());
 		}
 
 		processBasicData(pNode, pComponent);	// load basic data from XML
@@ -490,62 +494,60 @@ void CManager::createTextboxComponent(rapidxml::xml_node<>* pNode, CGameObject* 
 // create the sequence components
 void CManager::createSequenceComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene)
 {
-	//// Create all the sequences defined in the scene
-	//for (rapidxml::xml_node<>* pNodeSequence = pNode->first_node(); pNodeSequence != NULL; pNodeSequence = pNodeSequence->next_sibling())
-	//{
-		// e.g. <sequence>
-		if (strcmp(pNode->name(), "sequence") == 0)
+	// e.g. <sequence>
+	if (strcmp(pNode->name(), "sequence") == 0)
+	{
+		CSequenceComponent* pSequence = new CSequenceComponent();
+		pGameObject->m_components.push_back(pSequence);	// add it to the gameobject
+		pSequence->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
+		pScene->m_listSequences.push_back(pSequence);
+
+		processBasicData(pNode, pSequence);	// load basic data from XML
+
+		// Create all actions of that sequence
+		for (rapidxml::xml_node<>* pNodeAction = pNode->first_node(); pNodeAction != NULL; pNodeAction = pNodeAction->next_sibling())
 		{
-			CSequenceComponent* pSequence = new CSequenceComponent();
-			pScene->m_listSequences.push_back(pSequence);
+			CSequenceAction* pAction = new CSequenceAction();	// create the action
+			pSequence->m_pActions.push_back(pAction);	// add it to the list of actions
 
-			processBasicData(pNode, pSequence);	// load basic data from XML
+			// Assign type
+			if (strcmp(pNodeAction->name(), "move") == 0)
+				pAction->m_type = eActionType::move;
+			if (strcmp(pNodeAction->name(), "say") == 0)
+				pAction->m_type = eActionType::say;
 
-			// Create all actions of that sequence
-			for (rapidxml::xml_node<>* pNodeAction = pNode->first_node(); pNodeAction != NULL; pNodeAction = pNodeAction->next_sibling())
+			pAction->m_text = pNodeAction->value();	// assign the text
+			pAction->m_lifetime = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "lifetime"));	// assign the lifetime
+			pAction->m_charSize = (unsigned int)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "charsize"));	// assign the lifetime
+
+			// read font colors
+			sColorReturn colorObjectPrim = translateStringToColor(CRapidXMLAdditions::getAttributeValue(pNodeAction, "color"));
+			if (colorObjectPrim.m_bSuccessful)
+				pAction->m_colorPrimary = colorObjectPrim.m_color;
+			sColorReturn colorObjectSec = translateStringToColor(CRapidXMLAdditions::getAttributeValue(pNodeAction, "shadow"));
+			if (colorObjectSec.m_bSuccessful)
+				pAction->m_colorSecondary = colorObjectSec.m_color;
+
+			// assign the move to position
+			float x = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "posX"));	// assign the x value
+			float y = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "posY"));	// assign the y value
+			pAction->m_moveToVector = { x,y };
+
+			// assign the font
+			std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNodeAction, "load");	// get the name of the asset to load
+			CFontAsset* m_pAsset = (CFontAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
+			if (m_pAsset)
+				pAction->m_font = &m_pAsset->m_font;
+
+			// assign the target object that should perform the action
+			const char* targetName = CRapidXMLAdditions::getAttributeValue(pNodeAction, "object");
+			for (std::list<CGameObject*>::iterator it = pScene->m_GameObjects.begin(); it != pScene->m_GameObjects.end(); ++it)
 			{
-				CSequenceAction* pAction = new CSequenceAction();	// create the action
-				pSequence->m_pActions.push_back(pAction);	// add it to the list of actions
-
-				// Assign type
-				if (strcmp(pNodeAction->name(), "move") == 0)
-					pAction->m_type = eActionType::move;
-				if (strcmp(pNodeAction->name(), "say") == 0)
-					pAction->m_type = eActionType::say;
-
-				pAction->m_text = pNodeAction->value();	// assign the text
-				pAction->m_lifetime = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "lifetime"));	// assign the lifetime
-				pAction->m_charSize = (unsigned int)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "charsize"));	// assign the lifetime
-
-				// read font colors
-				sColorReturn colorObjectPrim = translateStringToColor(CRapidXMLAdditions::getAttributeValue(pNodeAction, "color"));
-				if (colorObjectPrim.m_bSuccessful)
-					pAction->m_colorPrimary = colorObjectPrim.m_color;
-				sColorReturn colorObjectSec = translateStringToColor(CRapidXMLAdditions::getAttributeValue(pNodeAction, "shadow"));
-				if (colorObjectSec.m_bSuccessful)
-					pAction->m_colorSecondary = colorObjectSec.m_color;
-
-				// assign the move to position
-				float x = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "posX"));	// assign the x value
-				float y = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "posY"));	// assign the y value
-				pAction->m_moveToVector = { x,y };
-
-				// assign the font
-				std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNodeAction, "load");	// get the name of the asset to load
-				CFontAsset* m_pAsset = (CFontAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
-				if (m_pAsset)
-					pAction->m_font = &m_pAsset->m_font;
-
-				// assign the target object that should perform the action
-				const char* targetName = CRapidXMLAdditions::getAttributeValue(pNodeAction, "object");
-				for (std::list<CGameObject*>::iterator it = pScene->m_GameObjects.begin(); it != pScene->m_GameObjects.end(); ++it)
-				{
-					if (strcmp(((*it)->m_name).c_str(), targetName) == 0)	// In case we have found the corret object
-						pAction->m_targetObject = *it;	// assign the object
-				}
+				if (strcmp(((*it)->m_name).c_str(), targetName) == 0)	// In case we have found the corret object
+					pAction->m_targetObject = *it;	// assign the object
 			}
 		}
-	//}
+	}
 }
 
 // set all available references

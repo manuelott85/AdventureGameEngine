@@ -156,8 +156,10 @@ private:
 public:
 	std::string m_type = "";		// store the type of interaction performed with the left mouse button
 	std::string m_neededGameObject = "";	// store the name of the gameobject that is needed to perform the action successfully
-	std::list<std::string> m_pListToEnable;		// store the name of components to ENABLE by performing the use action
-	std::list<std::string> m_pListToDisable;	// store the name of components to DISABLE by performing the use action
+	std::list<std::string> m_pComponentsToEnable;		// store the name of components to ENABLE by performing the use action
+	std::list<std::string> m_pComponentsToDisable;	// store the name of components to DISABLE by performing the use action
+	std::list<std::string> m_pGameObjectsToEnable;		// store the name of GameObjects to ENABLE by performing the use action
+	std::list<std::string> m_pGameObjectsToDisable;	// store the name of GameObjects to DISABLE by performing the use action
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);

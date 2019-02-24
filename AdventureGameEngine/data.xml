@@ -63,20 +63,26 @@
       </navigationmesh>
     </gameobject>
 
-    <gameobject name="girl" posX="1630" posY="710" scaleX="1" scaleY="1" rotation="0">
-      <!--<sprite load="keyBlue" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0" originY="0" enabled="1"/>-->
-      <textbox posX="0" posY="-90" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
-      <textbox posX="-2" posY="-88" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
+    <gameobject name="doorGirl" posX="1630" posY="760" scaleX="1" scaleY="1" rotation="0" enabled="0">
+      <sprite load="doorClosed" posX="0" posY="0" scaleX="1" scaleY="1" rotation="0" originX="48" originY="104" enabled="1"/>
+      <textbox posX="0" posY="-125" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
+      <textbox posX="-2" posY="-123" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
+      <text name="description" load="montserratB" lifetime="4" charsize="25">I should ask them if they have my keys.</text>
+      <interaction name="ask4Key" type="use" enabled="1">
+        <enableGameObject>ask4keys</enableGameObject>
+        <enableGameObject>key</enableGameObject>
+        <disableComponent>ask4Key</disableComponent>
+      </interaction>
     </gameobject>
     
-    <gameobject name="key" posX="1680" posY="800" scaleX="1" scaleY="1" rotation="0">
+    <gameobject name="key" posX="1680" posY="800" scaleX="1" scaleY="1" rotation="0" enabled="0">
       <sprite load="keyYellow" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="28" originY="64" enabled="1"/>
       <text name="description" load="montserratB" lifetime="4" charsize="25" color="black" shadow="white">This is a key for a door.</text>
       <text name="pickup" load="montserratB" lifetime="4" charsize="25">This might be usefull.</text>
       <interaction type="pickup" enabled="1"/>
     </gameobject>
 
-    <gameobject name="door" posX="110" posY="820" scaleX="1" scaleY="1" rotation="0">
+    <gameobject name="doorBar" posX="110" posY="820" scaleX="1" scaleY="1" rotation="0">
       <sprite load="doorClosed" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="48" originY="104" enabled="1"/>
       <sprite load="doorOpen" posX="0" posY="0" scaleX="1.5" scaleY="1.5" rotation="0" originX="48" originY="104" enabled="0"/>
       <text name="description" load="montserratB" lifetime="4" charsize="25">This is the entrance to my bar.</text>
@@ -84,13 +90,15 @@
       <text name="useSuccess" load="montserratB" lifetime="4" charsize="25">This door is now open.</text>
       <text name="use" load="montserratB" lifetime="4" charsize="25">Where are my keys? Doh... I left them at the girls' place.</text>
       <interaction name="tryDoor" type="use" enabled="1">
-        <enable>indoor</enable>
+        <enableGameObject>doorGirl</enableGameObject>
+        <enableComponent>openDoor</enableComponent>
+        <disableComponent>tryDoor</disableComponent>
       </interaction>
       <interaction name="openDoor" type="useWithRequirement" neededGameObject="key" enabled="0">
-        <enable>doorOpen</enable>
-        <disable>doorClosed</disable>
-        <enable>enterDoor</enable>
-        <disable>openDoor</disable>
+        <enableComponent>doorOpen</enableComponent>
+        <disableComponent>doorClosed</disableComponent>
+        <enableComponent>enterDoor</enableComponent>
+        <disableComponent>openDoor</disableComponent>
       </interaction>
       <interaction name="enterDoor" type="loadScene" enabled="0">
         <enable>indoor</enable>
@@ -125,7 +133,7 @@
     <gameobject name="intro" enabled="1">
       <sequence>
         <move object="player" posX="1600" posY="850"/>
-        <say object="girl" load="montserratB" lifetime="4" charsize="25" color="magenta" shadow="black">Please, come back soon!  </say>
+        <say object="doorGirl" load="montserratB" lifetime="4" charsize="25" color="magenta" shadow="black">Please, come back soon!  </say>
         <say object="player" load="montserratB" lifetime="4" charsize="25">Phew... Hi, I am Indy.</say>
         <say object="player" load="montserratB" lifetime="4" charsize="25">An Indie-Developer, and I am going to walk you through the features of this Engine.</say>
         <say object="player" load="montserratB" lifetime="4" charsize="25">Right now, you are in a sequence and therefore cannot interact with the game.</say>
@@ -141,25 +149,24 @@
       </sequence>
     </gameobject>
 
-    <gameobject name="intro" enabled="1">
+    <gameobject name="ask4keys" enabled="0">
       <sequence>
+        <say object="player" load="montserratB" lifetime="2" charsize="25">*knock, knock* Hey its me again.</say>
         <move object="player" posX="1600" posY="850"/>
-        <say object="girl" load="montserratB" lifetime="4" charsize="25" color="magenta" shadow="black">Please, come back soon!  </say>
-        <say object="player" load="montserratB" lifetime="4" charsize="25">Phew... Hi, I am Indy.</say>
-        <say object="player" load="montserratB" lifetime="4" charsize="25">An Indie-Developer, and I am going to walk you through the features of this Engine.</say>
-        <say object="player" load="montserratB" lifetime="4" charsize="25">Right now, you are in a sequence and therefore cannot interact with the game.</say>
-        <say object="player" load="montserratB" lifetime="4" charsize="25">This is indicated by the hourglass at your cursor.</say>
-        <move object="player" posX="1200" posY="900"/>
-        <say object="player" load="montserratB" lifetime="4" charsize="25">After this sequence, the cursor will either be an arrow indicating that you can go there...</say>
-        <say object="player" load="montserratB" lifetime="4" charsize="25">Or it will be a magnifying glass telling that you can interact with something.</say>
-        <say object="player" load="montserratB" lifetime="4" charsize="25">Left clicking will perform a default action like picking up or moveing to.</say>
-        <say object="player" load="montserratB" lifetime="4" charsize="25">I will tell you more about an object, if you click it with the right mouse button.</say>
-        <move object="player" posX="850" posY="750"/>
-        <say object="player" load="montserratB" lifetime="4" charsize="25">The girls are fine. So you and I should check out the bar.</say>
-        <say object="player" load="montserratB" lifetime="4" charsize="25">The bar is at the left end of this scene.</say>
+        <say object="doorGirl" load="montserratB" lifetime="3" charsize="25" color="magenta" shadow="black">That was quicker than expected.</say>
+        <say object="player" load="montserratB" lifetime="3" charsize="25">I am here for another reason!</say>
+        <say object="doorGirl" load="montserratB" lifetime="3" charsize="25" color="magenta" shadow="black">Are you? That's amusing.</say>
+        <say object="player" load="montserratB" lifetime="4" charsize="25">I think I lost my keys in your room. Could you...</say>
+        <say object="doorGirl" load="montserratB" lifetime="2" charsize="25" color="magenta" shadow="black">Wait a second...</say>
+        <say object="doorGirl" load="montserratB" lifetime="1" charsize="25" color="magenta" shadow="black">*steps*</say>
+        <say object="doorGirl" load="montserratB" lifetime="1" charsize="25" color="magenta" shadow="black">*...*</say>
+        <say object="doorGirl" load="montserratB" lifetime="1" charsize="25" color="magenta" shadow="black">*steps*</say>
+        <say object="doorGirl" load="montserratB" lifetime="2" charsize="25" color="magenta" shadow="black">Here they are!</say>
+        <say object="player" load="montserratB" lifetime="3" charsize="25">You are better than any diamond, Ruby!</say>
+        <say object="doorGirl" load="montserratB" lifetime="3" charsize="25" color="magenta" shadow="black">I am expecting a special tip next time. See you...</say>
       </sequence>
     </gameobject>
-
+    
   </scene>
 
   <!-- #### SCENE 2 ####-->
