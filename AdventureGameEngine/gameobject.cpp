@@ -388,6 +388,30 @@ void CInteractionComponent::performTask(bool leftMouseBtnWasUsed)
 			m_pParentGameObject->m_bEnabled = false;	// remove item from screen
 		}
 
+		if (m_type == "use")
+		{
+			for (std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin(); it != m_pParentGameObject->m_components.end(); ++it)
+			{
+				// show text
+				if ((*it)->m_name == "use")
+					(*it)->performAction(leftMouseBtnWasUsed);
+
+				// switch gameobjects to enabled
+				for (std::list<std::string>::iterator itString = m_pListToEnable.begin(); itString != m_pListToEnable.end(); ++itString)
+				{
+					if ((*it)->m_name == *itString)
+						(*it)->m_bEnabled = true;
+				}
+
+				// switch gameobjects to disabled
+				for (std::list<std::string>::iterator itString = m_pListToDisable.begin(); itString != m_pListToDisable.end(); ++itString)
+				{
+					if ((*it)->m_name == *itString)
+						(*it)->m_bEnabled = false;
+				}
+			}
+		}
+
 		if (m_type == "useWithRequirement")
 		{
 			// check if the required item is in the inventory
