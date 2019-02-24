@@ -15,6 +15,7 @@ class CInteractionComponent;
 class CFontAsset;
 class CTextbox;
 class CSequenceAction;
+class CAudioAsset;
 
 // ----------------------------------------------------------------------------
 
@@ -138,10 +139,11 @@ public:
 	sf::Vector2f m_v2fLastFramePos = { 0,0 };
 	// storage for saving the "list of component" index to given animation
 	int m_idleRightIndex = 0, m_idleLeftIndex = 0, m_moveRightIndex = 0, m_moveLeftIndex = 0, m_moveUpIndex = 0, m_moveDownIndex = 0;
+	int m_idleHeadIndex = 0, m_talkToThePlayerIndex = 0, m_talkIntoTheImageIndex = 0, m_talkRightIndex = 0, m_talkLeftIndex = 0;
 public:
 	virtual void update(sf::RenderWindow* pWindow);
 private:
-	void activateAnimationWithGivenIndex(int index);	// enable the object with given index and deactivate every one else, also scale accordingly to the y-axis and a factor
+	void activateAnimationWithGivenIndex(int index, bool bShowHeadStill = false, bool bShowHeadTalking = false);	// enable the object with given index and deactivate every one else, also scale accordingly to the y-axis and a factor
 };
 
 // ----------------------------------------------------------------------------
@@ -160,6 +162,8 @@ public:
 	std::list<std::string> m_pComponentsToDisable;	// store the name of components to DISABLE by performing the use action
 	std::list<std::string> m_pGameObjectsToEnable;		// store the name of GameObjects to ENABLE by performing the use action
 	std::list<std::string> m_pGameObjectsToDisable;	// store the name of GameObjects to DISABLE by performing the use action
+	CAudioAsset* m_pAudioFile;
+	sf::Sound m_sound;	// the audio component to play if the action gets triggered
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
@@ -186,6 +190,7 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+
 class CTextbox : public CComponent
 {
 private:
@@ -202,7 +207,17 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+class CAudioComponent : public CComponent
+{
+public:
+	CAudioAsset* m_pAudioFile;
+	sf::Sound m_sound;	// the audio component to play if the action gets triggered
 
+public:
+	virtual void update(sf::RenderWindow* pWindow);
+};
+
+// ----------------------------------------------------------------------------
 // This is the container for a sequence; if enabled it will disable the input and play through every action step by step until it deactivates itself again
 class CSequenceComponent : public CComponent
 {
@@ -222,6 +237,7 @@ enum eActionType
 };
 
 // ----------------------------------------------------------------------------
+
 class CSequenceAction
 {
 public:

@@ -152,7 +152,7 @@ void CSpriteMapAnimationAsset::update(sf::RenderWindow* pWindow)
 
 void CFontAsset::start(CManager *pManager, rapidxml::xml_node<>* pNode)
 {
-	// load the font
+	// load assets name
 	m_name = CRapidXMLAdditions::getAttributeValue(pNode, "name");	// get name from XML
 
 	// Load texture and assign to sprite
@@ -160,10 +160,28 @@ void CFontAsset::start(CManager *pManager, rapidxml::xml_node<>* pNode)
 
 	// Load ressource
 	if (!m_font.loadFromFile(file))
-		std::cout << "ERROR: Could not load font: 'Montserrat - Regular.ttf'" << std::endl;
+		std::cout << "ERROR: Could not load font" << std::endl;
 }
 
 sf::Sprite* CFontAsset::getSprite()
+{
+	return NULL;
+}
+
+// ---------- CAudioAsset ---------------------------------------------------------------------------------------------------------------
+
+void CAudioAsset::start(CManager *pManager, rapidxml::xml_node<>* pNode)
+{
+	// load assets name
+	m_name = CRapidXMLAdditions::getAttributeValue(pNode, "name");	// get name from XML
+
+	// Load the file
+	std::string file = pManager->m_strAssetPath + pNode->value();
+	if (!m_buffer.loadFromFile(file))
+		std::cout << "ERROR: Could not load audio file" << std::endl;
+}
+
+sf::Sprite* CAudioAsset::getSprite()
 {
 	return NULL;
 }

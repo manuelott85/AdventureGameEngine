@@ -34,9 +34,19 @@
       <animation name="moveDown" xOffset="150" yOffset="80" width="50" height="80" steps="5" time="200"/>
       <sprite name="idleFromRight" xOffset="0" yOffset="0" width="50" height="80"/>
       <sprite name="idleFromLeft" xOffset="50" yOffset="0" width="50" height="80"/>
+      <sprite name="idleHead" xOffset="500" yOffset="320" width="50" height="80"/>
+      <animation name="talkToPlayer" xOffset="550" yOffset="400" width="50" height="80" steps="11" time="200"/>
+      <animation name="talkIntoTheImage" xOffset="100" yOffset="560" width="50" height="80" steps="6" time="200"/>
+      <animation name="talkRight" xOffset="550" yOffset="400" width="50" height="80" steps="5" time="200"/>
     </spritemap>
 
-    <audio name="lightswitch">nameOfFile.ogg</audio>
+    <audio name="lightswitch">448086__breviceps__normal-click.wav</audio>
+    <audio name="keys">390324__lightnessko__keys-jingling.wav</audio>
+    <audio name="knock">257222__javierzumer__8bit-knock-knock.wav</audio>
+    <audio name="doorLocked">321087__benjaminnelan__door-locked-consolidated.ogg</audio>
+    <audio name="openLock">367423__magedu__door-lock-open.wav</audio>
+    <audio name="openDoor">398750__anthousai__door-open-01.wav</audio>
+    <audio name="ambienceCity">454822__nimlos__ambience-city-night-dpa-semibinaural.wav</audio>
 
     <font name="montserratR">Montserrat-Regular.ttf</font>
     <font name="montserratB">Montserrat-Black.ttf</font>
@@ -61,6 +71,7 @@
           <vector x="650" y="650"></vector>
         </polygon>
       </navigationmesh>
+      <audio load="ambienceCity" loop="true" volume="100" enabled="1"/>
     </gameobject>
 
     <gameobject name="doorGirl" posX="1630" posY="760" scaleX="1" scaleY="1" rotation="0" enabled="0">
@@ -72,14 +83,17 @@
         <enableGameObject>ask4keys</enableGameObject>
         <enableGameObject>key</enableGameObject>
         <disableComponent>ask4Key</disableComponent>
+        <playaudio load="knock"/>
       </interaction>
     </gameobject>
     
     <gameobject name="key" posX="1680" posY="800" scaleX="1" scaleY="1" rotation="0" enabled="0">
       <sprite load="keyYellow" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="28" originY="64" enabled="1"/>
-      <text name="description" load="montserratB" lifetime="4" charsize="25" color="black" shadow="white">This is a key for a door.</text>
+      <text name="description" load="montserratB" lifetime="4" charsize="25">This is a key for a door.</text>
       <text name="pickup" load="montserratB" lifetime="4" charsize="25">This might be usefull.</text>
-      <interaction type="pickup" enabled="1"/>
+      <interaction type="pickup" enabled="1">
+        <playaudio load="keys"/>
+      </interaction>
     </gameobject>
 
     <gameobject name="doorBar" posX="110" posY="820" scaleX="1" scaleY="1" rotation="0">
@@ -89,31 +103,40 @@
       <text name="useFailure" load="montserratB" lifetime="4" charsize="25">I don't have the key to unlock the door.</text>
       <text name="useSuccess" load="montserratB" lifetime="4" charsize="25">This door is now open.</text>
       <text name="use" load="montserratB" lifetime="4" charsize="25">Where are my keys? Doh... I left them at the girls' place.</text>
-      <interaction name="tryDoor" type="use" enabled="0">
+      <interaction name="tryDoor" type="use" enabled="1">
         <enableGameObject>doorGirl</enableGameObject>
         <enableComponent>openDoor</enableComponent>
         <disableComponent>tryDoor</disableComponent>
+        <playaudio load="doorLocked"/>
       </interaction>
       <interaction name="openDoor" type="useWithRequirement" neededGameObject="key" enabled="0">
         <enableComponent>doorOpen</enableComponent>
         <disableComponent>doorClosed</disableComponent>
         <enableComponent>enterDoor</enableComponent>
         <disableComponent>openDoor</disableComponent>
+        <playaudio load="openLock"/>
       </interaction>
-      <interaction name="enterDoor" type="loadScene" enabled="1">
+      <interaction name="enterDoor" type="loadScene" enabled="0">
         <enableComponent>indoor</enableComponent>
+        <playaudio load="openDoor"/>
       </interaction>
     </gameobject>
 
-    <!--<gameobject name="player" posX="1630" posY="710" scaleX="1" scaleY="1" rotation="0">-->
-    <gameobject name="player" posX="100" posY="710" scaleX="1" scaleY="1" rotation="0">
+
+    <gameobject name="player" posX="1630" posY="710" scaleX="1" scaleY="1" rotation="0">
+    <!--<gameobject name="player" posX="100" posY="710" scaleX="1" scaleY="1" rotation="0">-->
       <sprite load="idleFromRight" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
       <sprite load="idleFromLeft" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
       <animation load="moveUp" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
       <animation load="moveDown" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
       <animation load="moveRight" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0"/>
       <animation load="moveRight" posX="-80" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0" mirrorX="1"/>
-      <animationController idleRightIndex="0" idleLeftIndex="1" moveRightIndex="4" moveLeftIndex="5" moveUpIndex="2" moveDownIndex="3"/>
+      <sprite load="idleHead" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
+      <animation load="talkToPlayer" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
+      <animation load="talkIntoTheImage" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
+      <animation load="talkRight" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0"/>
+      <animation load="talkRight" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0" mirrorX="1"/>
+      <animationController idleRightIndex="0" idleLeftIndex="1" moveRightIndex="4" moveLeftIndex="5" moveUpIndex="2" moveDownIndex="3" idleHeadIndex="6" talkToPlayerIndex="7" talkIntoTheImageIndex="8" talkRightIndex="9" talkLeftIndex="10"/>
       <textbox posX="0" posY="-120" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
       <textbox posX="-2" posY="-118" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
     </gameobject>
@@ -131,7 +154,7 @@
       <cursor/>
     </gameobject>
 
-    <gameobject name="intro" enabled="0">
+    <gameobject name="intro" enabled="1">
       <sequence>
         <move object="player" posX="1600" posY="850"/>
         <say object="doorGirl" load="montserratB" lifetime="4" charsize="25" color="magenta" shadow="black">Please, come back soon!  </say>
@@ -203,8 +226,8 @@
     <gameobject name="lightswitch" posX="300" posY="460" scaleX="1" scaleY="1" rotation="0">
       <sprite load="lightswitchOff" posX="30" posY="-100" scaleX="4" scaleY="4" rotation="0" originX="0" originY="0" enabled="1"/>
       <sprite load="lightswitchOn" posX="30" posY="-100" scaleX="4" scaleY="4" rotation="0" originX="0" originY="0" enabled="0"/>
-      <text name="description" load="montserratB" lifetime="4" charsize="25">A lightswitch.</text>
-      <text name="use" load="montserratB" lifetime="4" charsize="25" color="green" shadow="black">*click*</text>
+      <text name="description" load="montserratB" lifetime="2" charsize="25">A lightswitch.</text>
+      <text name="use" load="montserratB" lifetime="1" charsize="25" color="green" shadow="black">*click*</text>
       <interaction name="switchOnLight" type="use" enabled="1">
         <enableComponent>switchOffLight</enableComponent>
         <disableComponent>switchOnLight</disableComponent>
@@ -232,7 +255,12 @@
       <animation load="moveDown" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
       <animation load="moveRight" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0"/>
       <animation load="moveRight" posX="-80" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0" mirrorX="1"/>
-      <animationController idleRightIndex="0" idleLeftIndex="1" moveRightIndex="4" moveLeftIndex="5" moveUpIndex="2" moveDownIndex="3"/>
+      <sprite load="idleHead" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
+      <animation load="talkToPlayer" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
+      <animation load="talkIntoTheImage" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0"/>
+      <animation load="talkRight" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0"/>
+      <animation load="talkRight" posX="0" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0" mirrorX="1"/>
+      <animationController idleRightIndex="0" idleLeftIndex="1" moveRightIndex="4" moveLeftIndex="5" moveUpIndex="2" moveDownIndex="3" idleHeadIndex="6" talkToPlayerIndex="7" talkIntoTheImageIndex="8" talkRightIndex="9" talkLeftIndex="10"/>
       <textbox posX="0" posY="-120" scaleX="0.125" scaleY="0.125" rotation="0" originX="0" originY="0" enabled="0"/>
       <textbox posX="-2" posY="-118" scaleX="0.125" scaleY="0.125" rotation="0" originX="0" originY="0" enabled="0"/>
     </gameobject>
@@ -249,10 +277,10 @@
       <cursor/>
     </gameobject>
 
-    <gameobject name="introIndoor" enabled="0">
+    <gameobject name="introIndoor" enabled="1">
       <sequence>
-        <say object="player" load="montserratB" lifetime="2" charsize="25">*clonk*</say>
-        <say object="player" load="montserratB" lifetime="3" charsize="25">I can't see a thing. Maybe I should switch the lights on...</say>
+        <say object="player" load="montserratB" lifetime="1" charsize="25">*clonk*</say>
+        <say object="player" load="montserratB" lifetime="2" charsize="25">I can't see a thing. Maybe I should switch the lights on...</say>
       </sequence>
     </gameobject>
     

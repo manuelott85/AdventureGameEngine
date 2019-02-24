@@ -74,6 +74,7 @@ private:
 	void createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene); // create the interaction components
 	void createTextComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene); // create the text components
 	void createTextboxComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene); // create the textbox components
+	void createAudioComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject); // create the audio components
 	void createSequenceComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene); // create the sequence components
 
 	void setReferences();	// set all available references

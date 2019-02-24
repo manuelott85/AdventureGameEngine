@@ -90,3 +90,15 @@ public:
 	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);	// Initialize the Asset (load the font)
 	virtual sf::Sprite* getSprite();
 };
+
+// ----------------------------------------------------------------------------
+
+class CAudioAsset : public CAsset
+{
+public:
+	sf::SoundBuffer m_buffer;
+
+public:
+	virtual void start(CManager *pManager, rapidxml::xml_node<>* pNode);
+	virtual sf::Sprite* getSprite();
+};

@@ -151,10 +151,9 @@ void CManager::loadAudio(rapidxml::xml_node<>* pNode)
 	// e.g. <audio name="lightswitch">nameOfFile.ogg</audio>
 	if (strcmp(pNode->name(), "audio") == 0)
 	{
-		//#### AudioType is missing ####
-		//CSpriteAsset *pAudio = new CSpriteAsset();	// create the asset's object
-		//pAudio->start(this, pNode);	// call its start function
-		//m_Assets.push_back(pAudio);	// make it available in the manager
+		CAudioAsset *pAudio = new CAudioAsset();	// create the asset's object
+		pAudio->start(this, pNode);	// call its start function
+		m_Assets.push_back(pAudio);	// make it available in the manager
 	}
 }
 
@@ -167,7 +166,6 @@ void CManager::loadFont(rapidxml::xml_node<>* pNode)
 		CFontAsset *pFont = new CFontAsset();	// create the asset's object
 		pFont->start(this, pNode);	// call its start function
 		m_Assets.push_back(pFont);	// make it available in the manager
-		int i = 5;
 	}
 }
 
@@ -245,6 +243,7 @@ void CManager::createEveryGameObjectFromXML(rapidxml::xml_node<>* pSceneNode, CS
 				createTextComponent(pNodeComponent, pGameObject, pScene);	// create the description component
 				createTextboxComponent(pNodeComponent, pGameObject, pScene);	// create the textbox component
 				createSequenceComponent(pNodeComponent, pGameObject, pScene);	// create the sequence component
+				createAudioComponent(pNodeComponent, pGameObject);	// create the audio component
 			}
 		}
 	}
@@ -406,6 +405,11 @@ void CManager::createAnimationCtrlComponent(rapidxml::xml_node<>* pNode, CGameOb
 		pComponent->m_moveLeftIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "moveLeftIndex"));
 		pComponent->m_moveUpIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "moveUpIndex"));
 		pComponent->m_moveDownIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "moveDownIndex"));
+		pComponent->m_idleHeadIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "idleHeadIndex"));
+		pComponent->m_talkToThePlayerIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "talkToPlayerIndex"));
+		pComponent->m_talkIntoTheImageIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "talkIntoTheImageIndex"));
+		pComponent->m_talkRightIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "talkRightIndex"));
+		pComponent->m_talkLeftIndex = (int)atoi(CRapidXMLAdditions::getAttributeValue(pNode, "talkLeftIndex"));
 	}
 }
 
@@ -435,6 +439,13 @@ void CManager::createInteractionComponent(rapidxml::xml_node<>* pNode, CGameObje
 				pComponent->m_pGameObjectsToEnable.push_back(pNodeSubComponent->value());
 			if (strcmp(pNodeSubComponent->name(), "disableGameObject") == 0)
 				pComponent->m_pGameObjectsToDisable.push_back(pNodeSubComponent->value());
+			if (strcmp(pNodeSubComponent->name(), "playaudio") == 0)
+			{
+				std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNodeSubComponent, "load");	// get the name of the asset to load
+				pComponent->m_pAudioFile = (CAudioAsset*)getAssetOnName(assetNameToLoad);
+				if (pComponent->m_pAudioFile)
+					pComponent->m_sound.setBuffer(pComponent->m_pAudioFile->m_buffer);
+			}
 		}
 
 		processBasicData(pNode, pComponent);	// load basic data from XML
@@ -488,6 +499,34 @@ void CManager::createTextboxComponent(rapidxml::xml_node<>* pNode, CGameObject* 
 
 		pComponent->m_drawLate = true;	// tell the component to get drawn after everything else in a second call
 		processBasicData(pNode, pComponent);	// load basic data from XML
+	}
+}
+
+// create the audio components
+void CManager::createAudioComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject)
+{
+	// e.g. <audio load = "knock" loop = "true" volume = "100" enabled = "1" / >
+	if (strcmp(pNode->name(), "audio") == 0)
+	{
+		CAudioComponent* pComponent = new CAudioComponent();	// create the component itself
+		pGameObject->m_components.push_back(pComponent);	// add it to the gameobject
+		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
+
+		processBasicData(pNode, pComponent);	// load basic data from XML
+
+		// set sound file
+		std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the asset to load
+		pComponent->m_pAudioFile = (CAudioAsset*)getAssetOnName(assetNameToLoad);
+		if (pComponent->m_pAudioFile)
+			pComponent->m_sound.setBuffer(pComponent->m_pAudioFile->m_buffer);
+
+		// set loop
+		char* boolean = CRapidXMLAdditions::getAttributeValue(pNode, "enabled");
+		if (boolean != "")
+			pComponent->m_sound.setLoop((bool)atoi(boolean));
+
+		// set volume
+		pComponent->m_sound.setVolume((float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "volume")));
 	}
 }
 

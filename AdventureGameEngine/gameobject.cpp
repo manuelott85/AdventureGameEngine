@@ -198,7 +198,22 @@ void CAnimationCtrl::update(sf::RenderWindow* pWindow)
 {
 	// In case there is NO movement
 	if (m_v2fLastFramePos == m_pParentGameObject->m_v2fPosition)
-		activateAnimationWithGivenIndex(m_idleRightIndex);
+	//	activateAnimationWithGivenIndex(m_idleRightIndex);
+	{
+		// Is the player talking?
+		bool bIsTalking = false;
+		for (std::list<CTextbox*>::iterator it = m_pParentGameObject->m_pTextComponents.begin(); it != m_pParentGameObject->m_pTextComponents.end(); ++it)
+		{
+			if ((*it)->m_bEnabled)
+				bIsTalking = true;
+		}
+
+		// Call head animations either still or talking
+		if (bIsTalking)
+			activateAnimationWithGivenIndex(m_idleRightIndex, false, true);
+		else
+			activateAnimationWithGivenIndex(m_idleRightIndex, true, false);
+	}
 	// in case there IS movement
 	else
 	{
@@ -253,36 +268,39 @@ void CAnimationCtrl::update(sf::RenderWindow* pWindow)
 }
 
 // enable the object with given index and deactivate every one else, also scale accordingly to the y-axis and a factor
-void CAnimationCtrl::activateAnimationWithGivenIndex(int index)
+void CAnimationCtrl::activateAnimationWithGivenIndex(int index, bool bShowHeadStill, bool bShowHeadTalking)
 {
 	int currentIndex = 0;
 	for (std::list<CComponent*>::iterator it = m_pParentGameObject->m_components.begin(); it != m_pParentGameObject->m_components.end(); ++it)
 	{
-		// if it is the element we are looking for, scale and enable it
+		// except the text box of the player; this line is a very specific workaround, but due to time constrains...
+		bool bIsText = false;
+		for (std::list<CTextbox*>::iterator itText = CManager::instance().m_pActiveScene->m_player->m_pTextComponents.begin(); itText != CManager::instance().m_pActiveScene->m_player->m_pTextComponents.end(); ++itText)
+		{
+			if ((*it) == (*itText))
+				bIsText = true;
+		}
+		if (bIsText)
+			break;
+
+		// interpolate the scaling
+		float scale = (float)interpolate(vector<double>{ 688, 900 }, vector<double>{ 1.25, 2 }, m_pParentGameObject->m_v2fPosition.y, true);
+		// Clamp the value towards a minimum scale
+		if (scale < 0.5)
+			scale = 0.5;
+		(*it)->m_v2fScale = { scale,scale };	// only the active component needs to be scaled, the others arn't visible anyways
+
+		// if it is the element we are looking for enable it
 		if (currentIndex == index)
-		{
-			// interpolate the scaling
-			float scale = (float)interpolate(vector<double>{ 688, 900 }, vector<double>{ 1.25, 2 }, m_pParentGameObject->m_v2fPosition.y, true);
-			// Clamp the value towards a minimum scale
-			if (scale < 0.5)
-				scale = 0.5;
-			(*it)->m_v2fScale = { scale,scale };	// only the active component needs to be scaled, the others arn't visible anyways
-
 			(*it)->m_bEnabled = true;	// enable the component
-		}
 		else  // otherwise disable it by default
-		{
-			// except the text box of the player; this line is a very specific workaround, but due to time constrains...
-			bool bIsText = false;
-			for (std::list<CTextbox*>::iterator itText = CManager::instance().m_pActiveScene->m_player->m_pTextComponents.begin(); itText != CManager::instance().m_pActiveScene->m_player->m_pTextComponents.end(); ++itText)
-			{
-				if ((*it) == (*itText))
-					bIsText = true;
-			}
+			(*it)->m_bEnabled = false;
 
-			if(!bIsText)
-				(*it)->m_bEnabled = false;
-		}
+		// Activate the head animations
+		if (currentIndex == m_idleHeadIndex)
+			(*it)->m_bEnabled = bShowHeadStill;
+		if (currentIndex == m_talkRightIndex)
+			(*it)->m_bEnabled = bShowHeadTalking;
 
 		currentIndex++;
 	}
@@ -386,6 +404,10 @@ void CInteractionComponent::performTask(bool leftMouseBtnWasUsed)
 
 			CInventoryContainer::instance().addItemToInventory(m_pParentGameObject->getName(), text);	// Add item to inventory
 			m_pParentGameObject->m_bEnabled = false;	// remove item from screen
+
+			// play sound
+			if (m_sound.getBuffer() != NULL)
+				m_sound.play();
 		}
 
 		if (m_type == "use")
@@ -425,6 +447,10 @@ void CInteractionComponent::performTask(bool leftMouseBtnWasUsed)
 						(*it)->m_bEnabled = false;
 				}
 			}
+
+			// play sound
+			if (m_sound.getBuffer() != NULL)
+				m_sound.play();
 		}
 
 		if (m_type == "useWithRequirement")
@@ -463,6 +489,10 @@ void CInteractionComponent::performTask(bool leftMouseBtnWasUsed)
 				}
 
 				CInventoryContainer::instance().m_pInventoryItems.remove(pItem);	// remove the item from the inventory
+
+				// play sound
+				if (m_sound.getBuffer() != NULL)
+					m_sound.play();
 			}
 			else
 			{
@@ -491,6 +521,10 @@ void CInteractionComponent::performTask(bool leftMouseBtnWasUsed)
 					}
 				}
 			}
+
+			// play sound
+			if (m_sound.getBuffer() != NULL)
+				m_sound.play();
 		}
 	}
 	else    // If the right mouse button was used, show the description text
@@ -599,6 +633,22 @@ void CTextbox::showText(const sf::String& text, float lifetimeInSec, const sf::F
 
 	timer.restart();
 	m_bEnabled = true;	// activate the component
+}
+
+// ---------- CAudioComponent ---------------------------------------------------------------------------------------------------------------
+void CAudioComponent::update(sf::RenderWindow* pWindow)
+{
+	if (m_bEnabled)
+	{
+		// play, if it is not
+		if (m_sound.getStatus() == sf::SoundSource::Status::Paused || m_sound.getStatus() == sf::SoundSource::Status::Stopped)
+			m_sound.play();
+	}
+	else
+	{
+		if (m_sound.getStatus() == sf::SoundSource::Status::Playing)
+			m_sound.stop();
+	}
 }
 
 // ---------- CSequenceComponent ---------------------------------------------------------------------------------------------------------------
