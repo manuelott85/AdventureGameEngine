@@ -72,11 +72,13 @@
       <animation load="moveRight" posX="-80" posY="-50" scaleX="1.7" scaleY="1.7" rotation="0" originX="25" originY="40" enabled="0" reverseplay="0" mirrorX="1"/>
       <animationController idleRightIndex="0" idleLeftIndex="1" moveRightIndex="4" moveLeftIndex="5" moveUpIndex="2" moveDownIndex="3"/>
       <textbox posX="0" posY="-90" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
+      <textbox posX="-2" posY="-88" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
     </gameobject>
 
     <gameobject name="girl" posX="1630" posY="710" scaleX="1" scaleY="1" rotation="0">
       <sprite load="keyBlue" posX="0" posY="0" scaleX="0.4" scaleY="0.4" rotation="0" originX="0" originY="0" enabled="1"/>
-      <textbox posX="-180" posY="-90" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="1"/>
+      <textbox posX="0" posY="-90" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
+      <textbox posX="-2" posY="-88" scaleX="1" scaleY="1" rotation="0" originX="0" originY="0" enabled="0"/>
     </gameobject>
 
     <gameobject name="key" posX="1330" posY="780" scaleX="1" scaleY="1" rotation="0">

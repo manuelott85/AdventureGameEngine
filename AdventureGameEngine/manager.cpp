@@ -524,7 +524,7 @@ void CManager::createTextboxComponent(rapidxml::xml_node<>* pNode, CGameObject* 
 		pGameObject->m_components.push_back(pComponent);	// add it to the gameobject
 		pScene->m_ComponentsDrawLate.push_back(pComponent);	// add the component to the late update / late drawCall function
 		pComponent->m_pParentGameObject = pGameObject;		// letting the component know to which gameobject it is attached to
-		pGameObject->m_textComponent = pComponent;	// assign the textbox component reference
+		pGameObject->m_pTextComponents.push_back(pComponent);	// add the textbox component reference
 
 		pComponent->m_drawLate = true;	// tell the component to get drawn after everything else in a second call
 		processBasicData(pNode, pComponent);	// load basic data from XML

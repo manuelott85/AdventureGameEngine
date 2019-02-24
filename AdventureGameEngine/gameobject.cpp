@@ -273,7 +273,14 @@ void CAnimationCtrl::activateAnimationWithGivenIndex(int index)
 		else  // otherwise disable it by default
 		{
 			// except the text box of the player; this line is a very specific workaround, but due to time constrains...
-			if ((*it) != CManager::instance().m_pActiveScene->m_player->m_textComponent)
+			bool bIsText = false;
+			for (std::list<CTextbox*>::iterator itText = CManager::instance().m_pActiveScene->m_player->m_pTextComponents.begin(); itText != CManager::instance().m_pActiveScene->m_player->m_pTextComponents.end(); ++itText)
+			{
+				if ((*it) == (*itText))
+					bIsText = true;
+			}
+
+			if(!bIsText)
 				(*it)->m_bEnabled = false;
 		}
 
@@ -466,13 +473,17 @@ void CTextComponent::update(sf::RenderWindow* pWindow)
 
 bool CTextComponent::performAction(bool leftMouseBtnWasUsed)
 {
-	/*if (!leftMouseBtnWasUsed)
-	{*/
-		CManager::instance().m_pActiveScene->m_player->m_textComponent->showText(m_text.getString(), m_lifetime, m_text.getFont(), m_charSize);	// show the text
-		return true;
-	/*}
-	else
-		return false;*/
+	int index = 0;
+	for (std::list<CTextbox*>::iterator itText = CManager::instance().m_pActiveScene->m_player->m_pTextComponents.begin(); itText != CManager::instance().m_pActiveScene->m_player->m_pTextComponents.end(); ++itText)
+	{
+		if (index == CManager::instance().m_pActiveScene->m_player->m_pTextComponents.size() - 1)
+			(*itText)->showText(m_text.getString(), m_lifetime, m_text.getFont(), m_charSize, true);	// show the text
+		else
+			(*itText)->showText(m_text.getString(), m_lifetime, m_text.getFont(), m_charSize, false);	// show the text
+		index++;
+	}
+
+	return true;
 }
 
 // ---------- CTextbox ---------------------------------------------------------------------------------------------------------------
@@ -488,10 +499,14 @@ void CTextbox::update(sf::RenderWindow* pWindow)
 		CTextbox* temp = this;
 		m_bEnabled = false;
 
-		for (std::list<CSequence*>::iterator it = CManager::instance().m_pActiveScene->m_listSequences.begin(); it != CManager::instance().m_pActiveScene->m_listSequences.end(); ++it)
+		// tell the current going sequence (if there is one), that one action has been accomblished
+		if (m_bIsPrimary)	// only the primary (white) text should count
 		{
-			if ((*it)->m_bEnabled)
-				(*it)->m_pActions.pop_front();
+			for (std::list<CSequence*>::iterator it = CManager::instance().m_pActiveScene->m_listSequences.begin(); it != CManager::instance().m_pActiveScene->m_listSequences.end(); ++it)
+			{
+				if ((*it)->m_bEnabled)
+					(*it)->m_pActions.pop_front();
+			}
 		}
 
 		return;
@@ -526,16 +541,24 @@ void CTextbox::update(sf::RenderWindow* pWindow)
 	pWindow->draw(m_text);	// draw the text
 }
 
-void CTextbox::showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset, unsigned int charSize)
+void CTextbox::showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset, unsigned int charSize, bool bIsPrimary)
 {
 	CTextbox* temp = this;
 	m_text.setString(text);	// assign text to say
 	m_lifetime = lifetimeInSec;	// assign lifetime
 	m_text.setFont(*pFontAsset);	// assign the font
-	m_text.setCharacterSize(charSize);	// assign the character size
-	//m_text.setFillColor(sf::Color::);
+	m_bIsPrimary = bIsPrimary;
+	if (bIsPrimary)
+	{
+		m_text.setFillColor(sf::Color::White);
+		m_text.setCharacterSize(charSize);	// assign the character size
+	}
+	else
+	{
+		m_text.setFillColor(sf::Color::Black);
+		m_text.setCharacterSize(charSize);	// assign the character size
+	}
 
 	timer.restart();
 	m_bEnabled = true;	// activate the component
-	CManager::instance().m_pActiveScene->m_player->m_textComponent->m_bEnabled = true;
 }

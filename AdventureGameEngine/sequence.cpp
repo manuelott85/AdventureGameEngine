@@ -38,24 +38,39 @@ void CSequence::update(sf::RenderWindow* pWindow)
 // ---------- CSequenceAction ---------------------------------------------------------------------------------------------------------------
 void CSequenceAction::update(sf::RenderWindow* pWindow)
 {
-	float distance = 0;
-	sf::Vector2f distanceVector = { 0,0 };
-
 	// switch on action type
 	switch (m_type) {
 	case eActionType::move :
+	{
+		float distance = 0;
+		sf::Vector2f distanceVector = { 0,0 };
 		CManager::instance().m_pActiveScene->m_playerMoveToTarget->m_v2fPosition = m_moveToVector;
 		distanceVector = CManager::instance().m_pActiveScene->m_player->m_v2fPosition - CManager::instance().m_pActiveScene->m_playerMoveToTarget->m_v2fPosition;
 		distance = sqrt(distanceVector.x * distanceVector.x + distanceVector.y * distanceVector.y);
 		if (distance < 10)
 			m_bFinished = true;
 		break;
+	}
 	case eActionType::say :
-		if (!m_targetObject->m_textComponent->m_bEnabled)
-			m_targetObject->m_textComponent->showText(m_text, m_lifetime, m_font, m_charSize);	// show the text
+	{
+		int index = 0;
+		for (std::list<CTextbox*>::iterator itText = m_targetObject->m_pTextComponents.begin(); itText != m_targetObject->m_pTextComponents.end(); ++itText)
+		{
+			if (!(*itText)->m_bEnabled)
+			{
+				if (index == m_targetObject->m_pTextComponents.size() - 1)
+					(*itText)->showText(m_text, m_lifetime, m_font, m_charSize, true);	// show the text
+				else
+					(*itText)->showText(m_text, m_lifetime, m_font, m_charSize, false);	// show the text
+			}
+			index++;
+		}
 		break;
+	}
 	default:
+	{
 		m_bFinished = true;
 		break;
+	}
 	}
 }

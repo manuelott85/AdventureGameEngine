@@ -29,7 +29,7 @@ public:
 	bool m_bEnabled = true;
 	std::list<CComponent*> m_components;
 	std::list<CInteractionComponent*> m_interactionComponents;
-	CTextbox* m_textComponent = NULL;
+	std::list<CTextbox*> m_pTextComponents;
 
 public:
 	void update(sf::RenderWindow* pWindow);
@@ -186,6 +186,7 @@ class CTextbox : public CComponent
 private:
 	//float m_fontSizePreScaling;	// save the original fontsize for scaling calculations
 	sf::Clock timer;	// to measure the lifetime of the text
+	bool m_bIsPrimary = true;
 
 public:
 	sf::Text m_text;	// the text object itself
@@ -193,5 +194,5 @@ public:
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
-	void showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset, unsigned int charSize);
+	void showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset, unsigned int charSize, bool bIsPrimary);
 };
