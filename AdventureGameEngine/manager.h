@@ -14,6 +14,7 @@
 class CAsset;
 class CGameObject;
 class CComponent;
+struct sColorReturn;
 
 // ----------------------------------------------------------------------------
 
@@ -75,7 +76,14 @@ private:
 	void createTextboxComponent(rapidxml::xml_node<>* pNode, CGameObject* pGameObject, CScene* pScene); // create the textbox components
 
 	void setReferences();	// set all available references
+	sColorReturn translateStringToColor(std::string string);
 
 public:
 	void processMouseInput(sf::RenderWindow* pWindow, bool leftMouseBtnWasUsed = true);	// tell each interaction module that the mouse was used
+};
+
+struct sColorReturn
+{
+	bool m_bSuccessful = false;
+	sf::Color m_color = sf::Color::White;
 };

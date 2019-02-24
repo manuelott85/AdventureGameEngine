@@ -477,9 +477,9 @@ bool CTextComponent::performAction(bool leftMouseBtnWasUsed)
 	for (std::list<CTextbox*>::iterator itText = CManager::instance().m_pActiveScene->m_player->m_pTextComponents.begin(); itText != CManager::instance().m_pActiveScene->m_player->m_pTextComponents.end(); ++itText)
 	{
 		if (index == CManager::instance().m_pActiveScene->m_player->m_pTextComponents.size() - 1)
-			(*itText)->showText(m_text.getString(), m_lifetime, m_text.getFont(), m_charSize, true);	// show the text
+			(*itText)->showText(m_text.getString(), m_lifetime, m_text.getFont(), m_charSize, true, m_colorPrimary);	// show the text
 		else
-			(*itText)->showText(m_text.getString(), m_lifetime, m_text.getFont(), m_charSize, false);	// show the text
+			(*itText)->showText(m_text.getString(), m_lifetime, m_text.getFont(), m_charSize, false, m_colorSecondary);	// show the text
 		index++;
 	}
 
@@ -543,23 +543,15 @@ void CTextbox::update(sf::RenderWindow* pWindow)
 	pWindow->draw(m_text);	// draw the text
 }
 
-void CTextbox::showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset, unsigned int charSize, bool bIsPrimary)
+void CTextbox::showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset, unsigned int charSize, bool bIsPrimary, sf::Color color)
 {
 	CTextbox* temp = this;
 	m_text.setString(text);	// assign text to say
 	m_lifetime = lifetimeInSec;	// assign lifetime
 	m_text.setFont(*pFontAsset);	// assign the font
+	m_text.setFillColor(color);
+	m_text.setCharacterSize(charSize);	// assign the character size
 	m_bIsPrimary = bIsPrimary;
-	if (bIsPrimary)
-	{
-		m_text.setFillColor(sf::Color::White);
-		m_text.setCharacterSize(charSize);	// assign the character size
-	}
-	else
-	{
-		m_text.setFillColor(sf::Color::Black);
-		m_text.setCharacterSize(charSize);	// assign the character size
-	}
 
 	timer.restart();
 	m_bEnabled = true;	// activate the component

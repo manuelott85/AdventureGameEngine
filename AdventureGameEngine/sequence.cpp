@@ -59,9 +59,9 @@ void CSequenceAction::update(sf::RenderWindow* pWindow)
 			if (!(*itText)->m_bEnabled)
 			{
 				if (index == m_targetObject->m_pTextComponents.size() - 1)
-					(*itText)->showText(m_text, m_lifetime, m_font, m_charSize, true);	// show the text
+					(*itText)->showText(m_text, m_lifetime, m_font, m_charSize, true, m_colorPrimary);	// show the text
 				else
-					(*itText)->showText(m_text, m_lifetime, m_font, m_charSize, false);	// show the text
+					(*itText)->showText(m_text, m_lifetime, m_font, m_charSize, false, m_colorSecondary);	// show the text
 			}
 			index++;
 		}

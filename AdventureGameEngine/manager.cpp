@@ -230,6 +230,14 @@ void CManager::createEverySequenceFromXML(rapidxml::xml_node<>* pNode, CScene* p
 				pAction->m_lifetime = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "lifetime"));	// assign the lifetime
 				pAction->m_charSize = (unsigned int)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "charsize"));	// assign the lifetime
 
+				// read font colors
+				sColorReturn colorObjectPrim = translateStringToColor(CRapidXMLAdditions::getAttributeValue(pNodeAction, "color"));
+				if (colorObjectPrim.m_bSuccessful)
+					pAction->m_colorPrimary = colorObjectPrim.m_color;
+				sColorReturn colorObjectSec = translateStringToColor(CRapidXMLAdditions::getAttributeValue(pNodeAction, "shadow"));
+				if (colorObjectSec.m_bSuccessful)
+					pAction->m_colorSecondary = colorObjectSec.m_color;
+
 				// assign the move to position
 				float x = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "posX"));	// assign the x value
 				float y = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "posY"));	// assign the y value
@@ -504,6 +512,14 @@ void CManager::createTextComponent(rapidxml::xml_node<>* pNode, CGameObject* pGa
 		pComponent->m_lifetime = (float)atof(CRapidXMLAdditions::getAttributeValue(pNode, "lifetime"));	// read the lifetime from XML
 		pComponent->m_charSize = (unsigned int)atof(CRapidXMLAdditions::getAttributeValue(pNode, "charsize"));	// read the character size from XML
 
+		// read font colors
+		sColorReturn colorObjectPrim = translateStringToColor(CRapidXMLAdditions::getAttributeValue(pNode, "color"));
+		if (colorObjectPrim.m_bSuccessful)
+			pComponent->m_colorPrimary = colorObjectPrim.m_color;
+		sColorReturn colorObjectSec = translateStringToColor(CRapidXMLAdditions::getAttributeValue(pNode, "shadow"));
+		if (colorObjectSec.m_bSuccessful)
+			pComponent->m_colorSecondary = colorObjectSec.m_color;
+
 		std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNode, "load");	// get the name of the asset to load
 		CFontAsset* m_pAsset = (CFontAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
 		if (m_pAsset)
@@ -545,6 +561,54 @@ void CManager::setReferences()
 				(*itScene)->m_playerMoveToTarget = *it;
 		}
 	}
+}
+
+sColorReturn CManager::translateStringToColor(std::string string)
+{
+	sColorReturn object;
+
+	if (string == "black")
+	{
+		object.m_color = sf::Color::Black;
+		object.m_bSuccessful = true;
+	}
+	if (string == "blue")
+	{
+		object.m_color = sf::Color::Blue;
+		object.m_bSuccessful = true;
+	}
+	if (string == "cyan")
+	{
+		object.m_color = sf::Color::Cyan;
+		object.m_bSuccessful = true;
+	}
+	if (string == "green")
+	{
+		object.m_color = sf::Color::Green;
+		object.m_bSuccessful = true;
+	}
+	if (string == "magenta")
+	{
+		object.m_color = sf::Color::Magenta;
+		object.m_bSuccessful = true;
+	}
+	if (string == "red")
+	{
+		object.m_color = sf::Color::Red;
+		object.m_bSuccessful = true;
+	}
+	if (string == "white")
+	{
+		object.m_color = sf::Color::White;
+		object.m_bSuccessful = true;
+	}
+	if (string == "yellow")
+	{
+		object.m_color = sf::Color::Yellow;
+		object.m_bSuccessful = true;
+	}
+
+	return object;
 }
 
 // tell each interaction module that the mouse was used

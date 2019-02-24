@@ -174,6 +174,8 @@ public:
 	sf::Text m_text;	// the text object itself
 	float m_lifetime = 2;
 	unsigned int m_charSize = 30;
+	sf::Color m_colorPrimary = sf::Color::White;
+	sf::Color m_colorSecondary = sf::Color::Black;
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
@@ -184,7 +186,6 @@ public:
 class CTextbox : public CComponent
 {
 private:
-	//float m_fontSizePreScaling;	// save the original fontsize for scaling calculations
 	sf::Clock timer;	// to measure the lifetime of the text
 	bool m_bIsPrimary = true;
 
@@ -194,5 +195,5 @@ public:
 
 public:
 	virtual void update(sf::RenderWindow* pWindow);
-	void showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset, unsigned int charSize, bool bIsPrimary);
+	void showText(const sf::String& text, float lifetimeInSec, const sf::Font* pFontAsset, unsigned int charSize, bool bIsPrimary, sf::Color color);
 };

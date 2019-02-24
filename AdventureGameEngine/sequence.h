@@ -40,6 +40,8 @@ public:
 	unsigned int m_charSize = 30;
 	std::string m_text = "";					// in case of a say action, this is the text
 	bool m_bFinished = false;					// should be set to true if the action has completed
+	sf::Color m_colorPrimary = sf::Color::White;
+	sf::Color m_colorSecondary = sf::Color::Black;
 
 public:
 	void update(sf::RenderWindow* pWindow);
