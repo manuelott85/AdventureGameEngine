@@ -233,7 +233,7 @@ public:
 
 enum eActionType
 {
-	nothing, move, say
+	nothing, move, say, audio
 };
 
 // ----------------------------------------------------------------------------
@@ -251,6 +251,8 @@ public:
 	bool m_bFinished = false;					// should be set to true if the action has completed
 	sf::Color m_colorPrimary = sf::Color::White;
 	sf::Color m_colorSecondary = sf::Color::Black;
+	CAudioAsset* m_pAudioFile;
+	sf::Sound m_sound;	// the audio component to play if the action gets triggered
 
 public:
 	void update(sf::RenderWindow* pWindow);

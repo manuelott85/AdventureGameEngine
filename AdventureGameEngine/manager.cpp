@@ -521,7 +521,7 @@ void CManager::createAudioComponent(rapidxml::xml_node<>* pNode, CGameObject* pG
 			pComponent->m_sound.setBuffer(pComponent->m_pAudioFile->m_buffer);
 
 		// set loop
-		char* boolean = CRapidXMLAdditions::getAttributeValue(pNode, "enabled");
+		char* boolean = CRapidXMLAdditions::getAttributeValue(pNode, "loop");
 		if (boolean != "")
 			pComponent->m_sound.setLoop((bool)atoi(boolean));
 
@@ -554,6 +554,8 @@ void CManager::createSequenceComponent(rapidxml::xml_node<>* pNode, CGameObject*
 				pAction->m_type = eActionType::move;
 			if (strcmp(pNodeAction->name(), "say") == 0)
 				pAction->m_type = eActionType::say;
+			if (strcmp(pNodeAction->name(), "audio") == 0)
+				pAction->m_type = eActionType::audio;
 
 			pAction->m_text = pNodeAction->value();	// assign the text
 			pAction->m_lifetime = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "lifetime"));	// assign the lifetime
@@ -568,15 +570,21 @@ void CManager::createSequenceComponent(rapidxml::xml_node<>* pNode, CGameObject*
 				pAction->m_colorSecondary = colorObjectSec.m_color;
 
 			// assign the move to position
-			float x = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "posX"));	// assign the x value
-			float y = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "posY"));	// assign the y value
-			pAction->m_moveToVector = { x,y };
+			if (pAction->m_type == eActionType::move)
+			{
+				float x = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "posX"));	// assign the x value
+				float y = (float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "posY"));	// assign the y value
+				pAction->m_moveToVector = { x,y };
+			}
 
 			// assign the font
-			std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNodeAction, "load");	// get the name of the asset to load
-			CFontAsset* m_pAsset = (CFontAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
-			if (m_pAsset)
-				pAction->m_font = &m_pAsset->m_font;
+			if (pAction->m_type == eActionType::say)
+			{
+				std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNodeAction, "load");	// get the name of the asset to load
+				CFontAsset* m_pAsset = (CFontAsset*)getAssetOnName(assetNameToLoad);	// assign a pointer to the asset to load
+				if (m_pAsset)
+					pAction->m_font = &m_pAsset->m_font;
+			}
 
 			// assign the target object that should perform the action
 			const char* targetName = CRapidXMLAdditions::getAttributeValue(pNodeAction, "object");
@@ -584,6 +592,24 @@ void CManager::createSequenceComponent(rapidxml::xml_node<>* pNode, CGameObject*
 			{
 				if (strcmp(((*it)->m_name).c_str(), targetName) == 0)	// In case we have found the corret object
 					pAction->m_targetObject = *it;	// assign the object
+			}
+
+			// assign sound
+			if (pAction->m_type == eActionType::audio)
+			{
+				// set sound file
+				std::string assetNameToLoad = CRapidXMLAdditions::getAttributeValue(pNodeAction, "load");	// get the name of the asset to load
+				pAction->m_pAudioFile = (CAudioAsset*)getAssetOnName(assetNameToLoad);
+				if (pAction->m_pAudioFile)
+					pAction->m_sound.setBuffer(pAction->m_pAudioFile->m_buffer);
+
+				// set loop
+				char* boolean = CRapidXMLAdditions::getAttributeValue(pNodeAction, "loop");
+				if (boolean != "")
+					pAction->m_sound.setLoop((bool)atoi(boolean));
+
+				// set volume
+				pAction->m_sound.setVolume((float)atof(CRapidXMLAdditions::getAttributeValue(pNodeAction, "volume")));
 			}
 		}
 	}

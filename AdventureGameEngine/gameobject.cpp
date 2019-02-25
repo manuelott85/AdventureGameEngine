@@ -717,6 +717,11 @@ void CSequenceAction::update(sf::RenderWindow* pWindow)
 		}
 		break;
 	}
+	case eActionType::audio:
+	{
+		m_sound.play();
+		int i = 5;
+	}
 	default:
 	{
 		m_bFinished = true;
